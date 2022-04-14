@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !\.(woff2|css|js|ico|json|png|jpg|gif)$ [NC]
+
+RewriteRule ^(.*)$ index.php [L,QSA]
