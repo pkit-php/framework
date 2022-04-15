@@ -4,6 +4,7 @@ function mathRoute($routes, $uri)
 {
     $includeFile = '';
     $params = [];
+    $variables = [];
 
     $patternVariable = '/{(.*?)}/';
     foreach ($routes as $route => $file) {
@@ -15,7 +16,7 @@ function mathRoute($routes, $uri)
         $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
 
         if (preg_match($patternRoute, $uri)) {
-
+            
             if (preg_match($patternRoute, $uri, $matches)) {
                 unset($matches[0]);
                 $params = array_combine($variables, $matches);
