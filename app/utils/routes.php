@@ -3,11 +3,12 @@
 function getRoutes($path, $subpath = "/")
 {
     $routes = [];
+    $routesDirs = [];
     $directory = dir($path . $subpath);
     while ($file = $directory->read()) {
         if (@dir($path . $subpath . $file)) {
             if ($file !== '.' && $file !== '..') {
-                $routes = array_merge($routes, getRoutes($path, $subpath . $file . "/"));
+                $routesDirs = array_merge($routesDirs, getRoutes($path, $subpath . $file . "/"));
             }
         } else {
             $route = $subpath . ($file == 'index.php' ? '' : explode('.php', $file)[0] . '/');
@@ -15,5 +16,5 @@ function getRoutes($path, $subpath = "/")
         }
     }
     $directory->close();
-    return $routes;
+    return array_merge($routes, $routesDirs);
 }
