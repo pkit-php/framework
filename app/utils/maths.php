@@ -23,7 +23,6 @@ function mathRoute($routes, $uri)
 
 
         $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
-        echo $patternRoute;
         if (preg_match($patternRoute, $uri)) {
 
             if (preg_match($patternRoute, $uri, $matches)) {
