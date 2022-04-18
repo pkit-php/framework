@@ -6,15 +6,24 @@ function mathRoute($routes, $uri)
     $params = [];
     $variables = [];
 
+    $patternRestVariable = '/{(.*?)}|\[(.*?)\]/';
     $patternVariable = '/{(.*?)}/';
+    $patternRest = '/\[(.*?)\]/';
     foreach ($routes as $route => $file) {
-        if (preg_match_all($patternVariable, $route, $matches)) {
+        if (preg_match_all($patternRestVariable, $route, $matches)) {
             $route = preg_replace($patternVariable, '(\d*\w*)', $route);
-            $variables = $matches[1];
+            $route = preg_replace($patternRest, '(.*?)', $route);
+            $variables = array_merge($matches[1], $matches[2]);
+            foreach ($variables as $key => $value) {
+                if ($value == '') {
+                    unset($variables[$key]);
+                }
+            }
         }
 
-        $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
 
+        $patternRoute = '/^' . str_replace('/', '\/', $route) . '$/';
+        echo $patternRoute;
         if (preg_match($patternRoute, $uri)) {
 
             if (preg_match($patternRoute, $uri, $matches)) {
