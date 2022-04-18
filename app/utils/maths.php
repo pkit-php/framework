@@ -10,6 +10,7 @@ function mathRoute($routes, $uri)
     $patternVariable = '/{(.*?)}/';
     $patternRest = '/\[(.*?)\]/';
     foreach ($routes as $route => $file) {
+        $variables = [];
         if (preg_match_all($patternRestVariable, $route, $matches)) {
             $route = preg_replace($patternVariable, '(\d*\w*)', $route);
             $route = preg_replace($patternRest, '(.*?)', $route);
