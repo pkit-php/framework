@@ -51,7 +51,7 @@ class Router
       include $this->file;
       $route = export();
 
-      $middlewares = $this->getMiddlewares($route->middlewares);
+      $middlewares = $this->getMiddlewares($route->middlewares ?? []);
       $response = $this->response;
       $request = $this->request;
 
