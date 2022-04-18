@@ -5,7 +5,7 @@ function getRoutes($path, $subpath = "/")
     $routes = [];
     $directory = dir($path . $subpath);
     while ($file = $directory->read()) {
-        if (dir($path . $subpath . $file)) {
+        if (@dir($path . $subpath . $file)) {
             if ($file !== '.' && $file !== '..') {
                 $routes = array_merge($routes, getRoutes($path, $subpath . $file . "/"));
             }
