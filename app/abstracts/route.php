@@ -4,35 +4,35 @@ include __DIR__ . '/../utils/methodNotAllowed.php';
 
 abstract class Route
 {
-  public function options($request, $response)
+  public function options(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function delete($request, $response)
+  public function delete(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function patch($request, $response)
+  public function patch(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function trace($request, $response)
+  public function trace(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function post($request, $response)
+  public function post(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function head($request, $response)
+  public function head(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function get($request, $response)
+  public function get(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }
-  public function put($request, $response)
+  public function put(Request $request, Response $response)
   {
     methodNotAllowed($request, $response);
   }

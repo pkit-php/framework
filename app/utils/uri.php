@@ -1,6 +1,6 @@
 <?php
 
-function sanitizeURI($uri)
+function sanitizeURI(string $uri)
 {
     $uri_base = explode('?', $uri)[0];
     $pure_uri = explode('#', $uri_base)[0];

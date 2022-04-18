@@ -1,6 +1,6 @@
 <?php
 
-function mathRoute($routes, $uri)
+function mathRoute(array $routes, string $uri)
 {
     $includeFile = '';
     $params = [];

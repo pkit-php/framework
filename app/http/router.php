@@ -11,15 +11,16 @@ include __DIR__ . '/middleware/index.php';
 
 class Router
 {
-  private
-    $routePath,
-    $request,
-    $response,
-    $params,
+  private string
+    $uri,
     $file,
-    $uri;
+    $routePath;
 
-  public function __construct($routePath)
+  private Request $request;
+  private Response $response;
+  private array $params = [];
+
+  public function __construct(string $routePath)
   {
     $this->uri = sanitizeURI($_SERVER['REQUEST_URI']);
     $this->request = new Request($this);

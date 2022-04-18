@@ -1,6 +1,6 @@
 <?php
 
-function getRoutes($path, $subpath = "/")
+function getRoutes(string $path, $subpath = "/")
 {
     $routes = [];
     $routesDirs = [];

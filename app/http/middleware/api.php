@@ -1,6 +1,6 @@
 <?php
-
-class API
+include __DIR__ . '/../../abstracts/middleware.php';
+class API implements Middleware
 {
   public function handle($request, $response, $next)
   {

@@ -7,26 +7,26 @@ class Response
     $contentType = 'text/html',
     $headers = [];
 
-  public function addHeader($key, $value)
+  public function addHeader(string $key, string $value): self
   {
     $this->headers[$key] = $value;
     return $this;
   }
 
-  public function setContentType($contentType)
+  public function setContentType(string $contentType): self
   {
     $this->contentType = $contentType;
     $this->addHeader('Content-Type', $contentType);
     return $this;
   }
 
-  public function setHttpCode($httpCode)
+  public function setHttpCode(int $httpCode): self
   {
     $this->httpCode = $httpCode;
     return $this;
   }
 
-  public function status($httpCode)
+  public function status(int $httpCode): self
   {
     $this->setHttpCode($httpCode);
     return $this;
@@ -65,37 +65,37 @@ class Response
     }
   }
 
-  public function json()
+  public function json(): self
   {
     $this->setContentType('application/json');
     return $this;
   }
 
-  public function onlyCode()
+  public function onlyCode(): self
   {
     $this->setContentType('');
     return $this;
   }
 
-  public function error()
+  public function error(): self
   {
     $this->setHttpCode(500);
     return $this;
   }
 
-  public function methodNotAllowed()
+  public function methodNotAllowed(): self
   {
     $this->setHttpCode(405);
     return $this;
   }
 
-  public function notFound()
+  public function notFound(): self
   {
     $this->setHttpCode(404);
     return $this;
   }
 
-  public function ok()
+  public function ok(): self
   {
     $this->setHttpCode(200);
     return $this;

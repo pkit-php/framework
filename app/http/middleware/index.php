@@ -21,7 +21,7 @@ class Queue
     $this->middlewares = $middlewares;
   }
 
-  public function next($request, $response)
+  public function next(Request $request, Response $response)
   {
     if (empty($this->middlewares)) {
       return call_user_func_array($this->controller, [$request, $response]);

@@ -1,6 +1,6 @@
 <?php
 
-function methodNotAllowed($_, $response)
+function methodNotAllowed($_, Response $response)
 {
   $response
     ->onlyCode()

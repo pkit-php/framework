@@ -2,14 +2,14 @@
 
 class Request
 {
-  private
-    $httpMethod,
-    $headers,
-    $router,
+  private string $httpMethod;
+  private Router $router;
+  private array
+    $headers = [],
     $queryParams = [],
     $postVars = [];
 
-  public function __construct($router)
+  public function __construct(Router $router)
   {
     $this->router = $router;
 
@@ -23,7 +23,7 @@ class Request
   private function setPostVars()
   {
     if ($this->httpMethod == 'GET') {
-      return false;
+      return;
     }
 
     $this->postVars = $_POST ?? [];
