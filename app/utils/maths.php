@@ -14,11 +14,9 @@ function mathRoute($routes, $uri)
             $route = preg_replace($patternVariable, '(\d*\w*)', $route);
             $route = preg_replace($patternRest, '(.*?)', $route);
             $variables = array_merge($matches[1], $matches[2]);
-            foreach ($variables as $key => $value) {
-                if ($value == '') {
-                    unset($variables[$key]);
-                }
-            }
+            $variables = array_filter($variables, function ($var) {
+                return $var !== '';
+            });
         }
 
 
