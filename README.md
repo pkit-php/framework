@@ -104,7 +104,7 @@ function export()
 
 ### rotas avançadas
 
-- `(...)` 'somente letras e numeros'
+- `(...)` 'somente letras e números'
 - `[...]` 'qualquer coisa entre `/`'
 - `{...}` 'qualquer coisa'
 
@@ -126,9 +126,9 @@ routes/
 
 ```php
 <?php
-# {file}.php
+# __DIR__./routes/(id)/[repo]/{file}.php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/pkit/abstracts/route.php';
 
 class fileByRepo extends Route
 {
