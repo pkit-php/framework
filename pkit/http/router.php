@@ -24,28 +24,13 @@ class Router
     $file,
     $routePath;
 
-  private Request $request;
-  private Response $response;
   private array $params = [];
+  public static Router $router;
 
   public function __construct(string $routePath)
   {
     $this->uri = URI::sanitizeURI($_SERVER['REQUEST_URI']);
-    $this->request = new Request($this);
-    $this->response = new Response;
     $this->routePath = $routePath;
-  }
-
-  private function getMiddlewares($middlewares)
-  {
-    $newMiddlewares = [];
-    foreach ($middlewares as $key => $middleware) {
-      if (is_int($key)) {
-        $newMiddlewares[] = $middleware;
-      }
-    }
-    $methodsMiddlewares = $middlewares[strtolower($this->request->getHttpMethod())] ?? [];
-    return array_merge($newMiddlewares, $methodsMiddlewares);
   }
 
   public function init()
@@ -57,23 +42,8 @@ class Router
   public function run()
   {
     if ($this->file) {
+      setRouter($this);
       include $this->file;
-      $extension = '.' . @end(explode('.', $this->file));
-      if ($extension != '.php') {
-        $this->response
-          ->setContentType(mime_content_type($extension))
-          ->send();
-        exit;
-      }
-      $route = export();
-
-      $middlewares = $this->getMiddlewares($route->middlewares ?? []);
-      $response = $this->response;
-      $request = $this->request;
-
-      (new Queue(function ($request, $response) use ($route) {
-        $this->runMethod($route, $request, $response);
-      }, $middlewares))->next($request, $response);
     } else {
       $this->response
         ->onlyCode()
@@ -93,38 +63,13 @@ class Router
     return $this->params;
   }
 
-  private function runMethod($route, $request, $response)
+  public function getFile()
   {
-
-    switch ($request->getHttpMethod()) {
-      case 'GET':
-        $route->get($request, $response);
-        break;
-      case 'HEAD':
-        $route->head($request, $response);
-        break;
-      case 'PUT':
-        $route->put($request, $response);
-        break;
-      case 'POST':
-        $route->post($request, $response);
-        break;
-      case 'PATCH':
-        $route->patch($request, $response);
-        break;
-      case 'TRACE':
-        $route->trace($request, $response);
-        break;
-      case 'OPTIONS':
-        $route->options($request, $response);
-        break;
-      case 'DELETE':
-        $route->delete($request, $response);
-        break;
-      default:
-        include __DIR__ . '/../utils/methodNotAllowed.php';
-        methodNotAllowed($request, $response);
-        break;
-    }
+    return $this->file;
   }
+}
+
+function setRouter($router)
+{
+  Router::$router = $router;
 }
