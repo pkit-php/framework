@@ -6,29 +6,30 @@ function mathRoute(array $routes, string $uri)
     $params = [];
     $variables = [];
 
-    $patternRestVariable = '/{(.*?)}|\[(.*?)\]/';
-    $patternVariable = '/{(.*?)}/';
-    $patternRest = '/\[(.*?)\]/';
+    $patternGeral = '/{(.*?)}|\[(.*?)\]|\((.*?)\)/';
+    $patternSymbols = '/[{}\[\]\(\)]/';
+    $patternVariable = '/\((.*?)\)/';
+    $patternPath = '/\[(.*?)\]/';
+    $patternRest = '/{(.*?)}/';
 
     foreach ($routes as $route => $file) {
         $variables = [];
         $route = str_replace('.', '\.', $route);
         $route = '/^' . str_replace('/', '\/', $route) . '$/';
-        if (preg_match_all($patternRestVariable, $route, $matches)) {
+        if (preg_match_all($patternGeral, $route, $matches)) {
             $route = preg_replace($patternVariable, '(\d*\w*)', $route);
-            $route = preg_replace($patternRest, '(.*)', $route);
+            $route = preg_replace($patternPath, '([^\/\s]*)', $route);
+            $route = preg_replace($patternRest, '([^\s]*)', $route);
             $variables = $matches[0];
-            $variables = array_map(function ($var) {
-                $var = preg_replace('/[{}\[\]]/', '', $var);
+            $variables = array_map(function ($var) use ($patternSymbols) {
+                $var = preg_replace($patternSymbols, '', $var);
                 return $var;
             }, $variables);
         }
-        $patternRoute = $route;
 
+        if (preg_match($route, $uri)) {
 
-        if (preg_match($patternRoute, $uri)) {
-
-            if (preg_match($patternRoute, $uri, $matches)) {
+            if (preg_match($route, $uri, $matches)) {
                 unset($matches[0]);
                 $params = array_combine($variables, $matches);
             };
