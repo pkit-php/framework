@@ -1,5 +1,7 @@
 <?php
 
+namespace Pkit\Http;
+
 class Response
 {
   private

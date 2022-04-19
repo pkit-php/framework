@@ -1,5 +1,10 @@
 <?php
 
+namespace Pkit\Http\Middleware;
+
+use Pkit\Http\Request;
+use Pkit\Http\Response;
+
 class Queue
 {
 

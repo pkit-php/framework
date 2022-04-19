@@ -1,12 +1,20 @@
 <?php
 
-include __DIR__ . '/../utils/routes.php';
-include __DIR__ . '/../utils/uri.php';
-include __DIR__ . '/../utils/maths.php';
+namespace Pkit\Http;
 
-include __DIR__ . '/request.php';
-include __DIR__ . '/response.php';
-include __DIR__ . '/middleware/index.php';
+use Pkit\Http\Request;
+use Pkit\Http\Response;
+use Pkit\Http\Middleware\Queue;
+use Pkit\Utils\URI;
+use Pkit\Utils\Routes;
+
+// include __DIR__ . '/../utils/routes.php';
+// include __DIR__ . '/../utils/uri.php';
+// include __DIR__ . '/../utils/maths.php';
+
+// include __DIR__ . '/request.php';
+// include __DIR__ . '/response.php';
+// include __DIR__ . '/middleware/index.php';
 
 
 class Router
@@ -22,7 +30,7 @@ class Router
 
   public function __construct(string $routePath)
   {
-    $this->uri = sanitizeURI($_SERVER['REQUEST_URI']);
+    $this->uri = URI::sanitizeURI($_SERVER['REQUEST_URI']);
     $this->request = new Request($this);
     $this->response = new Response;
     $this->routePath = $routePath;
@@ -42,15 +50,15 @@ class Router
 
   public function init()
   {
-    $routes = getRoutes($this->routePath);
-    [$this->file, $this->params] = mathRoute($routes, $this->getUri());
+    $routes = Routes::getRoutes($this->routePath);
+    [$this->file, $this->params] = Routes::mathRoute($routes, $this->getUri());
   }
 
   public function run()
   {
     if ($this->file) {
       include $this->file;
-      $extension = '.' . end(explode('.', $this->file));
+      $extension = '.' . @end(explode('.', $this->file));
       if ($extension != '.php') {
         $this->response
           ->setContentType(mime_content_type($extension))

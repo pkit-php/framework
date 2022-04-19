@@ -1,7 +1,9 @@
 <?php
 
-include __DIR__ . '/pkit/http/router.php';
-include __DIR__ . '/pkit/http/middleware/api.php';
+require __DIR__ . '/pkit/index.php';
+
+use Pkit\Http\Router;
+use Pkit\Http\Middleware\Queue;
 
 Queue::setMap([
   "api" => API::class

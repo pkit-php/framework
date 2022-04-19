@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
+use Pkit\Abstracts\Route;
 
 class Users extends Route
 {

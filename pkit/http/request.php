@@ -1,5 +1,9 @@
 <?php
 
+namespace Pkit\Http;
+
+use Pkit\Http\Router;
+
 class Request
 {
   private string $httpMethod;
