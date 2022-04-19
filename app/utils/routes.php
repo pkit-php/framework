@@ -11,7 +11,7 @@ function getRoutes(string $path, $subpath = "/")
                 $routesDirs = array_merge($routesDirs, getRoutes($path, $subpath . $file . "/"));
             }
         } else {
-            $route = $subpath . ($file == 'index.php' ? '' : explode('.php', $file)[0] . '/');
+            $route = $subpath . ($file == 'index.php' ? '' : rtrim($file, '.php') . '/');
             $routes[$route] = $path . $subpath . $file;
         }
     }
