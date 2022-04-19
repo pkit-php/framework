@@ -50,6 +50,13 @@ class Router
   {
     if ($this->file) {
       include $this->file;
+      $extension = '.' . end(explode('.', $this->file));
+      if ($extension != '.php') {
+        $this->response
+          ->setContentType(mime_content_type($extension))
+          ->send();
+        exit;
+      }
       $route = export();
 
       $middlewares = $this->getMiddlewares($route->middlewares ?? []);
