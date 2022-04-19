@@ -73,7 +73,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
 
 
 # classe abstrata para adição de rotas por método
-class Users extends Route
+class index extends Route
 {
   # middlewares sem chaves são utilizados em todos o métodos
   public $middlewares = [
@@ -98,7 +98,7 @@ class Users extends Route
 # função que exporta a classe para o roteador
 function export()
 {
-  return new Users;
+  return new Index();
 };
 ```
 
@@ -130,7 +130,7 @@ routes/
 
 include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
 
-class UserById extends Route
+class fileByRepo extends Route
 {
   public function get($request, $response)
   {
@@ -148,6 +148,6 @@ class UserById extends Route
 
 function export()
 {
-  return new UserById;
+  return new fileByRepo();
 };
 ```
