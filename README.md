@@ -134,6 +134,13 @@ class UserById extends Route
 {
   public function get($request, $response)
   {
+    /**
+     * [
+     *  'id' => '[a-zA-Z0-9]',
+     *  'repo' => '[^\/]'
+     *  'file' => '.*'
+     * ]
+     */
     $params = $request->getRouter()->getParams();
     $response->json()->send($params);
   }
