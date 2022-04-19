@@ -22,16 +22,17 @@ index.php
 pkit/
 ```
 
-- inclua o roteador do `pkit` ao seu `index.php`
+- inicialize o pkit
 
 ```php
-include __DIR__ . '/pkit/http/router.php';
+require __DIR__ . '/pkit/load.php';
 ```
 
 - mapeie os middlewares as serem usados
 
 ```php
-include __DIR__ . '/pkit/http/middleware/api.php';
+use Pkit\Http\Middleware\Queue;
+use Pkit\Http\Middleware\Api;
 # ...
 
 Queue::setMap([
@@ -43,6 +44,8 @@ Queue::setMap([
 - inicie o roteador com o path das rotas
 
 ```php
+use Pkit\Http\Router;
+
 $router = new Router(__DIR__ . '/routes');
 $router->init();
 $router->run();
@@ -68,9 +71,7 @@ routes/
 ```php
 <?php
 
-# deve ser usado o diretório base do documento
-include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
-
+new PKit\Http\Route
 
 # classe abstrata para adição de rotas por método
 class index extends Route
@@ -95,11 +96,9 @@ class index extends Route
 
 }
 
-# função que exporta a classe para o roteador
-function export()
-{
-  return new Index();
-};
+# função que inicia a rota
+(new Index())->run();
+
 ```
 
 ### rotas avançadas
@@ -128,14 +127,14 @@ routes/
 <?php
 # __DIR__./routes/(id)/[repo]/{file}.php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/pkit/abstracts/route.php';
+new PKit\Http\Route
 
 class fileByRepo extends Route
 {
   public function get($request, $response)
   {
     /**
-     * [
+     * $params = [
      *  'id' => '[a-zA-Z0-9]',
      *  'repo' => '[^\/]'
      *  'file' => '.*'
@@ -146,8 +145,5 @@ class fileByRepo extends Route
   }
 }
 
-function export()
-{
-  return new fileByRepo();
-};
+(new fileByRepo())->run();
 ```
