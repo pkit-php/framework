@@ -1,6 +1,6 @@
 <?php
 
-use Pkit\Abstracts\Route;
+use Pkit\Http\Route;
 
 class Users extends Route
 {
@@ -10,7 +10,4 @@ class Users extends Route
     }
 }
 
-function export()
-{
-    return new Users;
-};
+(new Users)->run();

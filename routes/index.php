@@ -1,6 +1,6 @@
 <?php
 
-use Pkit\Abstracts\Route;
+use Pkit\Http\Route;
 
 class Index extends Route
 {
@@ -10,7 +10,4 @@ class Index extends Route
   }
 }
 
-function export()
-{
-  return new Index;
-};
+(new Index)->run();

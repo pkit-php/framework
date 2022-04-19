@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/app/abstracts/route.php';
+use Pkit\Http\Route;
 
 class UserById extends Route
 {
@@ -11,7 +11,4 @@ class UserById extends Route
   }
 }
 
-function export()
-{
-  return new UserById;
-};
+(new UserById)->run();
