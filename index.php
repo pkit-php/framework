@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . '/pkit/index.php';
+require __DIR__ . '/pkit/load.php';
 
 use Pkit\Http\Router;
 use Pkit\Http\Middleware\Queue;
