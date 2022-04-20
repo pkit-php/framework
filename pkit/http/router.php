@@ -2,6 +2,7 @@
 
 namespace Pkit\Http;
 
+use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
 use Pkit\Utils\Sanitize;
 
@@ -23,7 +24,7 @@ class Router
 
   public function init()
   {
-    $routes = Routes::getRoutes($this->routePath);
+    $routes = Map::mapPhpFiles($this->routePath);
     [$this->file, $this->params] = Routes::mathRoute($routes, $this->getUri());
   }
 
