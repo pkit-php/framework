@@ -1,12 +1,15 @@
 <?php
 
+use App\Entitie\Users as EntitieUsers;
 use Pkit\Http\Route;
 
 class Users extends Route
 {
     public function get($request, $response)
     {
-        $response->send('user/index.php');
+        $user = (new EntitieUsers())->select();
+
+        return $response->json()->ok()->send($user);
     }
 }
 
