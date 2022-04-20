@@ -2,19 +2,8 @@
 
 namespace Pkit\Http;
 
-use Pkit\Http\Request;
-use Pkit\Http\Response;
-use Pkit\Http\Middleware\Queue;
 use Pkit\Utils\URI;
 use Pkit\Utils\Routes;
-
-// include __DIR__ . '/../utils/routes.php';
-// include __DIR__ . '/../utils/uri.php';
-// include __DIR__ . '/../utils/maths.php';
-
-// include __DIR__ . '/request.php';
-// include __DIR__ . '/response.php';
-// include __DIR__ . '/middleware/index.php';
 
 
 class Router
@@ -42,7 +31,7 @@ class Router
   public function run()
   {
     if ($this->file) {
-      setRouter($this);
+      self::$router = $this;
       include $this->file;
     } else {
       $this->response
@@ -67,9 +56,4 @@ class Router
   {
     return $this->file;
   }
-}
-
-function setRouter($router)
-{
-  Router::$router = $router;
 }
