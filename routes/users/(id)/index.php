@@ -22,7 +22,7 @@ class UserById extends Route
 
         return $response->json()->ok()->send([
             "user" => $user,
-            "password" => $user->getProtectedValue('password')
+            "password" => $user->password
         ]);
     }
 }
