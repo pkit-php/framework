@@ -33,6 +33,14 @@ class Router
     if ($this->file) {
       self::$router = $this;
       include $this->file;
+
+      $extension = '.' . @end(explode('.', Router::$router->getFile()));
+      if ($extension != '.php') {
+        (new Response)
+          ->setContentType(mime_content_type($extension))
+          ->send();
+        exit;
+      }
     } else {
       $this->response
         ->onlyCode()

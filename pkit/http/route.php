@@ -28,13 +28,6 @@ class Route extends AbstractsRoute
   {
     $request = new Request(Router::$router);
     $response = new Response;
-    $extension = '.' . @end(explode('.', Router::$router->getFile()));
-    if ($extension != '.php') {
-      $response
-        ->setContentType(mime_content_type($extension))
-        ->send();
-      exit;
-    }
 
     $middlewares = $this->getMiddlewares($this->middlewares ?? [], $request->getHttpMethod());
 
