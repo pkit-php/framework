@@ -2,9 +2,8 @@
 
 namespace Pkit\Http;
 
-use Pkit\Utils\URI;
 use Pkit\Utils\Routes;
-
+use Pkit\Utils\Sanitize;
 
 class Router
 {
@@ -18,7 +17,7 @@ class Router
 
   public function __construct(string $routePath)
   {
-    $this->uri = URI::sanitizeURI($_SERVER['REQUEST_URI']);
+    $this->uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     $this->routePath = $routePath;
   }
 
@@ -37,7 +36,7 @@ class Router
       $extension = '.' . @end(explode('.', Router::$router->getFile()));
       if ($extension != '.php') {
         (new Response)
-          ->setContentType(mime_content_type($extension))
+          ->setContentType(mime_content_type($extension) ?? "")
           ->send();
         exit;
       }
