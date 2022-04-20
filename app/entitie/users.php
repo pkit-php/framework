@@ -4,10 +4,12 @@ use Pkit\Database\Table;
 
 class Users extends Table
 {
-  public
+  public 
     $id,
-    $name,
-    $email;
+    $name;
   protected
-    $password;
+    $email,
+    $password,
+    $created,
+    $updated;
 }
