@@ -40,7 +40,7 @@ class Router
         exit;
       }
     } else {
-      $this->response
+      (new Response)
         ->onlyCode()
         ->notFound()
         ->send();
