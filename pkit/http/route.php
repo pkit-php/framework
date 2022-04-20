@@ -72,7 +72,6 @@ class Route extends AbstractsRoute
         $this->delete($request, $response);
         break;
       default:
-        include __DIR__ . '/../utils/methodNotAllowed.php';
         Methods::methodNotAllowed($request, $response);
         break;
     }
