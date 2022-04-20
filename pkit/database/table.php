@@ -1,4 +1,6 @@
-<?php namespace Pkit\Database;
+<?php
+
+namespace Pkit\Database;
 
 use Pkit\Utils\Sanitize;
 
@@ -14,13 +16,16 @@ class Table
     $this->_database = new Database;
   }
 
-  public function getProtectedValue($prop_name)
+  public function __set($prop, $value)
   {
-    $array = (array) $this;
-    $prefix = chr(0) . '*' . chr(0);
-    return $array[$prefix . $prop_name];
+    return $this->$prop = $value;
   }
 
+  public function __get($prop)
+  {
+    return $this->$prop;
+  }
+  
   static private function binds($keys)
   {
     return implode(', ', array_pad([], count($keys), '?'));
@@ -31,12 +36,10 @@ class Table
     return implode(', ', $keys);
   }
 
-  public function insert($returnId = false): mixed
+  public function insert($returnId = false)
   {
-    // $array = Converter::objectToArray($this);
-    // $array = array_filter($array);
-    $array = (array)$this;
-    var_dump($array);
+    $array = Sanitize::sanitizePropertys((array)$this);
+    $array = array_filter($array);
 
     $keys = array_keys($array);
     $fields = self::fields($keys);
@@ -55,16 +58,8 @@ class Table
 
   public function select(array $where = null, string $orderBy = null, string $limit = null)
   {
-    // $array = Converter::objectToArray($this);
-    $array = (array)$this;
-    foreach ($array as $key => $value) {
-      unset($array[$key]);
-      if (!preg_match('/\\\/', $key)) {
-        $protected = chr(0) . "*" . chr(0);
-        $key = str_replace($protected, "", $key);
-        $array[$key] = $value;
-      }
-    }
+    $array = Sanitize::sanitizePropertys((array)$this);
+
     $keys = array_keys($array);
     $fields = self::fields($keys);
     $params = [];
