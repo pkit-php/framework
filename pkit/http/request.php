@@ -1,4 +1,6 @@
-<?php namespace Pkit\Http;
+<?php
+
+namespace Pkit\Http;
 
 use Pkit\Http\Router;
 
@@ -27,12 +29,11 @@ class Request
     if ($this->httpMethod == 'GET') {
       return;
     }
-
-    $this->postVars = $_POST ?? [];
-
     $inputRaw = file_get_contents('php://input');
 
-    $this->postVars = strlen($inputRaw) && empty($_POST) ? json_decode($inputRaw, true) : $this->postVars;;
+    $this->postVars = strlen($inputRaw) && empty($_POST)
+      ? json_decode($inputRaw, true)
+      : $_POST ?? [];
   }
 
   public function getRouter()
