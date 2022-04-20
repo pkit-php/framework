@@ -1,6 +1,4 @@
-<?php
-
-namespace App\Entitie;
+<?php namespace App\Entitie;
 
 use Pkit\Database\Table;
 

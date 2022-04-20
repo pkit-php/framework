@@ -1,15 +1,10 @@
-<?php
-
-namespace Pkit\Database;
+<?php namespace Pkit\Database;
 
 use \PDO;
-use Pkit\Utils\Converter;
 
 class Database
 {
-
   private PDO $pdo;
-  private string $table, $idField;
 
   private static string
     $driver,

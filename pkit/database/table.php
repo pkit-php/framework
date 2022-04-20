@@ -1,12 +1,9 @@
-<?php
-
-namespace Pkit\Database;
+<?php namespace Pkit\Database;
 
 use Pkit\Utils\Sanitize;
 
 class Table
 {
-
   private string $_table, $_idField;
   private Database $_database;
 
@@ -34,7 +31,7 @@ class Table
     return implode(', ', $keys);
   }
 
-  public function insert($returnId = false): ?mixed
+  public function insert($returnId = false): mixed
   {
     // $array = Converter::objectToArray($this);
     // $array = array_filter($array);

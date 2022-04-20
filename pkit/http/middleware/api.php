@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Http\Middleware;
+<?php namespace Pkit\Http\Middleware;
 
 use Pkit\Abstracts\Middleware;
 

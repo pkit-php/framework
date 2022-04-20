@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Http;
+<?php namespace Pkit\Http;
 
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;

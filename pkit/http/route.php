@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Http;
+<?php namespace Pkit\Http;
 
 use Pkit\Abstracts\Route as AbstractsRoute;
 use Pkit\Http\Middleware\Queue;
@@ -11,7 +9,6 @@ use Pkit\Utils\Methods;
 
 class Route extends AbstractsRoute
 {
-
   private function getMiddlewares($middlewares, $method)
   {
     $newMiddlewares = [];

@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Http;
+<?php namespace Pkit\Http;
 
 class Response
 {

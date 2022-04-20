@@ -1,13 +1,10 @@
-<?php
-
-namespace Pkit\Http\Middleware;
+<?php namespace Pkit\Http\Middleware;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 
 class Queue
 {
-
   private static $map = [];
   private
     $middlewares,

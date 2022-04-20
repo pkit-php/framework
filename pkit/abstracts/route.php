@@ -1,13 +1,8 @@
-<?php
-
-namespace Pkit\Abstracts;
+<?php namespace Pkit\Abstracts;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-
 use Pkit\Utils\Methods;
-
-
 
 abstract class Route
 {

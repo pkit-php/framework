@@ -1,11 +1,8 @@
-<?php
-
-namespace Pkit\Utils;
-
+<?php namespace Pkit\Utils;
 
 class DotEnv
 {
-  protected string $path;
+  private string $path;
 
   public function __construct(string $path)
   {
