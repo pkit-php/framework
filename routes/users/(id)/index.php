@@ -8,11 +8,22 @@ class UserById extends Route
     public function get($request, $response)
     {
         $params = $request->getRouter()->getParams();
-        $user = (new Users);
         $id = $params["id"];
-        $selecteds = $user->select(['id:=' => $id]);
-        echo $selecteds[0]->getProtectedValue('password') . "\n";
-        $response->json()->send($selecteds[0]);
+
+        $userEntity = (new Users);
+        $user = $userEntity->select(['id:=' => $id])[0];
+
+        if (empty($user)) {
+            return $response->json()->notFound()->send([
+                "error" => 404,
+                "message" => 'user not found'
+            ]);
+        }
+
+        return $response->json()->ok()->send([
+            "user" => $user,
+            "password" => $user->getProtectedValue('password')
+        ]);
     }
 }
 
