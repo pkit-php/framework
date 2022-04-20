@@ -7,6 +7,7 @@ use Pkit\Http\Middleware\Queue;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Router;
+use Pkit\Utils\Methods;
 
 class Route extends AbstractsRoute
 {
@@ -72,7 +73,7 @@ class Route extends AbstractsRoute
         break;
       default:
         include __DIR__ . '/../utils/methodNotAllowed.php';
-        methodNotAllowed($request, $response);
+        Methods::methodNotAllowed($request, $response);
         break;
     }
   }
