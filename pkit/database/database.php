@@ -3,11 +3,13 @@
 namespace Pkit\Database;
 
 use \PDO;
+use Pkit\Utils\Converter;
 
-class Connection
+class Database
 {
 
   private PDO $pdo;
+  private string $table, $idField;
 
   private static string
     $driver,
@@ -25,7 +27,6 @@ class Connection
     self::$pass = $set['pass'];
   }
 
-
   private function connect()
   {
     $driver = self::$driver;
@@ -33,23 +34,21 @@ class Connection
     $dbname = self::$dbname;
     $user = self::$user;
     $pass = self::$pass;
-    $this->pdo = new PDO("$driver:host=$host;dbname=$dbname", $user, $pass);
+
+    $config = "$driver:host=$host;dbname=$dbname";
+
+    $this->pdo = new PDO($config, $user, $pass);
     // throw exceptions, when SQL error is caused
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // prevent emulation of prepared statements
     $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
   }
 
-  public function execute($query, $values = [])
+  public function execute($query, $params = [])
   {
     $this->connect();
-
     $stmt = $this->pdo->prepare($query);
-    foreach ($values as $key => $value) {
-      $stmt->bindValue($key, $value);
-    }
-    $stmt->execute();
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt->execute($params);
+    return $stmt;
   }
 }
