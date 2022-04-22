@@ -25,7 +25,7 @@ class Table
   {
     return $this->$prop;
   }
-  
+
   static private function binds($keys)
   {
     return implode(', ', array_pad([], count($keys), '?'));
@@ -75,13 +75,36 @@ class Table
 
     $query = "SELECT $fields FROM $this->_table $where $order $limit";
 
-    $stmt = $this->_database->execute($query, $params);
+    $stmt = $this->_database->execute($query, array_values($params));
     $result = [];
     while ($object = $stmt->fetchObject(get_class($this))) {
       $result[] = $object;
     }
 
     return $result;
+  }
+
+  public function update(array $where = null)
+  {
+    $array = Sanitize::sanitizePropertys((array)$this);
+
+    $fields = '';
+    foreach ($array as $field => $_) {
+      $fields .= "$field=?";
+    }
+
+    $params = $array;
+
+    if ($where) {
+      [$where, $wheres] = self::where($where);
+      $params = array_merge($params, $wheres);
+    }
+
+    $where = $where ?? "";
+
+    $query = "UPDATE $this->_table SET $fields $where";
+
+    $this->_database->execute($query, array_values($params));
   }
 
   private static function where(array $where)
