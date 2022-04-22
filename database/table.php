@@ -38,7 +38,7 @@ class Table
 
   public function insert($returnId = false)
   {
-    $array = Sanitize::sanitizePropertys((array)$this);
+    $array = Sanitize::sanitizeProperties((array)$this);
     $array = array_filter($array);
 
     $keys = array_keys($array);
@@ -58,7 +58,7 @@ class Table
 
   public function select(array $where = null, string $orderBy = null, string $limit = null)
   {
-    $array = Sanitize::sanitizePropertys((array)$this);
+    $array = Sanitize::sanitizeProperties((array)$this);
 
     $keys = array_keys($array);
     $fields = self::fields($keys);
@@ -86,7 +86,7 @@ class Table
 
   public function update(array $where = null)
   {
-    $array = Sanitize::sanitizePropertys((array)$this);
+    $array = Sanitize::sanitizeProperties((array)$this);
 
     $fields = '';
     foreach ($array as $field => $_) {
