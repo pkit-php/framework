@@ -1,8 +1,10 @@
-<?php namespace Pkit\Http\Middleware;
+<?php
+
+namespace Pkit\Http\Middlewares;
 
 use Pkit\Abstracts\Middleware;
 
-class API implements Middleware
+class Api implements Middleware
 {
   public function handle($request, $response, $next)
   {
