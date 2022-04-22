@@ -24,6 +24,7 @@ class Router
   {
     $routes = Map::mapPhpFiles($this->routePath);
     [$this->file, $this->params] = Routes::mathRoute($routes, $this->getUri());
+    return $this;
   }
 
   public function run()
