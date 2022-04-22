@@ -1,4 +1,6 @@
-<?php namespace Pkit\Http;
+<?php
+
+namespace Pkit\Http;
 
 class Response
 {
@@ -92,6 +94,12 @@ class Response
   public function notFound(): self
   {
     $this->setHttpCode(404);
+    return $this;
+  }
+
+  public function unauthorized()
+  {
+    $this->setHttpCode(401);
     return $this;
   }
 
