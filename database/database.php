@@ -13,13 +13,13 @@ class Database
     $user,
     $pass;
 
-  public static function init(array $set)
+  public static function init($driver, $host, $name, $user, $pass)
   {
-    self::$driver = $set['driver'];
-    self::$host = $set['host'];
-    self::$dbname = $set['name'];
-    self::$user = $set['user'];
-    self::$pass = $set['pass'];
+    self::$driver = $driver;
+    self::$host = $host;
+    self::$dbname = $name;
+    self::$user = $user;
+    self::$pass = $pass;
   }
 
   private function connect()
