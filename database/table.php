@@ -87,6 +87,7 @@ class Table
   public function update(array $where = null)
   {
     $array = Sanitize::sanitizeProperties((array)$this);
+    $array = array_filter($array);
 
     $fields = '';
     foreach ($array as $field => $_) {
