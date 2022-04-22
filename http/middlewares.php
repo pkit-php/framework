@@ -1,11 +1,11 @@
 <?php
 
-namespace Pkit\Http\Middleware;
+namespace Pkit\Http;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 
-class Queue
+class Middlewares
 {
   private static $namespace = '\App\Middlewares';
   private array $middlewares;
@@ -14,6 +14,18 @@ class Queue
   public static function init(string $namespace)
   {
     self::$namespace = $namespace;
+  }
+
+  public static function getMiddlewares($middlewares, $method)
+  {
+    $newMiddlewares = [];
+    foreach ($middlewares as $key => $middleware) {
+      if (is_int($key)) {
+        $newMiddlewares[] = $middleware;
+      }
+    }
+    $methodsMiddlewares = $middlewares[strtolower($method)] ?? [];
+    return array_merge($newMiddlewares, $methodsMiddlewares);
   }
 
   private static function getNamespace($class)
@@ -25,7 +37,7 @@ class Queue
     if (substr($class, 0, 4) === "pkit") {
       unset($path[0]);
       $baseClass = implode('\\', $path);
-      return 'Pkit\\Http\\Middlewares\\' .  $baseClass;
+      return 'Pkit\\Middlewares\\' .  $baseClass;
     } else {
       $baseClass = implode('\\', $path);
       return self::$namespace . '\\' . $baseClass;
