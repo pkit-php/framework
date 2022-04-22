@@ -2,10 +2,13 @@
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Http\Route as HttpRoute;
 use Pkit\Utils\Methods;
 
-abstract class Route
+abstract class Route extends HttpRoute
 {
+  public $middlewares = [];
+
   public function options(Request $request, Response $response)
   {
     Methods::methodNotAllowed($request, $response);
