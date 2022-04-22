@@ -90,8 +90,9 @@ class Table
 
     $fields = '';
     foreach ($array as $field => $_) {
-      $fields .= "$field=?";
+      $fields .= "$field=?, ";
     }
+    $fields = rtrim($fields, ", ");
 
     $params = $array;
 
