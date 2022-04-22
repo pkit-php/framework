@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Utils;
+<?php namespace Pkit\Utils;
 
 class Sanitize
 {
@@ -21,5 +19,18 @@ class Sanitize
     }
 
     return $yUri . '/';
+  }
+
+  static function sanitizePropertys($array)
+  {
+    foreach ($array as $key => $value) {
+      unset($array[$key]);
+      if (!preg_match('/\\\/', $key)) {
+        $protected = chr(0) . "*" . chr(0);
+        $key = str_replace($protected, "", $key);
+        $array[$key] = $value;
+      }
+    }
+    return $array;
   }
 }

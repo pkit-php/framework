@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Utils;
+<?php namespace Pkit\Utils;
 
 use Pkit\Http\Response;
 

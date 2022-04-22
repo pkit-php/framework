@@ -1,6 +1,4 @@
-<?php
-
-namespace Pkit\Http;
+<?php namespace Pkit\Http;
 
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
@@ -42,7 +40,7 @@ class Router
         exit;
       }
     } else {
-      $this->response
+      (new Response)
         ->onlyCode()
         ->notFound()
         ->send();
