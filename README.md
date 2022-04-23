@@ -51,7 +51,7 @@ $router->init();
 $router->run();
 ```
 
-## rotas
+## Rotas
 
 as rotas são adicionadas dentro da pasta `routes` e os caminhos são com base nos diretórios e nome dos arquivos, é suportado desde arquivos `.php` até arquivos estáticos como `.css` e `.js`
 
@@ -76,14 +76,6 @@ new PKit\Http\Route
 # classe abstrata para adição de rotas por método
 class index extends Route
 {
-  # middlewares sem chaves são utilizados em todos o métodos
-  public $middlewares = [
-    'api',
-    'post' => [
-      'requireAuth',
-    ],
-  ];
-
   public function get($request, $response)
   {
     $response->ok()->send('GET index.php');
@@ -147,3 +139,122 @@ class fileByRepo extends Route
 
 (new fileByRepo())->run();
 ```
+
+## Middlewares
+
+### configuração
+
+- inicie com namespace onde se encontra os middlewares adicionais no `index.php`
+
+```php
+/* ... */
+use App\Middlewares as MiddlewaresNamespace;
+
+Middlewares::init(MiddlewaresNamespace::class);
+/* ... */
+```
+
+### exemplo de criação
+
+```php
+<?php
+
+namespace App\Middlewares;
+
+use Pkit\Abstracts\Middleware;
+
+class Teste implements Middleware{
+    public function handle($request, $reponse, $next)
+    {
+        echo 'teste';
+        /* ... */
+        $next($response, $request)
+    }
+}
+```
+
+### exemplo de uso
+
+```php
+<?php 
+
+use Pkit\Abstracts\Route;
+
+class Home extends Route {
+    
+    public $middlewares = [
+      'teste', # middlewares adicionais
+      'pkit/api',# middlewares do framework inicião com 'pkit/'
+      # chaves nomeados são pra métodos específicos
+      'post' => [
+        'pkit/auth',
+      ],
+    ];
+    
+    function get($request, $response)
+    {
+        $response->send("...");
+    }
+
+    function post($request, $response)
+    {
+        $response->send("...");
+    }
+}
+(new Home)->run();
+```
+
+### lista de middlewares do framework
+
+- `pkit/api` : converte o content-type para application/json
+
+- `pkit/auth` : autentica o usuario com base na sessão
+
+## Session
+
+### exemplo de uso de sessão
+
+- login
+
+  ```php
+  <?php 
+
+  use Pkit\Abstracts\Route;
+  use Pkit\Utils\Session;
+
+  class Login extends Route {
+      
+      function get($request, $response)
+      {
+          Session::login([
+            'id' => '1234',
+            'name' => 'user...'
+          ]);
+          $response->send("logged");
+      }
+  }
+  (new Login)->run();
+  ```
+
+- logout
+
+  ```php
+  <?php 
+
+  use Pkit\Abstracts\Route;
+  use Pkit\Utils\Session;
+
+  class Logout extends Route {
+
+      public $middlewares = [
+        'pkit/auth',
+      ];
+      
+      function get($request, $response)
+      {
+          Session::logout();
+          $response->send("dislogged");
+      }
+  }
+  (new Logout)->run();
+  ```
