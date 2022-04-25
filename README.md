@@ -28,19 +28,6 @@ pkit/
 require __DIR__ . '/pkit/load.php';
 ```
 
-- mapeie os middlewares as serem usados
-
-```php
-use Pkit\Http\Middleware\Queue;
-use Pkit\Http\Middleware\Api;
-# ...
-
-Queue::setMap([
-  "api" => API::class,
-  # ...
-]);
-```
-
 - inicie o roteador com o path das rotas
 
 ```php
@@ -176,12 +163,12 @@ class Teste implements Middleware{
 ### exemplo de uso
 
 ```php
-<?php 
+<?php
 
 use Pkit\Abstracts\Route;
 
 class Home extends Route {
-    
+
     public $middlewares = [
       'teste', # middlewares adicionais
       'pkit/api',# middlewares do framework inicião com 'pkit/'
@@ -190,7 +177,7 @@ class Home extends Route {
         'pkit/auth',
       ],
     ];
-    
+
     function get($request, $response)
     {
         $response->send("...");
@@ -217,13 +204,13 @@ class Home extends Route {
 - login
 
   ```php
-  <?php 
+  <?php
 
   use Pkit\Abstracts\Route;
   use Pkit\Utils\Session;
 
   class Login extends Route {
-      
+
       function get($request, $response)
       {
           Session::login([
@@ -239,7 +226,7 @@ class Home extends Route {
 - logout
 
   ```php
-  <?php 
+  <?php
 
   use Pkit\Abstracts\Route;
   use Pkit\Utils\Session;
@@ -249,7 +236,7 @@ class Home extends Route {
       public $middlewares = [
         'pkit/auth',
       ];
-      
+
       function get($request, $response)
       {
           Session::logout();
