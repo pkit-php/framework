@@ -11,8 +11,8 @@ class Request
   private Router $router;
   private array
     $headers = [],
-    $queryParams = [];
-  private mixed $postVars;
+    $queryParams = [],
+    $postVars = [];
 
   public function __construct(Router $router)
   {
@@ -34,7 +34,12 @@ class Request
       switch ($contentType) {
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
-          $this->postVars = json_decode($inputRaw, true);
+          $json = json_decode($inputRaw, true);
+          if (!is_array($json)) {
+            $this->postVars[] = $json;
+            break;
+          }
+          $this->postVars = $json;
           break;
         case 'application/xml':
           $xml = file_get_contents('php://input');
@@ -50,11 +55,11 @@ class Request
           $this->postVars = $_POST;
           break;
         default:
-          (new Response)->unsupportedMediaType()->send();
+          (new Response)->unsupportedMediaType()->onlyCode()->send();
           break;
       }
     } catch (\Throwable $th) {
-      (new Response)->badRequest()->send();
+      (new Response)->badRequest()->onlyCode()->send($th);
     }
   }
 
