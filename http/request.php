@@ -29,7 +29,7 @@ class Request
 
   private function setPostVars()
   {
-    $contentType = explode(';', $this->getHeader('content-type'))[0];
+    $contentType = trim(explode(';', $this->getHeader('content-type'))[0]);
     try {
       switch ($contentType) {
         case 'application/json':
