@@ -4,39 +4,39 @@
 
 - adicione o `.htaccess` para que só considere o `index.php`
 
-```apache
-RewriteEngine On
+  ```apache
+  RewriteEngine On
 
-# RewriteCond %{REQUEST_URI} !\.(woff2|js|ico|json|png|jpg|gif)$ [NC]
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
+  # RewriteCond %{REQUEST_URI} !\.(woff2|js|ico|json|png|jpg|gif)$ [NC]
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule ^(.*)$ index.php [L,QSA]
-```
+  RewriteRule ^(.*)$ index.php [L,QSA]
+  ```
 
 - adicione a pasta `pkit`
 
-```
-.htaccess
-index.php
-pkit/
-```
+  ```
+  .htaccess
+  index.php
+  pkit/
+  ```
 
 - inicialize o pkit
 
-```php
-require __DIR__ . '/pkit/load.php';
-```
+  ```php
+  require __DIR__ . '/pkit/load.php';
+  ```
 
 - inicie o roteador com o path das rotas
 
-```php
-use Pkit\Http\Router;
+  ```php
+  use Pkit\Http\Router;
 
-$router = new Router(__DIR__ . '/routes');
-$router->init();
-$router->run();
-```
+  $router = new Router(__DIR__ . '/routes');
+  $router->init();
+  $router->run();
+  ```
 
 ## Rotas
 
@@ -245,3 +245,114 @@ class Home extends Route {
   }
   (new Logout)->run();
   ```
+
+## Database
+
+configuração do banco de dados
+
+```php
+Database::init(
+  getenv("DB"),
+  getenv("DB_HOST"),
+  getenv("DB_NAME"),
+  getenv("DB_USER"),
+  getenv("DB_PASS"),
+);
+```
+
+### exemplo de uso do database
+
+```php
+/* ... */
+(new Database)->execute('SELECT * FROM User WHERE id=?', [$id]);
+/* ... */
+```
+
+### exemplo de uso de tabela
+
+```php
+<?php
+// app/entities/user.php
+
+namespace App\Entitie;
+
+use Pkit\Database\Table;
+
+// o nome da classe deve ser o mesmo da tabela do banco de dados
+class Users extends Table
+{
+  // os atributos devem ser os mesmos da tabela do banco de dados
+
+  // podem ser visto pelo cliente
+  public
+    $id,
+    $name,
+    $email;
+  // só é possível usar dentro da aplicação
+  protected
+    $password;
+}
+
+```
+
+- select
+
+  ```php
+  /* ... */
+  (new Users)->select(where: ['id:>', $id], orderBy: 'name ASC', limit: [10, 40]);
+  /* ... */
+  ```
+
+- insert
+
+  ```php
+  /* ... */
+  $user = new Users;
+
+  $user->name = 'name';
+  $user->email = 'email@email.com';
+  $user->password = password_hash('1234', PASSWORD_DEFAULT);
+
+  $id = $user->insert(returnId: true);
+  /* ... */
+  ```
+
+- update
+
+  ```php
+  /* ... */
+  $user = new Users;
+
+  $user->name = 'name-name';
+  $user->email = 'email@email.com.br';
+  $user->password = password_hash('4321', PASSWORD_DEFAULT);
+
+  $user->update(where: ['id' => $id]);
+  /* ... */
+  ```
+
+- where
+
+  `\<field>:\<contition> => <value>`
+
+  - condition
+    | up | lo | di | eq |
+    |----|----|----|----|
+    | > | < | <> | = |
+
+  - exemplo
+    ```php
+    [
+      "status = 1", # valores sem chaves são escritos por extenso
+      "id" => $id, # a condição padrão é '='
+    ]
+    ```
+
+- limit
+  - exemplo
+    ```php
+    [
+      10, # item inicial
+      5, # quantidade de items
+    ]
+    ```
