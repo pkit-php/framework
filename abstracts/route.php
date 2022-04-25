@@ -1,4 +1,6 @@
-<?php namespace Pkit\Abstracts;
+<?php
+
+namespace Pkit\Abstracts;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
@@ -31,7 +33,13 @@ abstract class Route extends HttpRoute
   }
   public function head(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    $response->ok()->addHeader(
+      'Accept',
+      'application/x-www-form-urlencoded,' .
+        'application/json,' .
+        'application/form-data'
+    )
+      ->send();
   }
   public function get(Request $request, Response $response)
   {
