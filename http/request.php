@@ -3,6 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Http\Router;
+use Pkit\Utils\Converter;
 
 class Request
 {
@@ -10,8 +11,8 @@ class Request
   private Router $router;
   private array
     $headers = [],
-    $queryParams = [],
-    $postVars = [];
+    $queryParams = [];
+  private mixed $postVars;
 
   public function __construct(Router $router)
   {
@@ -21,19 +22,40 @@ class Request
     $this->queryParams = $_GET ?? [];
 
     $this->headers = getallheaders();
-    $this->setPostVars();
+    if ($this->httpMethod != 'GET') {
+      $this->setPostVars();
+    }
   }
 
   private function setPostVars()
   {
-    if ($this->httpMethod == 'GET') {
-      return;
+    $contentType = $this->getHeader('content-type');
+    try {
+      switch ($contentType) {
+        case 'application/json':
+          $inputRaw = file_get_contents('php://input');
+          $this->postVars = json_decode($inputRaw, true);
+          break;
+        case 'application/xml':
+          $xml = file_get_contents('php://input');
+          $this->postVars = Converter::xmlToArray($xml);
+          break;
+        case 'application/x-www-form-urlencoded':
+          $this->postVars = $_POST;
+          break;
+        case 'application/form-data':
+          $this->postVars = $_POST;
+          break;
+        case null:
+          $this->postVars = $_POST;
+          break;
+        default:
+          (new Response)->unsupportedMediaType()->send();
+          break;
+      }
+    } catch (\Throwable $th) {
+      (new Response)->badRequest()->send();
     }
-    $inputRaw = file_get_contents('php://input');
-
-    $this->postVars = strlen($inputRaw) && empty($_POST)
-      ? json_decode($inputRaw, true)
-      : $_POST ?? [];
   }
 
   public function getRouter()
