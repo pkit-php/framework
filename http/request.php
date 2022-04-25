@@ -29,7 +29,7 @@ class Request
 
   private function setPostVars()
   {
-    $contentType = $this->getHeader('content-type');
+    $contentType = explode(';', $this->getHeader('content-type'))[0];
     try {
       switch ($contentType) {
         case 'application/json':
@@ -46,11 +46,7 @@ class Request
           $this->postVars = Converter::xmlToArray($xml);
           break;
         case 'application/x-www-form-urlencoded':
-          $this->postVars = $_POST;
-          break;
-        case 'application/form-data':
-          $this->postVars = $_POST;
-          break;
+        case 'multipart/form-data':
         case null:
           $this->postVars = $_POST;
           break;
