@@ -59,6 +59,13 @@ class Response
     http_response_code($this->httpCode);
   }
 
+  public function sendStatus($status = 200)
+  {
+    $this
+      ->setHttpCode($status)
+      ->send();
+  }
+
   private function sendHeaders()
   {
     foreach ($this->headers as $key => $value) {
