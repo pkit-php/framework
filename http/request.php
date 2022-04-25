@@ -80,7 +80,7 @@ class Request
 
   public function getHeader($header)
   {
-    return $this->headers[$header];
+    return $this->headers[lcfirst($header)];
   }
 
   public function getHttpMethod()
