@@ -1,4 +1,6 @@
-<?php namespace Pkit\Http;
+<?php
+
+namespace Pkit\Http;
 
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
@@ -38,7 +40,6 @@ class Router
         (new Response)
           ->setContentType(mime_content_type($extension) ?? "")
           ->send();
-        exit;
       }
     } else {
       (new Response)
