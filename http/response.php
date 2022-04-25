@@ -107,6 +107,12 @@ class Response
     return $this;
   }
 
+  public function unsupportedMediaType(): self
+  {
+    $this->setHttpCode(415);
+    return $this;
+  }
+
   public function methodNotAllowed(): self
   {
     $this->setHttpCode(405);
@@ -122,6 +128,12 @@ class Response
   public function unauthorized()
   {
     $this->setHttpCode(401);
+    return $this;
+  }
+
+  public function badRequest()
+  {
+    $this->setHttpCode(400);
     return $this;
   }
 
