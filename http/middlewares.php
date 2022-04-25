@@ -61,6 +61,6 @@ class Middlewares
     };
 
     $namespace = self::getNamespace($middleware);
-    return (new $namespace())->handle($request, $response, $next);
+    return (new $namespace)->handle($request, $response, $next);
   }
 }
