@@ -34,6 +34,26 @@ class Response
     return $this;
   }
 
+  public function getContentType()
+  {
+    return $this->contentType;
+  }
+
+  public function getHttpCode()
+  {
+    return $this->httpCode;
+  }
+
+  public function getStatus()
+  {
+    return $this->getHttpCode();
+  }
+
+  public function getHeaders()
+  {
+    return $this->headers;
+  }
+
   private function sendCode()
   {
     http_response_code($this->httpCode);
@@ -65,6 +85,8 @@ class Response
         echo $content;
         break;
     }
+
+    exit;
   }
 
   public function json(): self
