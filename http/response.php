@@ -62,6 +62,7 @@ class Response
   public function sendStatus($status = 200)
   {
     $this
+      ->onlyCode()
       ->setHttpCode($status)
       ->send();
   }
