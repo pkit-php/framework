@@ -9,7 +9,7 @@ class Table
   private string $_table, $_idField;
   private Database $_database;
 
-  public function __construct($table = null, $idField = 'Id')
+  public function __construct($table = null, $idField = 'id')
   {
     $this->_table = $table ?? Sanitize::sanitizeClass(get_class($this));
     $this->_idField = $idField;
@@ -52,7 +52,7 @@ class Table
 
     if ($returnId) {
       $result = $stmt->fetch();
-      $this[$this->_idField] = $result[0][$this->_idField];
+      return $result[$this->_idField];
     }
   }
 
@@ -105,6 +105,20 @@ class Table
     $where = $where ?? "";
 
     $query = "UPDATE $this->_table SET $fields $where";
+
+    $this->_database->execute($query, array_values($params));
+  }
+
+  public function delete($where = null)
+  {
+    $params = [];
+    if ($where) {
+      [$where, $wheres] = self::where($where);
+      $params = array_merge($params, $wheres);
+    }
+    $where = $where ?? "";
+
+    $query = "DELETE FROM $this->_table $where";
 
     $this->_database->execute($query, array_values($params));
   }
