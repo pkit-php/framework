@@ -30,17 +30,12 @@ class Middlewares
 
   private static function getNamespace($class)
   {
-    $path = explode("/", $class);
-    $path = array_map(function ($value) {
-      return ucfirst($value);
-    }, $path);
-    if (substr($class, 0, 4) === "pkit") {
-      unset($path[0]);
-      $baseClass = implode('\\', $path);
-      return 'Pkit\\Middlewares\\' .  $baseClass;
+    $class = str_replace("/", "\\", ucwords($class, '/'));
+    if (substr($class, 0, 5) == 'Pkit\\') {
+      $class = ltrim($class, "Pkit\\");
+      return 'Pkit\\Middlewares\\' .  $class;
     } else {
-      $baseClass = implode('\\', $path);
-      return self::$namespace . '\\' . $baseClass;
+      return self::$namespace . '\\' . $class;
     }
   }
 
