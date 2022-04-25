@@ -56,7 +56,7 @@ class Table
     }
   }
 
-  public function select(array $where = null, string $orderBy = null, string $limit = null)
+  public function select(array $where = null, string $orderBy = null, array $limit = null)
   {
     $array = Sanitize::sanitizeProperties((array)$this);
 
@@ -71,7 +71,7 @@ class Table
 
     $where = $where ?? "";
     $order = strlen($orderBy) ? 'ORDER BY ' . $orderBy : '';
-    $order = strlen($limit) ? 'LIMIT ' . $limit : '';
+    $order = !empty($limit) ? self::limit($limit) : '';
 
     $query = "SELECT $fields FROM $this->_table $where $order $limit";
 
@@ -126,5 +126,12 @@ class Table
       $query = rtrim($query, ",");
     }
     return [$query ?? "", $binds];
+  }
+
+  private static function limit(array $limit)
+  {
+    $init = $limit[0];
+    $final = $limit[1];
+    return " LIMIT $init, $final";
   }
 }
