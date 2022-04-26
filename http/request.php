@@ -2,22 +2,18 @@
 
 namespace Pkit\Http;
 
-use Pkit\Http\Router;
 use Pkit\Utils\Converter;
 
 class Request
 {
   private string $httpMethod;
-  private Router $router;
   private array
     $headers = [],
     $queryParams = [],
     $postVars = [];
 
-  public function __construct(Router $router)
+  public function __construct()
   {
-    $this->router = $router;
-
     $this->httpMethod = $_SERVER['REQUEST_METHOD'];
     $this->queryParams = $_GET ?? [];
 
@@ -57,11 +53,6 @@ class Request
     } catch (\Throwable $th) {
       (new Response)->badRequest()->onlyCode()->send($th);
     }
-  }
-
-  public function getRouter()
-  {
-    return $this->router;
   }
 
   public function getPostVars()

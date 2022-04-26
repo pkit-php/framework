@@ -5,63 +5,95 @@ namespace Pkit\Http;
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
 use Pkit\Utils\Sanitize;
+use \Throwable;
 
 class Router
 {
-  private string
+  private static string
     $uri,
     $file,
-    $routePath;
+    $routePath,
+    $especialRoute;
 
-  private array $params = [];
-  public static Router $router;
+  private static Request $request;
+  private static Response $response;
 
-  public function __construct(string $routePath)
+  private static array $params = [];
+  private static Throwable $error;
+
+  public static function init(string $routePath)
   {
-    $this->uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
-    $this->routePath = $routePath;
+    $routes = Map::mapPhpFiles($routePath);
+    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    self::$especialRoute = $routes['/*/'] ?? null;
+    unset($routes['/*/']);
+    [self::$file, self::$params] = Routes::mathRoute($routes, self::$uri);
   }
 
-  public function init()
+  private static function includeFile()
   {
-    $routes = Map::mapPhpFiles($this->routePath);
-    [$this->file, $this->params] = Routes::mathRoute($routes, $this->getUri());
-    return $this;
-  }
+    include self::$file;
 
-  public function run()
-  {
-    if ($this->file) {
-      self::$router = $this;
-      include $this->file;
-
-      $extension = '.' . @end(explode('.', Router::$router->getFile()));
-      if ($extension != '.php') {
-        (new Response)
-          ->setContentType(mime_content_type($extension) ?? "")
-          ->send();
-      }
-    } else {
+    $extension = '.' . @end(explode('.', self::$file));
+    if ($extension != '.php') {
       (new Response)
-        ->onlyCode()
-        ->notFound()
+        ->setContentType(mime_content_type($extension) ?? "")
         ->send();
     }
   }
 
-
-  public function getUri()
+  public static function run()
   {
-    return $this->uri;
+    self::$request = new Request;
+    self::$response = new Response;
+    if (self::$file) {
+      try {
+        self::includeFile();
+      } catch (\Throwable $th) {
+        self::$response->setHttpCode($th->getCode());
+        self::$error = $th;
+        self::runEspecialRoute();
+      }
+    } else {
+      self::$response
+        ->onlyCode()
+        ->notFound();
+      self::runEspecialRoute();
+    }
   }
 
-  public function getParams()
+  public static function runEspecialRoute()
   {
-    return $this->params;
+    if (self::$especialRoute) {
+      $especialRoute = self::$especialRoute;
+      include $especialRoute;
+    } else {
+      self::$response->send();
+    }
   }
 
-  public function getFile()
+  public static function getRequestAndResponse()
   {
-    return $this->file;
+    return [self::$request, self::$response];
+  }
+
+  public static function getError(): ?\Throwable
+  {
+    return self::$error;
+  }
+
+  public static function getUri()
+  {
+    return self::$uri;
+  }
+
+  public static function getParams()
+  {
+    return self::$params;
+  }
+
+  public static function getFile()
+  {
+    return self::$file;
   }
 }

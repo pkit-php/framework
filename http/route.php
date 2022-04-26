@@ -1,10 +1,11 @@
-<?php namespace Pkit\Http;
+<?php
+
+namespace Pkit\Http;
 
 use Pkit\Http\Middlewares;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Router;
-use Pkit\Utils\Methods;
 
 class Route
 {
@@ -12,8 +13,7 @@ class Route
 
   public function run()
   {
-    $request = new Request(Router::$router);
-    $response = new Response;
+    [$request, $response] = Router::getRequestAndResponse();
     $middlewares = Middlewares::getMiddlewares($this->middlewares ?? [], $request->getHttpMethod());
 
     (new Middlewares(function ($request, $response) {
@@ -21,13 +21,13 @@ class Route
     }, $middlewares))->next($request, $response);
   }
 
-  private function runMethod($request, $response)
+  private function runMethod(Request $request, Response $response)
   {
     $method = strtolower($request->getHttpMethod());
-    if(method_exists($this, $method)){
+    if (method_exists($this, $method)) {
       $this->$method($request, $response);
     } else {
-      Methods::methodNotAllowed($request, $response);
+      $response->onlyCode()->notImplemented()->send();
     }
   }
 }
