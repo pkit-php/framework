@@ -3,6 +3,7 @@
 namespace Pkit\Database;
 
 use Pkit\Utils\Sanitize;
+use PDO;
 
 class Table
 {
@@ -76,12 +77,8 @@ class Table
     $query = "SELECT $fields FROM $this->_table $where $order $limit";
 
     $stmt = $this->_database->execute($query, array_values($params));
-    $result = [];
-    while ($object = $stmt->fetchObject(get_class($this))) {
-      $result[] = $object;
-    }
 
-    return $result;
+    return $stmt->fetchAll(PDO::FETCH_CLASS, get_class($this));
   }
 
   public function update(array $where = null)
