@@ -134,11 +134,11 @@ class fileByRepo extends Route
 - inicie com namespace onde se encontra os middlewares adicionais no `index.php`
 
 ```php
-/* ... */
+/***/
 use App\Middlewares as MiddlewaresNamespace;
 
 Middlewares::init(MiddlewaresNamespace::class);
-/* ... */
+/***/
 ```
 
 ### exemplo de criação
@@ -151,10 +151,10 @@ namespace App\Middlewares;
 use Pkit\Abstracts\Middleware;
 
 class Teste implements Middleware{
-    public function handle($request, $reponse, $next)
+    public function handle($request, $response, $next)
     {
         echo 'teste';
-        /* ... */
+        /***/
         $next($response, $request)
     }
 }
@@ -180,12 +180,14 @@ class Home extends Route {
 
     function get($request, $response)
     {
-        $response->send("...");
+      /***/
+      $response->send("...");
     }
 
     function post($request, $response)
     {
-        $response->send("...");
+      /***/
+      $response->send("...");
     }
 }
 (new Home)->run();
@@ -217,6 +219,7 @@ class Home extends Route {
             'id' => '1234',
             'name' => 'user...'
           ]);
+          /***/
           $response->send("logged");
       }
   }
@@ -240,6 +243,7 @@ class Home extends Route {
       function get($request, $response)
       {
           Session::logout();
+          /***/
           $response->send("dislogged");
       }
   }
@@ -263,9 +267,9 @@ Database::init(
 ### exemplo de uso do database
 
 ```php
-/* ... */
+/***/
 (new Database)->execute('SELECT * FROM User WHERE id=?', [$id]);
-/* ... */
+/***/
 ```
 
 ### exemplo de uso de tabela
@@ -298,15 +302,15 @@ class Users extends Table
 - select
 
   ```php
-  /* ... */
+  /***/
   (new Users)->select(where: ['id:>', $id], orderBy: 'name ASC', limit: [10, 40]);
-  /* ... */
+  /***/
   ```
 
 - insert
 
   ```php
-  /* ... */
+  /***/
   $user = new Users;
 
   $user->name = 'name';
@@ -314,13 +318,13 @@ class Users extends Table
   $user->password = password_hash('1234', PASSWORD_DEFAULT);
 
   $id = $user->insert(returnId: true);
-  /* ... */
+  /***/
   ```
 
 - update
 
   ```php
-  /* ... */
+  /***/
   $user = new Users;
 
   $user->name = 'name-name';
@@ -328,7 +332,7 @@ class Users extends Table
   $user->password = password_hash('4321', PASSWORD_DEFAULT);
 
   $user->update(where: ['id' => $id]);
-  /* ... */
+  /***/
   ```
 
 - where
@@ -356,3 +360,89 @@ class Users extends Table
       5, # quantidade de items
     ]
     ```
+
+## View
+
+configuração do path de views
+
+```php
+// index.php
+/***/
+View::init(__DIR__ . '/app/view');
+/***/
+```
+
+### render
+
+- é considerado a partir da pasta configurada
+- o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
+
+  ```php
+  <?php
+  // view/home.php
+  use Pkit\Utils\View;
+  ?>
+  <main>
+    <?php
+    foreach (View::getArgs() as $key => $value) {
+      View::render('componentes/home/p', $key . ' : ' . $value);
+    }
+    ?>
+  </main>
+  ```
+
+### layout
+
+- deve estar no arquivo `__layout.php` na pasta de views
+- para adicionar o arquivo ao layout deve se usar `View::slot()`
+
+  ```php
+  <?php
+  // view/__layout.php
+  use Pkit\Utils\View;
+
+  $_ARGS = View::getArgs()
+  ?>
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $_ARGS['title'] ?></title>
+    <meta name="description" content="<?= $_ARGS['description'] ?>">
+  </head>
+
+  <body>
+    <?php
+    View::render("componentes/header");
+    View::slot();
+    View::render("componentes/footer");
+    ?>
+  </body>
+
+  </html>
+  ```
+
+- exemplo de uso do layout
+
+  ```php
+  <?php
+
+  use Pkit\Abstracts\Route;
+  use Pkit\Utils\View;
+
+  class Index extends Route
+  {
+    public function get($request, $response)
+    {
+      View::layout('home', [
+        'title' => 'Home',
+        'description' => 'tela inicial',
+      ]);
+    }
+  }
+
+  (new Index)->run();
+  ```
