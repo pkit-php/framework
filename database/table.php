@@ -7,13 +7,12 @@ use PDO;
 
 class Table
 {
-  private string $_table, $_idField;
+  private string $_table;
   private Database $_database;
 
-  public function __construct($table = null, $idField = 'id')
+  public function __construct($table = null)
   {
     $this->_table = $table ?? Sanitize::sanitizeClass(get_class($this));
-    $this->_idField = $idField;
     $this->_database = new Database;
   }
 
@@ -37,7 +36,7 @@ class Table
     return implode(', ', $keys);
   }
 
-  public function insert($returnId = false)
+  public function insert(?string $return = null)
   {
     $array = Sanitize::sanitizeProperties((array)$this);
     $array = array_filter($array);
@@ -45,15 +44,14 @@ class Table
     $keys = array_keys($array);
     $fields = self::fields($keys);
     $binds  = self::binds($keys);
-    $return  = $returnId ? " RETURNING $this->_idField " : "";
+    $return  = " RETURNING $return" ?? "";
 
     $query = "INSERT INTO $this->_table ( $fields ) VALUES ( $binds ) $return";
 
     $stmt = $this->_database->execute($query, array_values($array));
 
-    if ($returnId) {
-      $result = $stmt->fetch();
-      return $result[$this->_idField];
+    if ($return) {
+      return $stmt->fetch();
     }
   }
 
