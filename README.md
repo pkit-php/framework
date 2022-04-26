@@ -317,7 +317,7 @@ class Users extends Table
   $user->email = 'email@email.com';
   $user->password = password_hash('1234', PASSWORD_DEFAULT);
 
-  $id = $user->insert(returnId: true);
+  $id = $user->insert(return: 'id');
   /***/
   ```
 
