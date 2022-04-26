@@ -4,6 +4,7 @@ namespace Pkit\Http;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Utils\Text;
 
 class Middlewares
 {
@@ -32,7 +33,7 @@ class Middlewares
   {
     $class = str_replace("/", "\\", ucwords($class, '/'));
     if (substr($class, 0, 5) == 'Pkit\\') {
-      $class = ltrim($class, "Pkit\\");
+      $class = Text::removeFromStart($class, 'Pkit\\');
       return 'Pkit\\Middlewares\\' .  $class;
     } else {
       return self::$namespace . '\\' . $class;
