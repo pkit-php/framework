@@ -4,41 +4,63 @@ namespace Pkit\Utils;
 
 class View
 {
-  private static string $path;
+  private static string
+    $path, $slotPath;
+  private static $args, $argsBuffer;
 
   public static function init(string $path)
   {
     Self::$path = $path;
   }
 
+  public static function getArgs()
+  {
+    return self::$args;
+  }
+
+  private static function allocArgs($args)
+  {
+    if ($args) {
+      if (self::$args) {
+        self::$argsBuffer = self::$args;
+      };
+      self::$args = $args;
+    };
+  }
+
+  private static function reAllocArgs()
+  {
+    if (self::$argsBuffer) self::$args = self::$argsBuffer;
+  }
+
+  public static function slot()
+  {
+    include self::$slotPath;
+  }
+
   public static function render(string $file, $args = null)
   {
-    if (ARGS) {
-      $lastArgs = ARGS;
-    };
-    if ($args) define('ARGS', $args, false);
-    echo $args;
-
-    $path = Self::$path . '/' . explode('.php', ltrim($file, '/'))[0] . '.php';
+    self::allocArgs($args);
+    $file = Text::removeFromEnd($file, '.php');
+    $path = Self::$path . '/' . $file . '.php';
     include $path;
 
-    if ($lastArgs) define('ARGS', $lastArgs, false);
+    self::reAllocArgs();
   }
 
   public static function layout(string $file, $args = null)
   {
-    if (ARGS) $lastArgs = ARGS;
-    if ($args) define('ARGS', $args, false);
-
-    $path = Self::$path . '/' . rtrim(ltrim($file, '/'), '.php') . '.php';
+    self::allocArgs($args);
+    $file = Text::removeFromEnd($file, '.php');
+    $path = Self::$path . '/' . $file . '.php';
     $layout = Self::$path . "/__layout.php";
     if (file_exists($layout)) {
-      define('SLOT', $path);
+      self::$slotPath = $path;
       include $layout;
     } else {
       include $path;
     }
 
-    if ($lastArgs) define('ARGS', $lastArgs, false);
+    self::reAllocArgs();
   }
 }
