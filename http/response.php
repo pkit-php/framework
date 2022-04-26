@@ -30,8 +30,7 @@ class Response
 
   public function status(int $httpCode): self
   {
-    $this->setHttpCode($httpCode);
-    return $this;
+    return $this->setHttpCode($httpCode);
   }
 
   public function getContentType()
@@ -56,7 +55,11 @@ class Response
 
   private function sendCode()
   {
-    http_response_code($this->httpCode);
+    if ($this->httpCode < 600 && $this->httpCode >= 100) {
+      http_response_code($this->httpCode);
+    } else {
+      http_response_code(500);
+    }
   }
 
   public function sendStatus($status = 200)
@@ -105,49 +108,146 @@ class Response
 
   public function onlyCode(): self
   {
-    $this->setContentType('');
-    return $this;
+    return $this->setContentType('');
+  }
+
+  public function serviceUnavailable(): self
+  {
+    return $this->setHttpCode(503);
+  }
+
+  public function notImplemented(): self
+  {
+    return $this->setHttpCode(501);
   }
 
   public function error(): self
   {
-    $this->setHttpCode(500);
-    return $this;
+    return $this->setHttpCode(500);
+  }
+
+  public function fieldsTooLarges(): self
+  {
+    return $this->setHttpCode(431);
+  }
+
+  public function tooManyRequests(): self
+  {
+    return $this->setHttpCode(429);
+  }
+
+  public function unprocessableEntity(): self
+  {
+    return $this->setHttpCode(422);
   }
 
   public function unsupportedMediaType(): self
   {
-    $this->setHttpCode(415);
-    return $this;
+    return $this->setHttpCode(415);
+  }
+
+  public function conflict()
+  {
+    return $this->setHttpCode(409);
+  }
+
+  public function notAcceptable()
+  {
+    return $this->setHttpCode(406);
   }
 
   public function methodNotAllowed(): self
   {
-    $this->setHttpCode(405);
-    return $this;
+    return $this->setHttpCode(405);
   }
 
   public function notFound(): self
   {
-    $this->setHttpCode(404);
-    return $this;
+    return $this->setHttpCode(404);
+  }
+
+  public function forbidden()
+  {
+    return $this->setHttpCode(403);
   }
 
   public function unauthorized()
   {
-    $this->setHttpCode(401);
-    return $this;
+    return $this->setHttpCode(401);
   }
 
   public function badRequest()
   {
-    $this->setHttpCode(400);
-    return $this;
+    return $this->setHttpCode(400);
+  }
+
+  public function permanentRedirect()
+  {
+    return $this->setHttpCode(308);
+  }
+
+  public function temporaryRedirect()
+  {
+    return $this->setHttpCode(307);
+  }
+
+  public function notModified()
+  {
+    return $this->setHttpCode(304);
+  }
+
+  public function seeOther()
+  {
+    return $this->setHttpCode(303);
+  }
+
+  public function found()
+  {
+    return $this->setHttpCode(302);
+  }
+
+  public function movedPermanently()
+  {
+    return $this->setHttpCode(301);
+  }
+
+  public function multipleChoice()
+  {
+    return $this->setHttpCode(300);
+  }
+
+  public function partialContent()
+  {
+    return $this->setHttpCode(206);
+  }
+
+  public function resetContent()
+  {
+    return $this->setHttpCode(205);
+  }
+
+  public function noContent()
+  {
+    return $this->setHttpCode(204);
+  }
+
+  public function nonAuthoritativeInformation()
+  {
+    return $this->setHttpCode(203);
+  }
+
+  public function accepted()
+  {
+    return $this->setHttpCode(201);
+  }
+
+  public function created()
+  {
+    return $this->setHttpCode(201);
   }
 
   public function ok(): self
   {
-    $this->setHttpCode(200);
-    return $this;
+    return $this->setHttpCode(200);
   }
 }
