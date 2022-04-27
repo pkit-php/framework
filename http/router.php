@@ -12,7 +12,6 @@ class Router
   private static string
     $uri,
     $file,
-    $routePath,
     $especialRoute;
 
   private static Request $request;
@@ -25,7 +24,7 @@ class Router
   {
     $routes = Map::mapPhpFiles($routePath);
     self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
-    self::$especialRoute = $routes['/*/'] ?? null;
+    self::$especialRoute = $routes['/*/'] ?? "";
     unset($routes['/*/']);
     [self::$file, self::$params] = Routes::mathRoute($routes, self::$uri);
   }
@@ -64,7 +63,7 @@ class Router
 
   public static function runEspecialRoute()
   {
-    if (self::$especialRoute) {
+    if (strlen(self::$especialRoute)) {
       $especialRoute = self::$especialRoute;
       include $especialRoute;
     } else {
