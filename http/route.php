@@ -27,7 +27,10 @@ class Route
     if (method_exists($this, $method)) {
       $this->$method($request, $response);
     } else {
-      $response->onlyCode()->notImplemented()->send();
+      if (!$response->getModified()) {
+        $response->onlyCode()->notImplemented();
+      }
+      $response->send();
     }
   }
 }
