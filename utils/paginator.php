@@ -2,8 +2,6 @@
 
 namespace App\Utils;
 
-use App\Model\Connection;
-
 class Paginator
 {
 
