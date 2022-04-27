@@ -4,6 +4,15 @@ namespace Pkit\Utils;
 
 class Converter
 {
+
+  public static function anyToArray($any)
+  {
+    if (!is_array($any)) {
+      $any = [$any];
+    }
+    return $any;
+  }
+
   public static function objectToArray($object)
   {
     foreach ($object as $key => $value) {
