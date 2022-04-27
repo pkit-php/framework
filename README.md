@@ -158,13 +158,13 @@ Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funci
 
 - inicie com namespace onde se encontra os middlewares adicionais no `index.php`
 
-```php
-/***/
-use App\Middlewares as MiddlewaresNamespace;
+  ```php
+  /***/
+  use App\Middlewares as MiddlewaresNamespace;
 
-Middlewares::init(MiddlewaresNamespace::class);
-/***/
-```
+  Middlewares::init(MiddlewaresNamespace::class);
+  /***/
+  ```
 
 ### exemplo de criação
 
