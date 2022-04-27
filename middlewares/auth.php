@@ -4,7 +4,7 @@ namespace Pkit\Middlewares;
 
 use Pkit\Abstracts\Middleware;
 use Pkit\Http\Router;
-use Pkit\Utils\Session;
+use Pkit\Auth\Session;
 
 class Auth implements Middleware
 {

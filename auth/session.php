@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Utils;
+namespace Pkit\Auth;
 
 class Session
 {

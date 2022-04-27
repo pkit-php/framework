@@ -1,6 +1,8 @@
 <?php
 
-namespace Pkit\Utils;
+namespace Pkit\Auth;
+
+use Pkit\Utils\Base64url;
 
 class Jwt
 {
