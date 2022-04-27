@@ -106,7 +106,8 @@ routes/
 <?php
 # __DIR__./routes/(id)/[repo]/{file}.php
 
-new PKit\Http\Route
+use PKit\Abstracts\Route;
+use PKit\Http\Router;
 
 class fileByRepo extends Route
 {
@@ -119,13 +120,37 @@ class fileByRepo extends Route
      *  'file' => '.*'
      * ]
      */
-    $params = $request->getRouter()->getParams();
+    $params = Router::getParams();
     $response->json()->send($params);
   }
 }
 
 (new fileByRepo())->run();
 ```
+
+### rota especial
+
+Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funcionando como um rota comum. Essa rota deve ser chamada de `*.php` e estar no pasta routes.
+
+- exemplo de uso em um middleware
+
+  ```php
+  <?php
+
+  namespace Pkit\Middlewares;
+
+  use Pkit\Abstracts\Middleware;
+  use Pkit\Http\Router;
+
+  class Maintenance implements Middleware
+  {
+    public function handle($request, $response, $next)
+    {
+      $response->serviceUnavailable();
+      Router::runEspecialRoute();# <--
+    }
+  }
+  ```
 
 ## Middlewares
 
@@ -197,7 +222,9 @@ class Home extends Route {
 
 - `pkit/api` : converte o content-type para application/json
 
-- `pkit/auth` : autentica o usuario com base na sessão
+- `pkit/auth` : autentica o usuário com base na sessão
+
+- `pkit/maintenance` : indica um rota em manutenção
 
 ## Session
 
@@ -215,11 +242,11 @@ class Home extends Route {
 
       function get($request, $response)
       {
+          /***/
           Session::login([
             'id' => '1234',
             'name' => 'user...'
           ]);
-          /***/
           $response->send("logged");
       }
   }
@@ -242,8 +269,8 @@ class Home extends Route {
 
       function get($request, $response)
       {
-          Session::logout();
           /***/
+          Session::logout();
           $response->send("dislogged");
       }
   }
