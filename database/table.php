@@ -104,7 +104,7 @@ class Table
     $this->_database->execute($query, array_values($params));
   }
 
-  public function delete($where = null)
+  public function delete(array $where = null)
   {
     $params = [];
     if ($where) {
