@@ -20,17 +20,13 @@ class View
 
   private static function allocArgs($args)
   {
-    if ($args) {
-      if (self::$args) {
-        self::$argsBuffer = self::$args;
-      };
-      self::$args = $args;
-    };
+    self::$argsBuffer = self::$args;
+    self::$args = $args;
   }
 
   private static function reAllocArgs()
   {
-    if (self::$argsBuffer) self::$args = self::$argsBuffer;
+    self::$args = self::$argsBuffer;
   }
 
   public static function slot()
