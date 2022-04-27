@@ -33,7 +33,9 @@ class Table
 
   static private function fields($keys)
   {
-    return implode(', ', $keys);
+    return implode(', ', array_map(function ($value) {
+      return "`$value`";
+    }, $keys));
   }
 
   public function insert(?string $return = null)
@@ -126,7 +128,7 @@ class Table
       foreach ($where as $field => $bind) {
         if (!is_int($field)) {
           [$field, $comp] = explode(":", $field);
-          $query .= (" $field" . ($comp ?? '=') . '?,');
+          $query .= (" `$field`" . ($comp ?? '=') . '?,');
           $binds[] = $bind;
         } else {
           $query .= " $bind,";
