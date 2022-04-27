@@ -8,28 +8,26 @@ class Response
     $httpCode = 200,
     $contentType = 'text/html',
     $headers = [],
-    $modified = false;
+    $statusModified = false;
 
   private function setModified()
   {
-    $this->modified = true;
+    $this->statusModified = true;
   }
 
   public function getModified()
   {
-    return $this->modified;
+    return $this->statusModified;
   }
 
   public function addHeader(string $key, string $value): self
   {
-    $this->setModified();
     $this->headers[$key] = $value;
     return $this;
   }
 
   public function setContentType(string $contentType): self
   {
-    $this->setModified();
     $this->contentType = $contentType;
     $this->addHeader('Content-Type', $contentType);
     return $this;
