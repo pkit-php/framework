@@ -4,6 +4,7 @@ namespace Pkit\Http;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Utils\Converter;
 use Pkit\Utils\Text;
 
 class Middlewares
@@ -20,12 +21,15 @@ class Middlewares
   public static function getMiddlewares($middlewares, $method)
   {
     $newMiddlewares = [];
+    $middlewares = Converter::anyToArray($middlewares);
     foreach ($middlewares as $key => $middleware) {
       if (is_int($key)) {
         $newMiddlewares[] = $middleware;
       }
     }
     $methodsMiddlewares = $middlewares[strtolower($method)] ?? [];
+    $methodsMiddlewares = Converter::anyToArray($methodsMiddlewares);
+
     return array_merge($newMiddlewares, $methodsMiddlewares);
   }
 
