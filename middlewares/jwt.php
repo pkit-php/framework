@@ -19,11 +19,10 @@ class Jwt implements Middleware
                 $payload = AuthJwt::getPayload($token);
                 $created = $payload->_created;
                 if ($created) {
-                    $delta = Date::deltaTime(
+                    $interval = Date::deltaTime(
                         new DateTime($created),
                         new DateTime('now')
                     );
-                    $interval = Date::dateIntervalToSeconds($delta);
                     if ($interval < $expire) {
                         return $next($request, $response);
                     }
