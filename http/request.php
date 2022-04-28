@@ -6,11 +6,11 @@ use Pkit\Utils\Converter;
 
 class Request
 {
-  private string $httpMethod;
-  private array
-    $headers = [],
-    $queryParams = [],
-    $postVars = [];
+  public readonly string $httpMethod;
+  public readonly array
+    $headers,
+    $queryParams,
+    $postVars;
 
   public function __construct()
   {
@@ -25,7 +25,7 @@ class Request
 
   private function setPostVars()
   {
-    $contentType = trim(explode(';', $this->getHeader('content-type'))[0]);
+    $contentType = trim(explode(';', $this->headers['content-type'])[0]);
     try {
       switch ($contentType) {
         case 'application/json':
@@ -47,36 +47,11 @@ class Request
           $this->postVars = $_POST;
           break;
         default:
-          (new Response)->unsupportedMediaType()->onlyCode()->send();
+          (new Response)->status(Status::UNSUPPORTED_MEDIA_TYPE)->onlyCode()->send();
           break;
       }
     } catch (\Throwable $th) {
-      (new Response)->badRequest()->onlyCode()->send($th);
+      (new Response)->status(Status::BAD_REQUEST)->onlyCode()->send($th);
     }
-  }
-
-  public function getPostVars()
-  {
-    return $this->postVars;
-  }
-
-  public function getQueryParams()
-  {
-    return $this->queryParams;
-  }
-
-  public function getHeaders()
-  {
-    return $this->headers;
-  }
-
-  public function getHeader($header)
-  {
-    return $this->headers[lcfirst($header)];
-  }
-
-  public function getHttpMethod()
-  {
-    return $this->httpMethod;
   }
 }
