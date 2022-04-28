@@ -47,8 +47,10 @@ class Router
     self::$response = new Response;
     if (self::$file) {
       try {
+        ob_start();
         self::includeFile();
       } catch (\Throwable $th) {
+        ob_end_clean();
         self::$response->setHttpCode($th->getCode());
         self::$error = $th;
         self::runEspecialRoute();
