@@ -2,6 +2,9 @@
 
 namespace Pkit\Utils;
 
+use Pkit\Http\ContentType;
+use Pkit\Http\Response;
+
 class View
 {
   private static string
@@ -22,6 +25,7 @@ class View
   {
     self::$argsBuffer = self::$args;
     self::$args = $args;
+    return $args;
   }
 
   private static function reAllocArgs()
@@ -34,22 +38,35 @@ class View
     include self::$slotPath;
   }
 
-  public static function render(string $file, $args = null)
+  private static function sendHtml(Response $response, int $code)
+  {
+    $response->contentType(ContentType::HTML)->setStatus($code)->send();
+  }
+
+  public static function render(string $file, $args = null, ?Response $response = null, $code = 200)
   {
     self::allocArgs($args);
+
     $file = Text::removeFromEnd($file, '.php');
     $path = Self::$path . '/' . $file . '.php';
+
     include $path;
 
     self::reAllocArgs();
+
+    if ($response) {
+      View::sendHtml($response, $code);
+    }
   }
 
-  public static function layout(string $file, $args = null)
+  public static function layout(string $file, $args = null, ?Response $response = null, $code = 200)
   {
     self::allocArgs($args);
+
     $file = Text::removeFromEnd($file, '.php');
     $path = Self::$path . '/' . $file . '.php';
     $layout = Self::$path . "/__layout.php";
+
     if (file_exists($layout)) {
       self::$slotPath = $path;
       include $layout;
@@ -58,5 +75,9 @@ class View
     }
 
     self::reAllocArgs();
+
+    if ($response) {
+      View::sendHtml($response, $code);
+    }
   }
 }
