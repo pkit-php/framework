@@ -14,7 +14,7 @@ class Route
   public function run()
   {
     [$request, $response] = Router::getRequestAndResponse();
-    $middlewares = Middlewares::getMiddlewares($this->middlewares ?? [], $request->getHttpMethod());
+    $middlewares = Middlewares::getMiddlewares($this->middlewares ?? [], $request->httpMethod);
 
     (new Middlewares(function ($request, $response) {
       $this->runMethod($request, $response);
@@ -23,13 +23,11 @@ class Route
 
   private function runMethod(Request $request, Response $response)
   {
-    $method = strtolower($request->getHttpMethod());
+    $method = strtolower($request->httpMethod);
     if (method_exists($this, $method)) {
       $this->$method($request, $response);
     } else {
-      if (!$response->getModified()) {
-        $response->onlyCode()->notImplemented();
-      }
+      $response->onlyCode()->setStatus(Status::NOT_IMPLEMENTED);
       $response->send();
     }
   }

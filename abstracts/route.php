@@ -33,13 +33,11 @@ abstract class Route extends HttpRoute
   }
   public function head(Request $request, Response $response)
   {
-    $response->ok()->addHeader(
-      'Accept',
+    $response->headers['Accept'] =
       'application/x-www-form-urlencoded,' .
-        'application/json,' .
-        'application/form-data'
-    )
-      ->send();
+      'application/json,' .
+      'application/form-data';
+    $response->send();
   }
   public function get(Request $request, Response $response)
   {

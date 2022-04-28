@@ -5,6 +5,7 @@ namespace Pkit\Middlewares;
 use Pkit\Abstracts\Middleware;
 use Pkit\Http\Router;
 use Pkit\Auth\Session;
+use Pkit\Http\Status;
 
 class Auth implements Middleware
 {
@@ -13,7 +14,7 @@ class Auth implements Middleware
     if (Session::logged()) {
       return $next($request, $response);
     };
-    $response->unauthorized();
+    $response->status(Status::UNAUTHORIZED);
     Router::runEspecialRoute();
   }
 }

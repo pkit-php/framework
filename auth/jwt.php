@@ -55,13 +55,13 @@ class Jwt
 
   public static function setBearer(Response $response, string $token)
   {
-    $response->addHeader("authorization", "Bearer " . $token);
+    $response->header["authorization"] = "Bearer " . $token;
   }
 
   public static function getBearer(Request $request)
   {
-    $auhorization = $request->getHeader("authorization") ?? "";
-    return Text::removeFromStart($auhorization, "Bearer ");
+    $authorization = $request->headers["authorization"] ?? "";
+    return Text::removeFromStart($authorization, "Bearer ");
   }
 
   public static function getExpire()

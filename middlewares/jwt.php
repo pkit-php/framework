@@ -6,6 +6,7 @@ use DateTime;
 use Pkit\Abstracts\Middleware;
 use Pkit\Auth\Jwt as AuthJwt;
 use Pkit\Http\Router;
+use Pkit\Http\Status;
 use Pkit\Utils\Date;
 
 class Jwt implements Middleware
@@ -31,7 +32,7 @@ class Jwt implements Middleware
                 return $next($request, $response);
             }
         };
-        $response->unauthorized();
+        $response->status(Status::UNAUTHORIZED);
         Router::runEspecialRoute();
     }
 }
