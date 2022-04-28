@@ -7,12 +7,12 @@ class Session
 
   private static $time;
 
-  public static function setTimeSession(int $time)
+  public static function init(int $time)
   {
     self::$time = $time;
   }
 
-  private static function init()
+  private static function start()
   {
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_start();
@@ -24,19 +24,19 @@ class Session
 
   public static function logged()
   {
-    Self::init();
-    return !is_null($_SESSION['payload']);
+    Self::start();
+    return !is_null(@$_SESSION['payload']);
   }
 
   public static function login($payload)
   {
-    self::init();
+    self::start();
     $_SESSION['payload'] = $payload;
   }
 
   public static function logout()
   {
-    self::init();
+    self::start();
 
     setcookie('PHPSESSID');
     session_regenerate_id();
@@ -46,7 +46,7 @@ class Session
 
   public static function getSession()
   {
-    self::init();
+    self::start();
     return $_SESSION['payload'];
   }
 }
