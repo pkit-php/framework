@@ -22,7 +22,7 @@ class Response
 
   public function addHeader(string $key, string $value): self
   {
-    $this->headers[$key] = $value;
+    $this->headers[ucfirst($key)] = $value;
     return $this;
   }
 
