@@ -36,7 +36,7 @@ class Router
     $extension = '.' . @end(explode('.', self::$file));
     if ($extension != '.php') {
       (new Response)
-        ->setContentType(mime_content_type($extension) ?? "")
+        ->contentType(mime_content_type($extension) ?? "")
         ->send();
     }
   }
@@ -50,15 +50,21 @@ class Router
         ob_start();
         self::includeFile();
       } catch (\Throwable $th) {
-        ob_end_clean();
-        self::$response->setHttpCode($th->getCode());
+        if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true")
+          ob_end_clean();
+        if (getenv('PKIT_DEBUG') == 'true') {
+          echo '<pre>';
+          var_dump($th);
+          echo '</pre>';
+        }
+        self::$response->status($th->getCode());
         self::$error = $th;
         self::runEspecialRoute();
       }
     } else {
       self::$response
         ->onlyCode()
-        ->notFound();
+        ->status(Status::NOT_FOUND);
       self::runEspecialRoute();
     }
   }
