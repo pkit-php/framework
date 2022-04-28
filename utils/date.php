@@ -8,6 +8,6 @@ class Date
 {
     static public function deltaTime(DateTime $after, DateTime $before)
     {
-        return - ($after->getTimestamp() - $before->getTimestamp());
+        return $before->getTimestamp() - $after->getTimestamp();
     }
 }
