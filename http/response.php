@@ -4,10 +4,9 @@ namespace Pkit\Http;
 
 class Response
 {
-  private readonly int $status;
-  public string $contentType;
   public array $headers;
-  public readonly bool $statusModified;
+  private ?int $status = null;
+  private ?string $contentType = null;
 
   public function __construct()
   {
@@ -16,37 +15,38 @@ class Response
 
   public function setStatus($status = 200)
   {
-    try {
-      $_ = $this->status;
-    } catch (\Throwable $th) {
+    if (!$this->status) {
       $this->status($status);
     }
     return $this;
   }
   public function setContentType($contentType = 'text/html')
   {
-    try {
-      $_ = $this->contentType;
-    } catch (\Throwable $th) {
+    if (!$this->contentType) {
       $this->contentType($contentType);
     }
     return $this;
   }
 
 
-  public function contentType(string $contentType): self
+  public function contentType(?string $contentType = null): self | string
   {
-    $this->contentType = $contentType;
-
-    $this->headers['Content-Type'] = $this->contentType;
-    return $this;
+    if ($contentType) {
+      $this->contentType = $contentType;
+      return $this;
+    } else {
+      return $this->contentType ?? "text/html";
+    }
   }
 
-  public function status(int $statusCode = 0): self
+  public function status(int $statusCode = 0): self | string
   {
-    $this->statusModified = true;
-    $this->status = $statusCode;
-    return $this;
+    if ($statusCode) {
+      $this->status = $statusCode;
+      return $this;
+    } else {
+      return $this->status ?? 200;
+    }
   }
 
   private function sendCode()
@@ -68,8 +68,14 @@ class Response
 
   private function sendHeaders()
   {
+    $this->headers['Content-Type'] = $this->contentType;
+
     foreach ($this->headers as $key => $value) {
-      header($key . ':' . $value);
+      if ($value) {
+        header($key . ':' . $value);
+      } else {
+        header_remove($value);
+      }
     }
   }
 
