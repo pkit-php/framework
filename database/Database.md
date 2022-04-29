@@ -29,7 +29,7 @@ Classe de autenticação e criação de tokens genéricos
   ```php
   <?php
   // .../*
-  use Pkit\Auth\Session;
+  use Pkit\Database\Database;
   /***/
   $statement = (new Database)->execute(/*query:string*/,/*parâmetros:array(opcionais)*/);
   $result = $statement->fetchAll();
