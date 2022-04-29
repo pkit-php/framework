@@ -5,7 +5,15 @@ namespace Pkit\Abstracts;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Route as HttpRoute;
-use Pkit\Utils\Methods;
+use Pkit\Http\Status;
+
+function methodNotAllowed($_, Response $response)
+{
+  $response
+    ->onlyCode()
+    ->setStatus(Status::METHOD_NOT_ALLOWED)
+    ->send();
+}
 
 abstract class Route extends HttpRoute
 {
@@ -13,23 +21,23 @@ abstract class Route extends HttpRoute
 
   public function options(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function delete(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function patch(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function trace(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function post(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function head(Request $request, Response $response)
   {
@@ -41,10 +49,10 @@ abstract class Route extends HttpRoute
   }
   public function get(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
   public function put(Request $request, Response $response)
   {
-    Methods::methodNotAllowed($request, $response);
+    methodNotAllowed($request, $response);
   }
 }
