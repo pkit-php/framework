@@ -127,7 +127,7 @@ class Table
       $query = 'WHERE';
       foreach ($where as $field => $bind) {
         if (!is_int($field)) {
-          [$field, $comp] = explode(":", $field);
+          @[$field, $comp] = explode(":", $field);
           $query .= (" `$field`" . ($comp ?? '=') . '?,');
           $binds[] = $bind;
         } else {

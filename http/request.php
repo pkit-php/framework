@@ -25,7 +25,7 @@ class Request
 
   private function setPostVars()
   {
-    $contentType = trim(explode(';', $this->headers['content-type'])[0]);
+    $contentType = trim(explode(';', @$this->headers['content-type'])[0]);
     try {
       switch ($contentType) {
         case 'application/json':
