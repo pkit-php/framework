@@ -24,7 +24,7 @@ Classe de autenticação e criação de tokens genéricos
   );
   ```
 
-- exemplo :
+- uso :
 
   ```php
   <?php
