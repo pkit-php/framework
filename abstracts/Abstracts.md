@@ -6,7 +6,7 @@ São modelos bases para criação de Middlewares e Rotas
 
 - A abstração deve ser implementada para que funcione da maneira desejada
 - Funciona com o handle interceptando o request, response e next, assim chamando o next de acordo com a condições e necessidades
-- exemplo :
+- exemplo:
 
   ```php
   <?php
@@ -33,7 +33,7 @@ São modelos bases para criação de Middlewares e Rotas
   - caso não aja será usado em todos o métodos;
   - caso aja será usado no método com o mesmo nome da chave;
 - É executado o método com o mesmo nome do método do cabeçalho HTTP, recebendo o request e o response, assim enviando o conteúdo final
-- exemplo :
+- exemplo:
 
   ```php
   <?php
@@ -44,7 +44,6 @@ São modelos bases para criação de Middlewares e Rotas
 
   class Index extends Route
   {
-
     public $middlewares = [
       "pkit/maintenance",
       'get' => [

@@ -5,8 +5,8 @@ Classe de autenticação e criação de tokens genéricos
 ## Database
 
 - Conecta ao banco de dados desejado
-- É usado através de construídos a mão com possíveis parâmetros
-- configuração :
+- É usado através de query's construídos a mão com possíveis parâmetros
+- configuração:
 
   ```php
   <?php
@@ -24,7 +24,7 @@ Classe de autenticação e criação de tokens genéricos
   );
   ```
 
-- uso :
+- uso:
 
   ```php
   <?php
@@ -42,7 +42,7 @@ Classe de autenticação e criação de tokens genéricos
 - É estendido a um modelo, feito a manipulação através dos seus parâmetros
 - Os parâmetros protegidos são reconhecidos, porem não é enviado em uma requisição
 - São feito os métodos básicos de CRUD
-- exemplo de Modelo :
+- exemplo de Modelo:
 
   ```php
   <?php
@@ -63,7 +63,7 @@ Classe de autenticação e criação de tokens genéricos
 
   ```
 
-- uso :
+- uso:
 
   ```php
   <?php
@@ -77,7 +77,7 @@ Classe de autenticação e criação de tokens genéricos
   //...
   $return = $user->insert(/*parâmetro a ser retornado:string(opcional)*/)//:Modelo;
   /***/
-  $payload = $user->select(/*where:array(opcional)*/,/*bind:string(opcional)*/, /*limit:array(opcional)*/);//:array<Modelo>
+  $payload = $user->select(/*where:array(opcional)*/,/*orderBy:string(opcional)*/, /*limit:array(opcional)*/);//:array<Modelo>
   /***/
 
   $user->name = "new name";
@@ -88,3 +88,29 @@ Classe de autenticação e criação de tokens genéricos
   /***/
 
   ```
+
+  - where
+
+    `\<field>:\<contition> => <value>`
+
+    - condition
+      | up | lo | di | eq |
+      |----|----|----|----|
+      | > | < | <> | = |
+
+    - exemplo
+      ```php
+      [
+        "status = 1", # valores sem chaves são escritos por extenso
+        "id" => $id, # a condição padrão é '='
+      ]
+      ```
+
+  - limit
+    - exemplo
+      ```php
+      [
+        10, # item inicial
+        5, # quantidade de items
+      ]
+      ```

@@ -7,7 +7,7 @@ Classe de autenticação e criação de tokens genéricos
 - Funciona a partir da sessão do php
 - É regerado sempre que a sessão é desligada
 - Pode durar uma sessão ou um tempo pre-determinado
-- configuração :
+- configuração:
 
   ```php
   <?php
@@ -20,7 +20,7 @@ Classe de autenticação e criação de tokens genéricos
   /***
   ```
 
-- uso :
+- uso:
 
   ```php
   <?php
@@ -41,7 +41,7 @@ Classe de autenticação e criação de tokens genéricos
 - É enviado um token criptografado para o cliente e assim validado no retorno
 - Por padrão ele é enviado pelo cabeçalho 'Authorization' com o "Bearer \<token>"
 - Pode ser valido pra sempre ou um tempo pre-determinado
-- configuração :
+- configuração:
 
   ```php
   <?php
@@ -54,7 +54,7 @@ Classe de autenticação e criação de tokens genéricos
   /***
   ```
 
-- uso :
+- uso:
 
   ```php
   <?php
