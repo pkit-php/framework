@@ -196,7 +196,7 @@ class Home extends Route {
 
     public $middlewares = [
       'teste', # middlewares adicionais
-      'pkit/api',# middlewares do framework inicião com 'pkit/'
+      'pkit/api',# middlewares do framework iniciam com 'pkit/'
       # chaves nomeados são pra métodos específicos
       'post' => [
         'pkit/auth',
@@ -234,7 +234,7 @@ class Home extends Route {
 
   ```php
   <?php
-
+  //.../routes/login.php
   use Pkit\Abstracts\Route;
   use Pkit\Utils\Session;
 
@@ -257,7 +257,7 @@ class Home extends Route {
 
   ```php
   <?php
-
+  //.../routes/logout.php
   use Pkit\Abstracts\Route;
   use Pkit\Utils\Session;
 
@@ -282,6 +282,9 @@ class Home extends Route {
 configuração do banco de dados
 
 ```php
+//.../index.php
+use Pkit\Database\Database;
+/***/
 Database::init(
   getenv("DB"),
   getenv("DB_HOST"),
@@ -289,11 +292,14 @@ Database::init(
   getenv("DB_USER"),
   getenv("DB_PASS"),
 );
+/***/
 ```
 
 ### exemplo de uso do database
 
 ```php
+/***/
+use Pkit\Database\Database;
 /***/
 (new Database)->execute('SELECT * FROM User WHERE id=?', [$id]);
 /***/
@@ -305,7 +311,7 @@ Database::init(
 <?php
 // app/entities/user.php
 
-namespace App\Entitie;
+namespace App\Entities;
 
 use Pkit\Database\Table;
 
@@ -364,7 +370,7 @@ class Users extends Table
 
 - where
 
-  `\<field>:\<contition> => <value>`
+  `\<field>:\<condition> => <value>`
 
   - condition
     | up | lo | di | eq |
