@@ -28,7 +28,8 @@ class Route
   public function runMethod(Request $request, Response $response)
   {
     $method = strtolower($request->httpMethod);
-    if (method_exists($this, $method)) {
+    if ($method !== 'run' && method_exists($this, $method)) {
+      # o método 'run' também pode ser executado desa forma
       $this->$method($request, $response);
     } else {
       $response->onlyCode()->setStatus(Status::NOT_IMPLEMENTED);
