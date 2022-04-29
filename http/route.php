@@ -11,17 +11,21 @@ class Route
 {
   public $middlewares;
 
-  public function run()
+  public static function run()
   {
     [$request, $response] = Router::getRequestAndResponse();
-    $middlewares = Middlewares::getMiddlewares($this->middlewares ?? [], $request->httpMethod);
 
-    (new Middlewares(function ($request, $response) {
-      $this->runMethod($request, $response);
+    $class = static::class;
+    $route = new $class;
+
+    $middlewares = Middlewares::getMiddlewares($route->middlewares ?? [], $request->httpMethod);
+
+    (new Middlewares(function ($request, $response) use ($route) {
+      $route->runMethod($request, $response);
     }, $middlewares))->next($request, $response);
   }
 
-  private function runMethod(Request $request, Response $response)
+  public function runMethod(Request $request, Response $response)
   {
     $method = strtolower($request->httpMethod);
     if (method_exists($this, $method)) {
