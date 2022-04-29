@@ -42,9 +42,11 @@ abstract class Route extends HttpRoute
   public function head(Request $request, Response $response)
   {
     $response->headers['Accept'] =
-      'application/x-www-form-urlencoded,' .
-      'application/json,' .
-      'application/form-data';
+      'application/x-www-form-urlencoded, ' .
+      'application/json, ' .
+      'application/xml, ' .
+      'multipart/form-data';
+    $response->onlyCode();
     $response->send();
   }
   public function get(Request $request, Response $response)
