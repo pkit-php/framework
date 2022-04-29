@@ -479,3 +479,5 @@ View::init(__DIR__ . '/app/view');
 
   (new Index)->run();
   ```
+
+<strong>para mais informações acesse as documentações nas pastas no framework</strong>
