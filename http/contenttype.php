@@ -4,7 +4,7 @@ namespace Pkit\Http;
 
 class ContentType
 {
-  const NONE = "";
+  const NONE = null;
   const JSON = "application/json";
   const HTML = "text/html";
 }
