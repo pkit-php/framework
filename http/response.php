@@ -39,7 +39,7 @@ class Response
     }
   }
 
-  public function status(int $statusCode = 0): self | string
+  public function status(int $statusCode = 0): self | int
   {
     if ($statusCode) {
       $this->status = $statusCode;
