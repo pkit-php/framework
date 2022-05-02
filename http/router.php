@@ -49,6 +49,7 @@ class Router
       try {
         ob_start();
         self::includeFile();
+        exit;
       } catch (\Throwable $th) {
         if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true") {
           ob_end_clean();
