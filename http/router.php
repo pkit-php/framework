@@ -2,6 +2,7 @@
 
 namespace Pkit\Http;
 
+use Pkit\Utils\Debug;
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
 use Pkit\Utils\Sanitize;
@@ -49,23 +50,21 @@ class Router
         ob_start();
         self::includeFile();
       } catch (\Throwable $th) {
-        if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true")
+        if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true") {
           ob_end_clean();
-        if (getenv('PKIT_DEBUG') == 'true') {
-          echo '<pre>';
-          var_dump($th);
-          echo '</pre>';
         }
         self::$response->status($th->getCode() != 0 ? $th->getCode() : 500);
         self::$error = $th->getMessage();
-        self::runEspecialRoute();
       }
     } else {
       self::$response
         ->onlyCode()
         ->status(Status::NOT_FOUND);
       self::$error = 'Page not found';
-      self::runEspecialRoute();
+    }
+    self::runEspecialRoute();
+    if (getenv('PKIT_DEBUG') == 'true') {
+      Debug::log(self::$request, self::$response, self::$error);
     }
   }
 
