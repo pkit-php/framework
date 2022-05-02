@@ -57,4 +57,7 @@ abstract class Route extends HttpRoute
   {
     methodNotAllowed($request, $response);
   }
+  public function all(Request $request, Response $response)
+  {
+  }
 }

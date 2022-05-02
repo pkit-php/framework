@@ -27,6 +27,10 @@ class Route
 
   public function runMethod(Request $request, Response $response)
   {
+    $all = 'all';
+    if (method_exists($this, $all)) {
+      $this->$all($request, $response);
+    }
     $method = strtolower($request->httpMethod);
     $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
     if (in_array($method, $methods) && method_exists($this, $method)) {
