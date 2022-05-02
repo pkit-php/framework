@@ -5,7 +5,6 @@ namespace Pkit\Http;
 use Pkit\Utils\Map;
 use Pkit\Utils\Routes;
 use Pkit\Utils\Sanitize;
-use \Throwable;
 
 class Router
 {
@@ -18,7 +17,7 @@ class Router
   private static Response $response;
 
   private static array $params = [];
-  private static Throwable $error;
+  private static ?string $error = null;
 
   public static function init(string $routePath)
   {
@@ -57,14 +56,15 @@ class Router
           var_dump($th);
           echo '</pre>';
         }
-        self::$response->status($th->getCode());
-        self::$error = $th;
+        self::$response->status($th->getCode() != 0 ? $th->getCode() : 500);
+        self::$error = $th->getMessage();
         self::runEspecialRoute();
       }
     } else {
       self::$response
         ->onlyCode()
         ->status(Status::NOT_FOUND);
+      self::$error = 'Page not found';
       self::runEspecialRoute();
     }
   }
@@ -84,7 +84,7 @@ class Router
     return [self::$request, self::$response];
   }
 
-  public static function getError(): ?\Throwable
+  public static function getError()
   {
     return self::$error;
   }
