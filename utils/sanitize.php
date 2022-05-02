@@ -11,16 +11,12 @@ class Sanitize
 
   static function sanitizeURI(string $uri)
   {
-    $uri_base = explode('?', $uri)[0];
-    $pure_uri = explode('#', $uri_base)[0];
+    $uri = urldecode($uri);
+    $uri = explode('?', $uri)[0];
+    $uri = explode('#', $uri)[0];
 
-    $xUri = $pure_uri ?? '/';
-    $yUri = rtrim($xUri, '/');
-    if ($yUri == '') {
-      return '/';
-    }
-
-    return $yUri;
+    $uri = $uri ?? '/';
+    return $uri == '/' ? $uri : rtrim($uri, '/');
   }
 
   static function sanitizeProperties($array)
