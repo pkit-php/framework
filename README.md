@@ -31,6 +31,7 @@
 - inicie o roteador com o path das rotas
 
   ```php
+  //.../index.php
   use Pkit\Http\Router;
 
   $router = new Router(__DIR__ . '/routes');
@@ -42,23 +43,24 @@
 
 as rotas são adicionadas dentro da pasta `routes` e os caminhos são com base nos diretórios e nome dos arquivos, é suportado desde arquivos `.php` até arquivos estáticos como `.css` e `.js`
 
-```
-.htaccess
-index.php
-pkit/
-routes/
-├ public/
-│ └ style.css
-├ home.php
-└ index.php
-```
+- exemplo
+  ```
+  .htaccess
+  index.php
+  pkit/
+  routes/
+  ├ public/
+  │ └ style.css
+  ├ home.php
+  └ index.php
+  ```
 
 ### exemplo de rota
 
 ```php
 <?php
-
-new PKit\Http\Route
+//.../routes/*
+use Pkit\Abstracts\Route;
 
 # classe abstrata para adição de rotas por método
 class index extends Route
@@ -76,7 +78,7 @@ class index extends Route
 }
 
 # função que inicia a rota
-(new Index())->run();
+Index::run();
 
 ```
 
@@ -104,12 +106,12 @@ routes/
 
 ```php
 <?php
-# __DIR__./routes/(id)/[repo]/{file}.php
+//.../routes/(id)/[repo]/{file}.php
 
 use PKit\Abstracts\Route;
 use PKit\Http\Router;
 
-class fileByRepo extends Route
+class FileByRepo extends Route
 {
   public function get($request, $response)
   {
@@ -125,7 +127,7 @@ class fileByRepo extends Route
   }
 }
 
-(new fileByRepo())->run();
+FileByRepo::run();
 ```
 
 ### rota especial
@@ -136,7 +138,7 @@ Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funci
 
   ```php
   <?php
-
+  //.../app/middlewares/maintenance.php
   namespace Pkit\Middlewares;
 
   use Pkit\Abstracts\Middleware;
@@ -159,6 +161,7 @@ Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funci
 - inicie com namespace onde se encontra os middlewares adicionais no `index.php`
 
   ```php
+  //.../index.php
   /***/
   use App\Middlewares as MiddlewaresNamespace;
 
@@ -170,7 +173,7 @@ Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funci
 
 ```php
 <?php
-
+//.../app/middlewares/teste.php
 namespace App\Middlewares;
 
 use Pkit\Abstracts\Middleware;
@@ -189,13 +192,13 @@ class Teste implements Middleware{
 
 ```php
 <?php
-
+//.../routes/home.php
 use Pkit\Abstracts\Route;
 
 class Home extends Route {
 
     public $middlewares = [
-      'teste', # middlewares adicionais
+      'teste', # middlewares adicionados
       'pkit/api',# middlewares do framework iniciam com 'pkit/'
       # chaves nomeados são pra métodos específicos
       'post' => [
@@ -206,25 +209,25 @@ class Home extends Route {
     function get($request, $response)
     {
       /***/
-      $response->send("...");
+      $response->send(/***/);
     }
 
     function post($request, $response)
     {
       /***/
-      $response->send("...");
+      $response->send(/***/);
     }
 }
-(new Home)->run();
+Home::run();
 ```
 
 ### lista de middlewares do framework
 
 - `pkit/api` : converte o content-type para application/json
-
 - `pkit/auth` : autentica o usuário com base na sessão
-
 - `pkit/maintenance` : indica um rota em manutenção
+- `pkit/jwt` : autentica o usuário com base no bearer token(jwt)
+- `pkit/onlycode` : converte o content-type para nulo
 
 ## Session
 
@@ -236,7 +239,7 @@ class Home extends Route {
   <?php
   //.../routes/login.php
   use Pkit\Abstracts\Route;
-  use Pkit\Utils\Session;
+  use Pkit\Auth\Session;
 
   class Login extends Route {
 
@@ -250,7 +253,7 @@ class Home extends Route {
           $response->send("logged");
       }
   }
-  (new Login)->run();
+  Login::run();
   ```
 
 - logout
@@ -259,7 +262,7 @@ class Home extends Route {
   <?php
   //.../routes/logout.php
   use Pkit\Abstracts\Route;
-  use Pkit\Utils\Session;
+  use Pkit\Auth\Session;
 
   class Logout extends Route {
 
@@ -274,7 +277,54 @@ class Home extends Route {
           $response->send("dislogged");
       }
   }
-  (new Logout)->run();
+  Logout::run();
+  ```
+
+## Jwt
+
+### configuração
+
+```php
+//.../routes/logout.php
+use Pkit\Auth\Jwt;
+/***/
+Jwt::init(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/));
+/***/
+```
+
+### exemplo de uso de Jwt
+
+- token
+
+  ```php
+  <?php
+  //.../routes/login.php
+  use Pkit\Abstracts\Route;
+  use Pkit\Auth\Jwt;
+
+  class Login extends Route {
+
+      public $middlewares = [
+        'get' => 'pkit/jwt'
+      ]
+
+      function get($request, $response)
+      {
+        /***/
+        # pega o token enviado pelo header 'Authorization'
+        $token = Jwt::getBearer();
+        $response->send(Jwt::getPayload($token));
+      }
+
+      function post($request, $response)
+      {
+        /***/
+        $token = Jwt::tokenize(/*payload*/);
+        # envia o token pelo header 'Authorization'
+        Jwt::setBearer($token);
+      }
+  }
+  Login::run();
   ```
 
 ## Database
@@ -298,10 +348,11 @@ Database::init(
 ### exemplo de uso do database
 
 ```php
+//.../*
 /***/
 use Pkit\Database\Database;
 /***/
-(new Database)->execute('SELECT * FROM User WHERE id=?', [$id]);
+(new Database)->execute('SELECT * FROM Table WHERE id=?', [$id]);
 /***/
 ```
 
@@ -412,7 +463,7 @@ View::init(__DIR__ . '/app/view');
 
   ```php
   <?php
-  // view/home.php
+  //.../app/view/home.php
   use Pkit\Utils\View;
   ?>
   <main>
@@ -431,38 +482,35 @@ View::init(__DIR__ . '/app/view');
 
   ```php
   <?php
-  // view/__layout.php
+  //.../app/view/__layout.php
   use Pkit\Utils\View;
 
   $_ARGS = View::getArgs()
   ?>
   <!DOCTYPE html>
   <html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $_ARGS['title'] ?></title>
-    <meta name="description" content="<?= $_ARGS['description'] ?>">
-  </head>
-
-  <body>
-    <?php
-    View::render("componentes/header");
-    View::slot();
-    View::render("componentes/footer");
-    ?>
-  </body>
-
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title><?= $_ARGS['title'] ?></title>
+      <meta name="description" content="<?= $_ARGS['description'] ?>">
+    </head>
+    <body>
+      <?php
+      View::render("componentes/header");
+      View::slot();
+      View::render("componentes/footer");
+      ?>
+    </body>
   </html>
   ```
 
-- exemplo de uso do layout
+- exemplo de uso
 
   ```php
   <?php
-
+  //.../routes/index.php
   use Pkit\Abstracts\Route;
   use Pkit\Utils\View;
 
@@ -470,14 +518,15 @@ View::init(__DIR__ . '/app/view');
   {
     public function get($request, $response)
     {
+      # o método layout tem os mesmo parâmetros do render, porem envolto com o __layout
       View::layout('home', [
         'title' => 'Home',
         'description' => 'tela inicial',
-      ]);
+      ], $response, 200);
     }
   }
 
-  (new Index)->run();
+  Index::run();
   ```
 
 <strong>para mais informações acesse as documentações nas pastas no framework</strong>
