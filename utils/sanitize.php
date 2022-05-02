@@ -20,7 +20,7 @@ class Sanitize
       return '/';
     }
 
-    return $yUri . '/';
+    return $yUri;
   }
 
   static function sanitizeProperties($array)

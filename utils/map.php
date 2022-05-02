@@ -1,4 +1,6 @@
-<?php namespace Pkit\Utils;
+<?php
+
+namespace Pkit\Utils;
 
 class Map
 {
@@ -13,7 +15,8 @@ class Map
           $routesDirs = array_merge($routesDirs, Map::mapPhpFiles($path, $subpath . $file . "/"));
         }
       } else {
-        $route = $subpath . ($file == 'index.php' ? '' : rtrim($file, '.php') . '/');
+        $route = $subpath . ($file == 'index.php' ? '' : rtrim($file, '.php'));
+        $route = $route == "/" ? $route : rtrim($route, '/');
         $routes[$route] = $path . $subpath . $file;
       }
     }
