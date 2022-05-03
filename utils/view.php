@@ -38,18 +38,28 @@ class View
     include self::$slotPath;
   }
 
+  private static function getPath(string $file)
+  {
+    $file = Text::removeFromEnd($file, '.php') . '.php';
+
+    if (substr($file, 0, 5) == 'pkit/') {
+      $file = Text::removeFromStart($file, 'pkit/');
+      return __DIR__ . '/../view/' .  $file;
+    } else {
+      return Self::$path . '/' . $file;
+    }
+  }
+
   private static function sendHtml(Response $response, int $code)
   {
     $response->contentType(ContentType::HTML)->setStatus($code)->send();
   }
 
-  public static function render(string $file, $args = null, ?Response $response = null, $code = 200)
+  public static function render(string $file, ?Response $response = null, $args = null, $code = 200)
   {
     self::allocArgs($args);
 
-    $file = Text::removeFromEnd($file, '.php');
-    $path = Self::$path . '/' . $file . '.php';
-
+    $path = self::getPath($file);
     include $path;
 
     self::reAllocArgs();
@@ -59,15 +69,14 @@ class View
     }
   }
 
-  public static function layout(string $file, $args = null, ?Response $response = null, $code = 200)
+  public static function layout(string $file, ?Response $response = null, $args = null, $code = 200)
   {
     self::allocArgs($args);
 
-    $file = Text::removeFromEnd($file, '.php');
-    $path = Self::$path . '/' . $file . '.php';
+    $path = self::getPath($file);
     $layout = Self::$path . "/__layout.php";
 
-    if (file_exists($layout)) {
+    if (substr($file, 0, 5) != 'pkit/' && file_exists($layout)) {
       self::$slotPath = $path;
       include $layout;
     } else {
