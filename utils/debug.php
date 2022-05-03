@@ -22,12 +22,10 @@ class Debug
 
   public static function html(Response $response, $message)
   {
-    $response->contentType(ContentType::HTML)->send(
-      '<pre>' . json_encode([
-        'code' => $response->status(),
-        'error' => $message,
-      ]) . '</pre>'
-    );
+    View::render("pkit/code", $response, [
+      'code' => $response->status(),
+      'message' => $message,
+    ], $response->status());
   }
 
   public static function json(Response $response, $message)
