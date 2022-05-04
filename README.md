@@ -504,7 +504,7 @@ View::init(__DIR__ . '/app/view');
     <body>
       <?php
       View::render("componentes/header");
-      View::slot();
+      View::slot($_ARGS); # deve-se passar os argumentos ao slot
       View::render("componentes/footer");
       ?>
     </body>
