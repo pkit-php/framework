@@ -11,6 +11,7 @@ class Maintenance implements Middleware
   public function handle($request, $response, $next)
   {
     $response->status(Status::SERVICE_UNAVAILABLE);
+    Router::setMessage('page in maintenance');
     Router::runEspecialRoute();
   }
 }

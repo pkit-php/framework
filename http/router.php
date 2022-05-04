@@ -2,9 +2,9 @@
 
 namespace Pkit\Http;
 
-use Pkit\Utils\Debug;
-use Pkit\Utils\Map;
-use Pkit\Utils\Routes;
+use Pkit\_\Debug;
+use Pkit\_\Map;
+use Pkit\_\Routes;
 use Pkit\Utils\Sanitize;
 
 class Router
@@ -19,15 +19,17 @@ class Router
   private static array $params = [];
   private static ?string
     $especialRoute,
-    $error = null;
+    $message = null;
 
   public static function init(string $routePath)
   {
-    $routes = Map::mapPhpFiles($routePath);
+    $routes = Map::mapPhpFiles($routePath, '/');
+    $routes = Map::mapPhpFiles($routePath, '/');
     self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     self::$especialRoute = $routes['/*'] ?? "";
     unset($routes['/*']);
-    [self::$file, self::$params] = Routes::mathRoute($routes, self::$uri);
+    $match = Routes::mathRoutes($routes, self::$uri);
+    [self::$file, self::$params] = [$match[0], $match[1]];
   }
 
   private static function includeFile()
@@ -46,7 +48,7 @@ class Router
   {
     self::$request = new Request;
     self::$response = new Response;
-    if (self::$file) {
+    if (strlen(self::$file)) {
       try {
         ob_start();
         self::includeFile();
@@ -56,18 +58,16 @@ class Router
           ob_end_clean();
         }
         self::$response->status($th->getCode() != 0 ? $th->getCode() : 500);
-        self::$error = $th->getMessage();
+        self::$message = $th->getMessage();
       }
     } else {
       self::$response
         ->onlyCode()
         ->status(Status::NOT_FOUND);
-      self::$error = 'Page not found';
+      $uri = self::$uri;
+      self::$message = "page '$uri' not found";
     }
     self::runEspecialRoute();
-    if (getenv('PKIT_DEBUG') == 'true') {
-      Debug::log(self::$request, self::$response, self::$error);
-    }
   }
 
   public static function runEspecialRoute()
@@ -75,7 +75,11 @@ class Router
     if (self::$especialRoute) {
       include self::$especialRoute;
     } else {
-      self::$response->send();
+      if (getenv('PKIT_DEBUG') == 'true') {
+        Debug::log(self::$request, self::$response, self::$message);
+      } else {
+        self::$response->send();
+      }
     }
   }
 
@@ -84,9 +88,14 @@ class Router
     return [self::$request, self::$response];
   }
 
-  public static function getError()
+  public static function setMessage($message)
   {
-    return self::$error;
+    self::$message = $message;
+  }
+
+  public static function getMessage()
+  {
+    return self::$message;
   }
 
   public static function getUri()

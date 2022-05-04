@@ -15,6 +15,7 @@ class Auth implements Middleware
       return $next($request, $response);
     };
     $response->status(Status::UNAUTHORIZED);
+    Router::setMessage('User unauthorized');
     Router::runEspecialRoute();
   }
 }

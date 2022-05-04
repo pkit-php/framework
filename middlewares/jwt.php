@@ -33,6 +33,7 @@ class Jwt implements Middleware
             }
         };
         $response->status(Status::UNAUTHORIZED);
+        Router::setMessage('User unauthorized');
         Router::runEspecialRoute();
     }
 }
