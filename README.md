@@ -1,8 +1,10 @@
 # PKIT
 
-<div style="text-align: center;">
+<div align="center">
 <img src="icon.png">
 </div>
+
+`framework ainda em desenvolvimento`
 
 ## como iniciar
 
