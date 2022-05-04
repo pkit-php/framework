@@ -10,12 +10,7 @@
 
   ```apache
   RewriteEngine On
-
-  # RewriteCond %{REQUEST_URI} !\.(woff2|js|ico|json|png|jpg|gif)$ [NC]
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteCond %{REQUEST_FILENAME} !-f
-
-  RewriteRule ^(.*)$ index.php [L,QSA]
+  RewriteRule . index.php [L,QSA]
   ```
 
 - adicione a pasta `pkit`
