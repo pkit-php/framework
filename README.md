@@ -536,7 +536,7 @@ View::init(__DIR__ . '/app/view');
 
 ### lista de viewers do framework
 
-obs.:é usado da mesma que os middlewares do framework
+obs.:é usado da mesma forma que os middlewares do framework
 
 - `pkit/code` : pagina que mostra um svg animado com base no codigo
   - argumentos
