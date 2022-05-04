@@ -57,7 +57,12 @@ class Router
         if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true") {
           ob_end_clean();
         }
-        self::$response->status($th->getCode() != 0 ? $th->getCode() : 500);
+        $code = $th->getCode();
+        self::$response->status(
+          is_int($code) && $code > 200 && $code != 600
+            ? $code
+            : 500
+        );
         self::$message = $th->getMessage();
       }
     } else {
