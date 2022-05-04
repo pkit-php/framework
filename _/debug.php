@@ -14,7 +14,7 @@ class Debug
     $accepts = $request->headers['Accept'];
     if (strpos($accepts, 'text/html') !== false) {
       self::html($response, $message);
-    } else if (strpos($accepts, 'application/json') !== true) {
+    } else if (strpos($accepts, 'application/json') !== false) {
       self::json($response, $message);
     } else {
       echo $message;
