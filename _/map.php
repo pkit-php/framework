@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Utils;
+namespace Pkit\_;
 
 class Map
 {
@@ -12,11 +12,12 @@ class Map
     while ($file = $directory->read()) {
       if (@dir($path . $subpath . $file)) {
         if ($file !== '.' && $file !== '..') {
-          $routesDirs = array_merge($routesDirs, Map::mapPhpFiles($path, $subpath . $file . "/"));
+          $routesDirs = array_merge($routesDirs, self::mapPhpFiles($path, $subpath . $file . "/"));
         }
       } else {
         $route = $subpath . ($file == 'index.php' ? '' : rtrim($file, '.php'));
         $route = $route == "/" ? $route : rtrim($route, '/');
+
         $routes[$route] = $path . $subpath . $file;
       }
     }

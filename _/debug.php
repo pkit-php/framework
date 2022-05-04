@@ -1,10 +1,11 @@
 <?php
 
-namespace Pkit\Utils;
+namespace Pkit\_;
 
 use Pkit\Http\ContentType;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Utils\View;
 
 class Debug
 {
