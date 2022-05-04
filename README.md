@@ -335,9 +335,12 @@ configuração do banco de dados
 use Pkit\Database\Database;
 /***/
 Database::init(
-  getenv("DB"),
-  getenv("DB_HOST"),
-  getenv("DB_NAME"),
+  [
+    "driver" => getenv("DB"),
+    "host" => getenv("DB_HOST"),
+    "port" => getenv("DB_HOST"),
+    "dbname" => getenv("DB_NAME"),
+  ],
   getenv("DB_USER"),
   getenv("DB_PASS"),
 );
