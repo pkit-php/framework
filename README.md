@@ -15,7 +15,7 @@
 
 - adicione a pasta `pkit`
 
-  ```
+  ```files
   .htaccess
   index.php
   pkit/
