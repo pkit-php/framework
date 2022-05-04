@@ -462,15 +462,17 @@ View::init(__DIR__ . '/app/view');
 
 - é considerado a partir da pasta configurada
 - o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
+- obs.: somentes os arquivos `.phtml` são reconhecidos
 
   ```php
   <?php
-  //.../app/view/home.php
+  //.../app/view/home.phtml
   use Pkit\Utils\View;
   ?>
   <main>
     <?php
-    foreach (View::getArgs() as $key => $value) {
+    // $_ARGS# 'superglobal' que recebe os argumentos do render
+    foreach ($_ARGS as $key => $value) {
       View::render('componentes/home/p', $key . ' : ' . $value);
     }
     ?>
@@ -482,12 +484,10 @@ View::init(__DIR__ . '/app/view');
 - deve estar no arquivo `__layout.php` na pasta de views
 - para adicionar o arquivo ao layout deve se usar `View::slot()`
 
-  ```php
+  ```phtml
   <?php
-  //.../app/view/__layout.php
+  //.../app/view/__layout.phtml
   use Pkit\Utils\View;
-
-  $_ARGS = View::getArgs()
   ?>
   <!DOCTYPE html>
   <html lang="en">

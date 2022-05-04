@@ -9,38 +9,21 @@ class View
 {
   private static string
     $path, $slotPath;
-  private static $args, $argsBuffer;
 
   public static function init(string $path)
   {
     Self::$path = $path;
   }
 
-  public static function getArgs()
+  public static function slot($args)
   {
-    return self::$args;
-  }
-
-  private static function allocArgs($args)
-  {
-    self::$argsBuffer = self::$args;
-    self::$args = $args;
-    return $args;
-  }
-
-  private static function reAllocArgs()
-  {
-    self::$args = self::$argsBuffer;
-  }
-
-  public static function slot()
-  {
+    $_ARGS = $args;
     include self::$slotPath;
   }
 
   private static function getPath(string $file)
   {
-    $file = Text::removeFromEnd($file, '.php') . '.php';
+    $file = Text::removeFromEnd($file, '.phtml') . '.phtml';
 
     if (substr($file, 0, 5) == 'pkit/') {
       $file = Text::removeFromStart($file, 'pkit/');
@@ -57,12 +40,10 @@ class View
 
   public static function render(string $file, ?Response $response = null, $args = null, $code = 200)
   {
-    self::allocArgs($args);
+    $_ARGS = $args;
 
     $path = self::getPath($file);
     include $path;
-
-    self::reAllocArgs();
 
     if ($response) {
       View::sendHtml($response, $code);
@@ -71,7 +52,7 @@ class View
 
   public static function layout(string $file, ?Response $response = null, $args = null, $code = 200)
   {
-    self::allocArgs($args);
+    $_ARGS = $args;
 
     $path = self::getPath($file);
     $layout = Self::$path . "/__layout.php";
@@ -82,8 +63,6 @@ class View
     } else {
       include $path;
     }
-
-    self::reAllocArgs();
 
     if ($response) {
       View::sendHtml($response, $code);
