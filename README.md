@@ -34,10 +34,10 @@
   ```php
   //.../index.php
   use Pkit\Http\Router;
+  /***/
 
-  $router = new Router(__DIR__ . '/routes');
-  $router->init();
-  $router->run();
+  Router::init(__DIR__ . "/routes");
+  Router::run();
   ```
 
 ## Rotas
@@ -425,7 +425,7 @@ class Users extends Table
 
 - where
 
-  `\<field>:\<condition> => <value>`
+  `'<field>:<condition>' => <value>`
 
   - condition
     | up | lo | di | eq |
@@ -433,6 +433,7 @@ class Users extends Table
     | > | < | <> | = |
 
   - exemplo
+
     ```php
     [
       "status = 1", # valores sem chaves são escritos por extenso
@@ -442,6 +443,7 @@ class Users extends Table
 
 - limit
   - exemplo
+
     ```php
     [
       10, # item inicial
@@ -533,4 +535,27 @@ View::init(__DIR__ . '/app/view');
   Index::run();
   ```
 
+### lista de viewers do framework
+
+obs.:é usado da mesma que os middlewares do framework
+
+- `pkit/code` : pagina que mostra um svg animado com base no codigo
+  - argumentos
+    - lang
+    - title
+    - code
+    - color
+    - message
+- `pkit/redirect` : pagina que mostra uma tela de carregamento animado, ainda redireciona para o site pedido
+  - argumentos
+    - lang
+    - title
+    - site
+
+## Variaveis de ambiente especiais
+
+```sh
+PKIT_DEBUG=true  # se true, caso aja erro, mostra uma pagina com o codigo de erro e a mensagem do erro
+PKIT_CLEAR=false # se false, mantem o conteudo renderizado mesmo que tenha sido ocasionado um erro
+```
 <strong>para mais informações acesse as documentações nas pastas no framework</strong>
