@@ -11,7 +11,7 @@ $_ARGS = View::getArgs();
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $_ARGS['title'] ?? $_ARGS['code'] ?? 200 ?> </title>
+  <title><?= $_ARGS['title'] ?? $_ARGS['code'] ?> </title>
 </head>
 
 <body>
@@ -48,7 +48,6 @@ $_ARGS = View::getArgs();
         <svg class="levite animate-loop" width="136" height="165" viewBox="0 0 136 165" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M8 37.2548L0 45.2548L0.0294495 45.2843L0 45.3137L45.2549 90.5685L56.5685 79.2548L30.3137 53H72C84.7304 53 96.9394 58.0571 105.941 67.0589C114.943 76.0606 120 88.2696 120 101C120 113.73 114.943 125.939 105.941 134.941C96.9395 143.943 84.7305 149 72.0001 149L72.0001 165C88.9739 165 105.253 158.257 117.255 146.255C129.257 134.252 136 117.974 136 101C136 84.0261 129.257 67.7475 117.255 55.7451C105.253 43.7428 88.9738 37 72 37H30.8823L56.5685 11.3137L45.2548 0L8.25482 37H8V37.2548ZM8 149H72V165H8V149Z" fill="#C4C4C4" />
         </svg>
-
       <?php endif ?>
     </div>
     <p><strong style="color: var(--color);"><?= $_ARGS['code'] ?? "'code'" ?></strong> - <?= $_ARGS['message'] ?? "'message'" ?></p>
@@ -63,6 +62,8 @@ $_ARGS = View::getArgs();
     body {
       margin: 0;
       padding: 0;
+      background-color: <?= $_ARGS['back_color'] ?? '#fff' ?>;
+      color: <?= $_ARGS['font_color'] ?? '#000' ?>
     }
 
     p {
@@ -177,6 +178,7 @@ $_ARGS = View::getArgs();
 
     .levite {
       animation-duration: 4s;
+      animation-timing-function: ease-in-out;
       animation-name: levite;
     }
 
