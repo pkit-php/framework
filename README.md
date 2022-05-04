@@ -1,8 +1,6 @@
 # PKIT
 
-<div align="center">
-<img src="icon.png">
-</div>
+<div align="center"><img src="icon.png"></div>
 
 `framework ainda em desenvolvimento`
 
@@ -45,7 +43,8 @@
 as rotas são adicionadas dentro da pasta `routes` e os caminhos são com base nos diretórios e nome dos arquivos, é suportado desde arquivos `.php` até arquivos estáticos como `.css` e `.js`
 
 - exemplo
-  ```
+
+  ```files
   .htaccess
   index.php
   pkit/
@@ -283,7 +282,7 @@ Home::run();
 
 ## Jwt
 
-### configuração
+### configuração do Jwt
 
 ```php
 //.../routes/logout.php
@@ -558,4 +557,5 @@ obs.:é usado da mesma que os middlewares do framework
 PKIT_DEBUG=true  # se true, caso aja erro, mostra uma pagina com o codigo de erro e a mensagem do erro
 PKIT_CLEAR=false # se false, mantem o conteudo renderizado mesmo que tenha sido ocasionado um erro
 ```
-<strong>para mais informações acesse as documentações nas pastas no framework</strong>
+
+_para mais informações acesse as documentações nas pastas no framework_
