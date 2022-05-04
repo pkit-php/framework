@@ -88,7 +88,7 @@ Index::run();
 - `[...]` 'qualquer coisa entre `/`'
 - `{...}` 'qualquer coisa'
 
-```
+```files
 .htaccess
 index.php
 pkit/
