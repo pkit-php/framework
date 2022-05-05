@@ -17,7 +17,7 @@ class Debug
     } else if (strpos($accepts, 'application/json') !== false) {
       self::json($response, $message);
     } else {
-      echo $message;
+      $response->send($message);
     }
   }
 
