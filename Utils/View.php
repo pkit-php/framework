@@ -50,11 +50,17 @@ class View
     if (!file_exists($path)) {
       throw new \Exception("VIEW: view '$file' not exists", 500);
     }
+    ob_start();
     include $path;
+    $content = ob_get_contents();
+
+    ob_clean();
+    ob_end_flush();
 
     if ($response) {
-      View::sendHtml($response, $code);
+      View::sendHtml($response, $code, $content);
     }
+    return $content;
   }
 
   public static function layout(string $file, ?Response $response = null, $args = null, $code = 200)
