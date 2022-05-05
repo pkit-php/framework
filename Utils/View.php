@@ -55,9 +55,9 @@ class View
     $_ARGS = $args;
 
     $path = self::getPath($file);
-    $layout = Self::$path . "/__layout.phtml";
+    $layout = self::getLayoutPath($file);
 
-    if (substr($file, 0, 5) != 'pkit/' && file_exists($layout)) {
+    if (substr($file, 0, 5) != 'pkit/' && strlen($layout)) {
       self::$slotPath = $path;
       include $layout;
     } else {
@@ -67,5 +67,26 @@ class View
     if ($response) {
       View::sendHtml($response, $code);
     }
+  }
+
+  public static function getLayoutPath($file)
+  {
+    $arrayPath = explode("/", $file);
+    $index = count($arrayPath) - 1;
+    unset($arrayPath[$index]);
+    $layout = '';
+    $path = '';
+    if (file_exists(Self::$path . $path . "/__layout.phtml")) {
+      $layout = Self::$path . "/__layout.phtml";
+    }
+    foreach ($arrayPath as $value) {
+      $path .= "/$value";
+      if (!strlen($layout) && file_exists(Self::$path . $path . "/__layout.phtml")) {
+        $layout = Self::$path . $path . "/__layout.phtml";
+      } else if (file_exists(Self::$path . $path . "/__layout.reset.phtml")) {
+        $layout = Self::$path . $path . "/__layout.reset.phtml";
+      }
+    }
+    return $layout;
   }
 }
