@@ -10,9 +10,12 @@ class Table
   private string $_table;
   private Database $_database;
 
-  public function __construct($table = null)
+  public function __construct(array $properties=[])
   {
-    $this->_table = $table ?? Sanitize::sanitizeClass(get_class($this));
+    foreach($properties as $key => $value){
+      $this->{$key} = $value;
+    }
+    $this->_table = Sanitize::sanitizeClass(get_class($this));
     $this->_database = new Database;
   }
 
