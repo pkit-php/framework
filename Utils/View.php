@@ -20,16 +20,21 @@ class View
     return self::render(self::$slotPath, null, $args);
   }
 
+  private static function getBasePath($file)
+  {
+    if (substr($file, 0, 5) == 'pkit/') {
+      return __DIR__ . '/../view/';
+    } else {
+      return Self::$path . '/';
+    }
+  }
+
   private static function getPath(string $file)
   {
     $file = Text::removeFromEnd($file, '.phtml') . '.phtml';
-
-    if (substr($file, 0, 5) == 'pkit/') {
-      $file = Text::removeFromStart($file, 'pkit/');
-      return __DIR__ . '/../view/' .  $file;
-    } else {
-      return Self::$path . '/' . $file;
-    }
+    $path = self::getBasePath($file);
+    $file = Text::removeFromStart($file, 'pkit/');
+    return $path . $file;
   }
 
   private static function sendHtml(Response $response, int $code, string $content)
@@ -63,7 +68,7 @@ class View
     $layout = self::getLayoutPath($file);
 
     ob_start();
-    if (substr($file, 0, 5) != 'pkit/' && strlen($layout)) {
+    if (strlen($layout)) {
       self::$slotPath = $file;
       include $layout;
     } else {
@@ -86,17 +91,18 @@ class View
     $arrayPath = explode("/", $file);
     $index = count($arrayPath) - 1;
     unset($arrayPath[$index]);
+    $path = self::getBasePath($file);
     $layout = '';
-    $path = '';
-    if (file_exists(Self::$path . $path . "/__layout.phtml")) {
-      $layout = Self::$path . "/__layout.phtml";
+    $subpath = '';
+    if (file_exists($path . $subpath . "/__layout.phtml")) {
+      $layout = $path . "/__layout.phtml";
     }
     foreach ($arrayPath as $value) {
-      $path .= "/$value";
-      if (!strlen($layout) && file_exists(Self::$path . $path . "/__layout.phtml")) {
-        $layout = Self::$path . $path . "/__layout.phtml";
-      } else if (file_exists(Self::$path . $path . "/__layout.reset.phtml")) {
-        $layout = Self::$path . $path . "/__layout.reset.phtml";
+      $subpath .= "/$value";
+      if (!strlen($layout) && file_exists($path . $subpath . "/__layout.phtml")) {
+        $layout = $path . $subpath . "/__layout.phtml";
+      } else if (file_exists($path . $subpath . "/__layout.reset.phtml")) {
+        $layout = $path . $subpath . "/__layout.reset.phtml";
       }
     }
     return $layout;
