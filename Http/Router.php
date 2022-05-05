@@ -21,11 +21,25 @@ class Router
     $especialRoute,
     $message = null;
 
-  public static function init(string $routePath)
+  public static function init(string $routePath, string $publicPath = null)
+  {
+    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    if (!$publicPath) {
+      $publicPath = $routePath;
+    }
+    $routePath = rtrim($routePath, "/");
+    $publicPath = rtrim($publicPath, "/");
+    $filePublic = file($publicPath . self::$uri);
+    if (file($publicPath . self::$uri)) {
+      self::$file = $filePublic;
+    } else {
+      self::setFileAndParams($routePath);
+    }
+  }
+
+  private static function setFileAndParams($routePath)
   {
     $routes = Map::mapPhpFiles($routePath, '/');
-    $routes = Map::mapPhpFiles($routePath, '/');
-    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     self::$especialRoute = $routes['/*'];
     unset($routes['/*']);
     $match = Routes::mathRoutes($routes, self::$uri);
