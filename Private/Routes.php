@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\_;
+namespace Pkit\Private;
 
 class Routes
 {

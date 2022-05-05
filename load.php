@@ -3,7 +3,7 @@
 namespace Pkit;
 
 spl_autoload_register(function ($class) {
-  $baseFile = strtolower(str_replace('\\', '/', $class)) . '.php';
+  $baseFile = str_replace('\\', '/', $class) . '.php';
   if (substr($class, 0, 4) === "Pkit") {
     $file = __DIR__ . '/../' . $baseFile;
   } else {

@@ -2,9 +2,9 @@
 
 namespace Pkit\Http;
 
-use Pkit\_\Debug;
-use Pkit\_\Map;
-use Pkit\_\Routes;
+use Pkit\Private\Debug;
+use Pkit\Private\Map;
+use Pkit\Private\Routes;
 use Pkit\Utils\Sanitize;
 
 class Router
@@ -24,6 +24,7 @@ class Router
   public static function init(string $routePath)
   {
     $routes = Map::mapPhpFiles($routePath, '/');
+    var_dump('...');
     $routes = Map::mapPhpFiles($routePath, '/');
     self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     self::$especialRoute = $routes['/*'];
