@@ -23,14 +23,11 @@ class Database
 
   private function connect()
   {
-    $config = self::$config;
-    $driver = $config['driver'] ?? "mysql";
-    $host = 'host=' . $config['host'] . ';' ?? "host=localhost;";
-    $dbname = 'dbname=' . $config['dbname'] . ';' ?? "";
-    $port = 'port=' . $config['port'] . ';' ?? "";
-
-    $config = "$driver:" . $host . $port . $dbname;
-
+    $config = self::$config['driver'] . ":" ?? "mysql:";
+    unset(self::$config['driver']);
+    foreach (self::$config as $key => $value) {
+      $config .= "$key=$value;";
+    }
     $this->pdo = new PDO($config, self::$user, self::$pass);
     // throw exceptions, when SQL error is caused
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
