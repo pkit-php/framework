@@ -8,7 +8,6 @@ use Pkit\Utils\View;
 <head>
   <?php if ($_ARGS['redirect']) : ?>
     <meta http-equiv="refresh" content="0;url=<?= $_ARGS['redirect'] ?? '/' ?>" />
-
   <?php endif ?>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,6 +16,21 @@ use Pkit\Utils\View;
   <meta name="description" content="<?= $_ARGS['description'] ?>">
 
   <style>
+    body {
+      width: 100%;
+      height: 100vh;
+
+      box-sizing: border-box;
+
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      width: 100%;
+      height: 100vh;
+    }
+
     :root {
       --color: <?= $_ARGS['color'] ?? '#f22' ?>;
       --back-color: <?= $_ARGS['back-color'] ?? '#fff' ?>;
@@ -27,9 +41,12 @@ use Pkit\Utils\View;
 </head>
 
 <body>
+  <?= $_ARGS['header'] ?>
+  <?= $_ARGS['aside'] ?>
   <main>
     <?= View::slot($_ARGS) ?>
   </main>
+  <?= $_ARGS['footer'] ?>
 </body>
 
 </html>
