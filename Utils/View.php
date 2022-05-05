@@ -17,8 +17,7 @@ class View
 
   public static function slot($args)
   {
-    $_ARGS = $args;
-    include self::$slotPath;
+    return self::render(self::$slotPath, null, $args);
   }
 
   private static function getPath(string $file)
@@ -33,9 +32,9 @@ class View
     }
   }
 
-  private static function sendHtml(Response $response, int $code)
+  private static function sendHtml(Response $response, int $code, string $content)
   {
-    $response->contentType(ContentType::HTML)->setStatus($code)->send();
+    $response->contentType(ContentType::HTML)->setStatus($code)->send($content);
   }
 
   public static function render(string $file, ?Response $response = null, $args = null, $code = 200)
@@ -57,16 +56,23 @@ class View
     $path = self::getPath($file);
     $layout = self::getLayoutPath($file);
 
+    ob_start();
     if (substr($file, 0, 5) != 'pkit/' && strlen($layout)) {
-      self::$slotPath = $path;
+      self::$slotPath = $file;
       include $layout;
     } else {
       include $path;
     }
+    self::$slotPath = '';
+    $content = ob_get_contents();
+
+    ob_clean();
+    ob_end_flush();
 
     if ($response) {
-      View::sendHtml($response, $code);
+      View::sendHtml($response, $code, $content);
     }
+    return $content;
   }
 
   public static function getLayoutPath($file)
