@@ -55,7 +55,7 @@ class View
     $_ARGS = $args;
 
     $path = self::getPath($file);
-    $layout = Self::$path . "/__layout.php";
+    $layout = Self::$path . "/__layout.phtml";
 
     if (substr($file, 0, 5) != 'pkit/' && file_exists($layout)) {
       self::$slotPath = $path;
