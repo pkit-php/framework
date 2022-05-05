@@ -5,7 +5,7 @@ namespace Pkit\Auth;
 class Session
 {
 
-  private static $time;
+  private static $time = 0;
 
   public static function init(int $time)
   {
@@ -16,15 +16,16 @@ class Session
   {
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_start();
+      session_regenerate_id();
       if (self::$time) {
-        setcookie('PHPSESSID', session_id(), (time() + getenv('SESSION_TIME')), '/');
+        setcookie(session_name(), session_id(), (time() + self::$time), '/', httponly: true);
       }
     }
   }
 
   public static function logged()
   {
-    Self::start();
+    self::start();
     return !is_null(@$_SESSION['payload']);
   }
 
@@ -36,12 +37,9 @@ class Session
 
   public static function logout()
   {
-    self::start();
-
-    setcookie('PHPSESSID');
-    session_regenerate_id();
-    session_destroy();
+    setcookie(session_name());
     session_unset();
+    session_destroy();
   }
 
   public static function getSession()
