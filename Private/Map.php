@@ -2,6 +2,8 @@
 
 namespace Pkit\Private;
 
+use Pkit\Utils\Text;
+
 class Map
 {
   static function mapPhpFiles(string $path, $subpath = "/")
@@ -15,7 +17,7 @@ class Map
           $routesDirs = array_merge($routesDirs, self::mapPhpFiles($path, $subpath . $file . "/"));
         }
       } else {
-        $route = $subpath . ($file == 'index.php' ? '' : rtrim($file, '.php'));
+        $route = $subpath . ($file == 'index.php' ? '' : Text::removeFromEnd($file, '.php'));
         $route = $route == "/" ? $route : rtrim($route, '/');
 
         $routes[$route] = $path . $subpath . $file;
