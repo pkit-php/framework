@@ -23,7 +23,7 @@ class Debug
 
   public static function html(Response $response, $message)
   {
-    View::render("pkit/code", $response, [
+    View::layout("pkit/code", $response, [
       'code' => $response->status(),
       'message' => $message,
     ], $response->status());
