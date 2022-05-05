@@ -1,16 +1,16 @@
 # Viewers do framework
 
 - lista
-  - `pkit/code` : pagina que mostra um svg animado com base no codigo
+  - `pkit/__layout`: corpo padrão das paginas do pkit
     - argumentos
+      - redirect
       - lang
       - title
+      - color
+      - back-color
+      - font-color
+  - `pkit/code`: pagina que mostra um svg animado com base no código
+    - argumentos
       - code
-      - color
       - message
-  - `pkit/redirect` : pagina que mostra uma tela de carregamento animado e ainda redireciona para o site pedido
-    - argumentos
-      - lang
-      - title
-      - site
-      - color
+  - `pkit/loading`: pagina que mostra uma tela de carregamento animado

@@ -1,15 +1,3 @@
-<!DOCTYPE html>
-<html lang="<?= $_ARGS['lang'] ?? 'en' ?>">
-
-<head>
-  <meta http-equiv="refresh" content="0;url=<?= $_ARGS['site'] ?? '/' ?>" />
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $_ARGS['title'] ?? 'redirect' ?></title>
-</head>
-
-<body>
   <div class="center relative">
     <svg id="loading-1" class="absolute" width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
       <path d="M64 128C80.9739 128 97.2525 121.257 109.255 109.255C121.257 97.2525 128 80.9739 128 64L106.249 64C106.249 75.2052 101.798 85.9515 93.8748 93.8748C85.9515 101.798 75.2052 106.249 64 106.249L64 128Z" />
@@ -20,10 +8,6 @@
     </svg>
   </div>
   <style>
-    :root {
-      --color: <?= $_ARGS['color'] ?? "#f22" ?>
-    }
-
     body {
       margin: 0;
       padding: 0;
@@ -83,6 +67,3 @@
       animation-name: loading-2;
     }
   </style>
-</body>
-
-</html>
