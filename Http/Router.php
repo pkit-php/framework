@@ -24,7 +24,6 @@ class Router
   public static function init(string $routePath)
   {
     $routes = Map::mapPhpFiles($routePath, '/');
-    var_dump('...');
     $routes = Map::mapPhpFiles($routePath, '/');
     self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     self::$especialRoute = $routes['/*'];
