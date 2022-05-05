@@ -441,6 +441,7 @@ class Users extends Table
     ```
 
 - limit
+
   - exemplo
 
     ```php
@@ -469,7 +470,7 @@ View::init(__DIR__ . '/app/view');
 
   ```php
   <?php
-  //.../app/view/home.phtml
+  //.../app/view/home/index.phtml
   use Pkit\Utils\View;
   ?>
   <main>
@@ -484,12 +485,13 @@ View::init(__DIR__ . '/app/view');
 
 ### layout
 
-- deve estar no arquivo `__layout.php` na pasta de views
-- para adicionar o arquivo ao layout deve se usar `View::slot()`
+- deve estar no arquivo `__layout.php` no caminho para a view
+- para dar reset o layout deve estar no arquivo `__layout.reset.php`
+- para adicionar o arquivo ao layout deve se usar `View::slot(/*args*/)`
 
   ```phtml
   <?php
-  //.../app/view/__layout.phtml
+  //.../app/view/home/__layout.phtml
   use Pkit\Utils\View;
   ?>
   <!DOCTYPE html>
@@ -502,11 +504,11 @@ View::init(__DIR__ . '/app/view');
       <meta name="description" content="<?= $_ARGS['description'] ?>">
     </head>
     <body>
-      <?php
-      View::render("componentes/header");
-      View::slot($_ARGS); # deve-se passar os argumentos ao slot
-      View::render("componentes/footer");
-      ?>
+      <main>
+        <?= View::render("componentes/header") ?>
+        <?= View::slot($_ARGS) # deve-se passar os argumentos ao slot ?>
+        <?= View::render("componentes/footer") ?>
+      </main>
     </body>
   </html>
   ```
@@ -524,7 +526,7 @@ View::init(__DIR__ . '/app/view');
     public function get($request, $response)
     {
       # o método layout tem os mesmo parâmetros do render, porem envolto com o __layout
-      View::layout('home', [
+      View::layout('home/index', [
         'title' => 'Home',
         'description' => 'tela inicial',
       ], $response, 200);
@@ -538,7 +540,7 @@ View::init(__DIR__ . '/app/view');
 
 obs.:é usado da mesma forma que os middlewares do framework
 
-- `pkit/code` : pagina que mostra um svg animado com base no codigo
+- `pkit/code` : pagina que mostra um svg animado com base no código
   - argumentos
     - lang
     - title
@@ -551,11 +553,11 @@ obs.:é usado da mesma forma que os middlewares do framework
     - title
     - site
 
-## Variaveis de ambiente especiais
+## Variáveis de ambiente especiais
 
 ```sh
-PKIT_DEBUG=true  # se true, caso aja erro, mostra uma pagina com o codigo de erro e a mensagem do erro
-PKIT_CLEAR=false # se false, mantem o conteudo renderizado mesmo que tenha sido ocasionado um erro
+PKIT_DEBUG=true  # se true, caso aja erro, mostra uma pagina com o código de erro e a mensagem do erro
+PKIT_CLEAR=false # se false, mantém o conteúdo renderizado mesmo que tenha sido ocasionado um erro
 ```
 
 _para mais informações acesse as documentações nas pastas no framework_
