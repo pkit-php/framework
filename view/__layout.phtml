@@ -1,0 +1,35 @@
+<?php
+
+use Pkit\Utils\View;
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <?php if ($_ARGS['redirect']) : ?>
+    <meta http-equiv="refresh" content="0;url=<?= $_ARGS['redirect'] ?? '/' ?>" />
+
+  <?php endif ?>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= $_ARGS['title'] ?></title>
+  <meta name="description" content="<?= $_ARGS['description'] ?>">
+
+  <style>
+    :root {
+      --color: <?= $_ARGS['color'] ?? '#f22' ?>;
+      --back-color: <?= $_ARGS['back-color'] ?? '#fff' ?>;
+      --font-color: <?= $_ARGS['font-color'] ?? '#000' ?>;
+      --time: 4s;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <?= View::slot($_ARGS) ?>
+  </main>
+</body>
+
+</html>
