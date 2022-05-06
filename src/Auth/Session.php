@@ -53,4 +53,10 @@ class Session
     self::start();
     return $_SESSION['payload'];
   }
+
+  public static function getCreated()
+  {
+    self::start();
+    return $_SESSION['created'];
+  }
 }

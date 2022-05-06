@@ -13,10 +13,9 @@ class Auth implements Middleware
   public function handle($request, $response, $next)
   {
     if (Session::logged()) {
-      $session = Session::getSession();
       $expire = Session::getTime();
       if ($expire) {
-        $created = $session['created'];
+        $created = Session::getCreated();
         if ($created) {
           $interval = Date::deltaTime(
             new \DateTime($created),
