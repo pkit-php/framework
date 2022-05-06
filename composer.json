@@ -1,0 +1,15 @@
+{
+  "name": "kauaug/pkit",
+  "authors": [
+    {
+      "name": "Kauan Augusto",
+      "email": "kauaug.mo@gmail.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Pkit\\": "src"
+    }
+  }
+}
