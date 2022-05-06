@@ -6,6 +6,7 @@ use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Utils\Base64url;
+use Pkit\Utils\Date;
 use Pkit\Utils\Text;
 
 class Jwt
@@ -32,7 +33,7 @@ class Jwt
     ];
 
     if (self::$expire) {
-      $payload['_created'] = (new DateTime())->format('Y-m-d H:i:s');
+      $payload['_created'] = Date::format(new DateTime());
     }
 
     $header = json_encode($header);

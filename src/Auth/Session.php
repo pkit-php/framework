@@ -2,6 +2,9 @@
 
 namespace Pkit\Auth;
 
+use DateTime;
+use Pkit\Utils\Date;
+
 class Session
 {
 
@@ -22,8 +25,8 @@ class Session
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_start();
       session_regenerate_id();
-      if (self::$time) {
-        $_SESSION['created'] = time();
+      if (self::$time && !$_SESSION['created']) {
+        $_SESSION['created'] = Date::format(new DateTime());
         setcookie(session_name(), session_id(), (time() + self::$time), '/', httponly: true);
       }
     }
