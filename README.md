@@ -464,7 +464,7 @@ routes/
 
 - é considerado a partir da pasta configurada
 - o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
-- obs.: somentes os arquivos `.phtml` são reconhecidos
+- obs.: somente os arquivos `.phtml` são reconhecidos
 
   ```php
   <?php
