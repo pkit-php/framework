@@ -12,12 +12,18 @@ class Session
     self::$time = $time;
   }
 
+  public static function getTime()
+  {
+    return self::$time;
+  }
+
   private static function start()
   {
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_start();
       session_regenerate_id();
       if (self::$time) {
+        $_SESSION['created'] = time();
         setcookie(session_name(), session_id(), (time() + self::$time), '/', httponly: true);
       }
     }

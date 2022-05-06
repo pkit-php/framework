@@ -6,13 +6,29 @@ use Pkit\Abstracts\Middleware;
 use Pkit\Http\Router;
 use Pkit\Auth\Session;
 use Pkit\Http\Status;
+use Pkit\Utils\Date;
 
 class Auth implements Middleware
 {
   public function handle($request, $response, $next)
   {
     if (Session::logged()) {
-      return $next($request, $response);
+      $session = Session::getSession();
+      $expire = Session::getTime();
+      if ($expire) {
+        $created = $session['created'];
+        if ($created) {
+          $interval = Date::deltaTime(
+            new \DateTime($created),
+            new \DateTime('now')
+          );
+          if ($interval < $expire) {
+            return $next($request, $response);
+          }
+        }
+      } else {
+        return $next($request, $response);
+      }
     } else {
       Session::logout();
     }
