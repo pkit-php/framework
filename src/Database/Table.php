@@ -10,9 +10,9 @@ class Table
   private string $_table;
   private Database $_database;
 
-  public function __construct(array $properties=[])
+  public function __construct(array $properties = [])
   {
-    foreach($properties as $key => $value){
+    foreach ($properties as $key => $value) {
       $this->{$key} = $value;
     }
     $this->_table = Sanitize::sanitizeClass(get_class($this));
@@ -58,6 +58,24 @@ class Table
     if ($return) {
       return $stmt->fetch();
     }
+  }
+
+  public function count(array $where = null)
+  {
+    $params = [];
+
+    if ($where) {
+      [$where, $wheres] = self::where($where);
+      $params = array_merge($params, $wheres);
+    }
+
+    $where = $where ?? "";
+
+    $query = "SELECT count(*) FROM $this->_table $where";
+
+    $stmt = $this->_database->execute($query, array_values($params));
+
+    return $stmt->fetch();
   }
 
   public function select(array $where = null, string $orderBy = null, array $limit = null)
