@@ -75,7 +75,7 @@ class Table
 
     $stmt = $this->_database->execute($query, array_values($params));
 
-    return $stmt->fetch();
+    return $stmt->fetch()[0];
   }
 
   public function select(array $where = null, string $orderBy = null, array $limit = null)
