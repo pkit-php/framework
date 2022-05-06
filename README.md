@@ -33,7 +33,7 @@ Pkit é um framework php para aplicações web que visa facilitar o desenvolvime
 - inicialize o pkit
 
   ```php
-  require __DIR__ . '/pkit/load.php';
+  require __DIR__ . '/vendor/autoload.php';
   ```
 
 - inicie o roteador com o path das rotas
@@ -464,7 +464,7 @@ routes/
 
 - é considerado a partir da pasta configurada
 - o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
-- obs.: somentes os arquivos `.phtml` são reconhecidos
+- obs.: somente os arquivos `.phtml` são reconhecidos
 
   ```php
   <?php
