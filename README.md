@@ -27,14 +27,6 @@ Pkit é um framework php para aplicações web que visa facilitar o desenvolvime
   RewriteRule . index.php [L,QSA]
   ```
 
-- adicione a pasta `pkit`
-
-  ```files
-  .htaccess
-  index.php
-  pkit/
-  ```
-
 - inicialize o pkit
 
   ```php
