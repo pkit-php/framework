@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/l/kauaug/pkit" alt="License"></a>
 </p>
 
-<div align="center"><img src="icon.png"></div>
+<div align="center"><a href="https://packagist.org/packages/kauaug/pkit"><img src="icon.png"></a></div>
 
 Pkit é um framework php para aplicações web que visa facilitar o desenvolvimento de tais projetos.
 
