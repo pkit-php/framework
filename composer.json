@@ -1,5 +1,8 @@
 {
   "name": "kauaug/pkit",
+  "type": "project",
+  "description": "The Pkit Framework.",
+  "keywords": ["framework", "pkit", "api-rest", "jwt"],
   "license": "MIT",
   "authors": [
     {
