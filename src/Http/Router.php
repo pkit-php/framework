@@ -85,8 +85,9 @@ class Router
       }
     }
     self::$uri = $uri;
-    $filePublic = file(self::getPublicPath() . self::$uri);
-    if (file(self::getPublicPath() . self::$uri)) {
+    $publicPath = self::getPublicPath();
+    $filePublic = file($publicPath . self::$uri);
+    if (file($publicPath . self::$uri)) {
       self::$file = $filePublic;
     } else {
       self::setFileAndParams();
