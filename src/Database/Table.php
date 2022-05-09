@@ -15,19 +15,27 @@ class Table
     foreach ($properties as $key => $value) {
       $this->{$key} = $value;
     }
-    $this->_table = strlen($this->_table) ?
-      $this->_table :
+    $protected = chr(0) . "*" . chr(0);
+    $table = ((array)$this)[$protected . '_table'];
+    $this->_table = strlen($table) ?
+      $table :
       Sanitize::sanitizeClass(get_class($this));
     $this->_connection = new Connection;
   }
 
   public function __set($prop, $value)
   {
+    if (strpos($prop, 0, 1) == "_") {
+      throw new \Exception("A propriedade $prop não pode ser definida, pois é privada", 500);
+    }
     return $this->$prop = $value;
   }
 
   public function __get($prop)
   {
+    if (strpos($prop, 0, 1) == "_") {
+      throw new \Exception("A propriedade $prop não pode ser retornada, pois é privada", 500);
+    }
     return $this->$prop;
   }
 
