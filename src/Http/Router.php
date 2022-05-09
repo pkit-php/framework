@@ -3,6 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Private\Debug;
+use Pkit\Private\Env;
 use Pkit\Private\Map;
 use Pkit\Private\Routes;
 use Pkit\Utils\Sanitize;
@@ -18,28 +19,47 @@ class Router
 
   private static array $params = [];
   private static ?string
-    $especialRoute,
-    $message = null;
+    $especialRoute = null,
+    $message = null,
+    $routePath = null,
+    $publicPath = null;
 
   public static function config(string $routePath, string $publicPath = null)
   {
-    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
-    if (!$publicPath) {
-      $publicPath = $routePath;
+    self::$routePath = rtrim($routePath, "/");
+    self::$publicPath = rtrim($publicPath, "/");
+  }
+
+  public static function getRoutePath()
+  {
+    if (is_null(self::$routePath)) {
+      self::$routePath = Env::getEnvOrValue("ROUTES_PATH", $_SERVER["DOCUMENT_ROOT"] . "/routes");
     }
-    $routePath = rtrim($routePath, "/");
-    $publicPath = rtrim($publicPath, "/");
-    $filePublic = file($publicPath . self::$uri);
-    if (file($publicPath . self::$uri)) {
+    return self::$routePath;
+  }
+
+  public static function getPublicPath()
+  {
+    if (is_null(self::$publicPath)) {
+      self::$publicPath = Env::getEnvOrValue("PUBLIC_PATH", $_SERVER["DOCUMENT_ROOT"] . "/public");
+    }
+    return self::$publicPath;
+  }
+
+  private static function init()
+  {
+    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    $filePublic = file(self::getPublicPath() . self::$uri);
+    if (file(self::getPublicPath() . self::$uri)) {
       self::$file = $filePublic;
     } else {
-      self::setFileAndParams($routePath);
+      self::setFileAndParams();
     }
   }
 
-  private static function setFileAndParams($routePath)
+  private static function setFileAndParams()
   {
-    $routes = Map::mapPhpFiles($routePath, '/');
+    $routes = Map::mapPhpFiles(self::getRoutePath(), '/');
     self::$especialRoute = $routes['/*'];
     unset($routes['/*']);
     $match = Routes::mathRoutes($routes, self::$uri);
@@ -60,6 +80,7 @@ class Router
 
   public static function run()
   {
+    self::init();
     self::$request = new Request;
     self::$response = new Response;
     if (strlen(self::$file)) {

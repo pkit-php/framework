@@ -3,12 +3,13 @@
 namespace Pkit\Auth;
 
 use DateTime;
+use Pkit\Private\Env;
 use Pkit\Utils\Date;
 
 class Session
 {
 
-  private static $time = 0;
+  private static ?int $time = null;
 
   public static function config(int $time)
   {
@@ -17,6 +18,9 @@ class Session
 
   public static function getTime()
   {
+    if (is_null(self::$time)) {
+      self::$time = (int)Env::getEnvOrValue("SESSION_TIME", 0);
+    }
     return self::$time;
   }
 
@@ -25,9 +29,9 @@ class Session
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_start();
       session_regenerate_id();
-      if (self::$time && !$_SESSION['created']) {
+      if (self::getTime() && !$_SESSION['created']) {
         $_SESSION['created'] = Date::format(new DateTime());
-        setcookie(session_name(), session_id(), (time() + self::$time), '/', httponly: true);
+        setcookie(session_name(), session_id(), (time() + self::getTime()), '/', httponly: true);
       }
     }
   }

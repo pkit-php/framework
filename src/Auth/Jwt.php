@@ -5,13 +5,15 @@ namespace Pkit\Auth;
 use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Private\Env;
 use Pkit\Utils\Base64url;
 use Pkit\Utils\Date;
 use Pkit\Utils\Text;
 
 class Jwt
 {
-  private static $key, $expire = 0;
+  private static ?string $key = null;
+  private static ?int $expire = null;
 
   public static function config(string $key, $expire = 0)
   {
@@ -21,7 +23,7 @@ class Jwt
 
   private static function signature(string $header, string $payload)
   {
-    $signature = hash_hmac('sha256', "$header.$payload", self::$key, true);
+    $signature = hash_hmac('sha256', "$header.$payload", self::getKey(), true);
     return Base64url::encode($signature);
   }
 
@@ -67,7 +69,18 @@ class Jwt
 
   public static function getExpire()
   {
+    if (is_null(self::$expire)) {
+      self::$expire = (int)Env::getEnvOrValue("JWT_EXPIRES", 0);
+    }
     return self::$expire;
+  }
+
+  public static function getKey()
+  {
+    if (is_null(self::$key)) {
+      self::$key = Env::getEnvOrValue("JWT_KEY", "");
+    }
+    return self::$key;
   }
 
   public static function validate(string $token)

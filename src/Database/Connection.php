@@ -3,16 +3,24 @@
 namespace Pkit\Database;
 
 use \PDO;
+use Pkit\Private\Env;
 
 class Connection
 {
   private PDO $pdo;
 
   private static array
-    $config;
-  private static string
-    $user,
-    $pass;
+    $config = [];
+  private static ?string
+    $driver = null,
+    $dbname = null,
+    $host = null,
+    $port = null,
+    $charset = null,
+    $dialect = null;
+  private static ?string
+    $user = null,
+    $pass = null;
 
   public static function config($config, $user, $pass)
   {
@@ -21,15 +29,60 @@ class Connection
     self::$pass = $pass;
   }
 
+  private static function getDriver()
+  {
+    if (is_null(self::$driver)) {
+      self::$driver = self::$config['driver']
+        ? self::$config['driver']
+        : Env::getEnvOrValue("DB_DRIVER", "mysql");
+    }
+    return self::$driver;
+  }
+
+  public static function getAttribute(string $attribute)
+  {
+    if (is_null(self::${$attribute})) {
+      self::${$attribute} = self::$config[$attribute]
+        ? self::$config[$attribute]
+        : Env::getEnvOrValue("DB_" . strtoupper($attribute), null);
+    }
+    return self::${$attribute};
+  }
+
+  public static function getUser()
+  {
+    if (is_null(self::$user)) {
+      self::$user = Env::getEnvOrValue("DB_USER", "root");
+    }
+    return self::$user;
+  }
+
+  public static function getPass()
+  {
+    if (is_null(self::$pass)) {
+      self::$pass = Env::getEnvOrValue("DB_PASS", "");
+    }
+    return self::$pass;
+  }
+
+  private static function getConfig()
+  {
+    $driver = self::getDriver();
+    $config = $driver . ":";
+    $keys = ["dbname", "host", "port", "charset", "dialect"];
+    foreach ($keys as  $key) {
+      $value = self::getAttribute($key);
+      if ($value) {
+        $config .= "$key=$value;";
+      }
+    }
+    return $config;
+  }
+
   private function connect()
   {
-    $driver = self::$config['driver'];
-    $config = strlen($driver) ? $driver . ":" : "mysql:";
-    unset(self::$config['driver']);
-    foreach (self::$config as $key => $value) {
-      $config .= "$key=$value;";
-    }
-    $this->pdo = new PDO($config, self::$user, self::$pass);
+    $config = self::getConfig();
+    $this->pdo = new PDO($config, self::getUser(), self::getPass());
     // throw exceptions, when SQL error is caused
     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // prevent emulation of prepared statements

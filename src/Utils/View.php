@@ -4,15 +4,24 @@ namespace Pkit\Utils;
 
 use Pkit\Http\ContentType;
 use Pkit\Http\Response;
+use Pkit\Private\Env;
 
 class View
 {
-  private static string
-    $path, $slotPath;
+  private static ?string
+    $path = null, $slotPath = null;
 
   public static function config(string $path)
   {
     Self::$path = $path;
+  }
+
+  public static function getPath()
+  {
+    if (!self::$path) {
+      self::$path = Env::getEnvOrValue("VIEW_PATH", $_SERVER["DOCUMENT_ROOT"] . "/view");
+    }
+    return self::$path;
   }
 
   public static function slot($args)
@@ -25,11 +34,11 @@ class View
     if (substr($file, 0, 5) == 'pkit/') {
       return __DIR__ . '/../view/';
     } else {
-      return Self::$path . '/';
+      return Self::getPath() . '/';
     }
   }
 
-  private static function getPath(string $file)
+  private static function getPathFile(string $file)
   {
     $file = Text::removeFromEnd($file, '.phtml') . '.phtml';
     $path = self::getBasePath($file);
@@ -46,7 +55,7 @@ class View
   {
     $_ARGS = $args;
 
-    $path = self::getPath($file);
+    $path = self::getPathFile($file);
     if (!file_exists($path)) {
       throw new \Exception("VIEW: view '$file' not exists", 500);
     }
@@ -67,7 +76,7 @@ class View
   {
     $_ARGS = $args;
 
-    $path = self::getPath($file);
+    $path = self::getPathFile($file);
     if (!file_exists($path)) {
       throw new \Exception("VIEW: view '$file' not exists", 500);
     }
