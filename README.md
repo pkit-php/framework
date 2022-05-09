@@ -1,8 +1,12 @@
 # PKIT
 
-`'framework ainda em desenvolvimento'`
+<p align="center">
+<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/dt/kauaug/pkit" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/v/kauaug/pkit" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/l/kauaug/pkit" alt="License"></a>
+</p>
 
-<div align="center"><img src="icon.png"></div>
+<div align="center"><a href="https://packagist.org/packages/kauaug/pkit"><img src="icon.png"></a></div>
 
 Pkit é um framework php para aplicações web que visa facilitar o desenvolvimento de tais projetos.
 
@@ -20,14 +24,6 @@ Pkit é um framework php para aplicações web que visa facilitar o desenvolvime
   ```apache
   RewriteEngine On
   RewriteRule . index.php [L,QSA]
-  ```
-
-- adicione a pasta `pkit`
-
-  ```files
-  .htaccess
-  index.php
-  pkit/
   ```
 
 - inicialize o pkit
