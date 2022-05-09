@@ -38,8 +38,9 @@ Pkit é um framework php para aplicações web que visa facilitar o desenvolvime
   //.../index.php
   use Pkit\Http\Router;
   /***/
-
-  Router::config(__DIR__ . "/routes");
+  # padrão '[root]/routes'
+  # pode ser configurado pelo .env 'ROUTE_PATH', 'PUBLIC_PATH', 'DOMAIN', 'SUB_DOMAIN' respectivamente
+  Router::config(__DIR__ . "/routes", __DIR__. "/public", "pkit.com", true);
   Router::run();
   ```
 
@@ -199,11 +200,11 @@ routes/
   class Home extends Route {
 
       public $middlewares = [
-        'teste', # middlewares adicionados
-        'pkit/api',# middlewares do framework iniciam com 'pkit/'
+        'Teste', # middlewares adicionados
+        'Pkit/Api',# middlewares do framework iniciam com 'pkit/'
         # chaves nomeados são pra métodos específicos
         'post' => [
-          'pkit/auth',
+          'Pkit/Auth',
         ],
       ];
 
@@ -223,11 +224,11 @@ routes/
   ```
 
 - lista de middlewares do framework
-  - `pkit/api` : converte o content-type para application/json
-  - `pkit/auth` : autentica o usuário com base na sessão
-  - `pkit/maintenance` : indica um rota em manutenção
-  - `pkit/jwt` : autentica o usuário com base no bearer token(jwt)
-  - `pkit/onlycode` : converte o content-type para nulo
+  - `Pkit/Api` : converte o content-type para application/json
+  - `Pkit/Auth` : autentica o usuário com base na sessão
+  - `Pkit/Maintenance` : indica um rota em manutenção
+  - `Pkit/Jwt` : autentica o usuário com base no bearer token(jwt)
+  - `Pkit/OnlyCode` : converte o content-type para nulo
 
 ## Session
 
@@ -265,7 +266,7 @@ routes/
   class Logout extends Route {
 
       public $middlewares = [
-        'pkit/auth',
+        'Pkit/Auth',
       ];
 
       function get($request, $response)
@@ -286,6 +287,7 @@ routes/
   //.../routes/logout.php
   use Pkit\Auth\Jwt;
   /***/
+  # pode ser configurado pelo .env 'JWT_KEY' e 'JWT_EXPIRES' respectivamente
   Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/));
   /***/
   ```
@@ -301,7 +303,7 @@ routes/
   class Login extends Route {
 
       public $middlewares = [
-        'get' => 'pkit/jwt'
+        'get' => 'Pkit/jwt'
       ]
 
       function get($request, $response)
@@ -331,15 +333,16 @@ routes/
   //.../index.php
   use Pkit\Database\Database;
   /***/
+  # pode ser configurado pelo .env 'DB_DRIVER', 'DB_HOST', 'DB_PORT', 'DB_DBNAME', 'DB_USER' e 'DB_PASS' respectivamente
   Database::config(
     [
-      "driver" => getenv("DB"),
-      "host" => getenv("DB_HOST"),
-      "port" => getenv("DB_HOST"),
-      "dbname" => getenv("DB_NAME"),
+      "driver" => 'mysql',
+      "host" => 'localhost',
+      "port" => '3503',
+      "dbname" => 'database',
     ],
-    getenv("DB_USER"),
-    getenv("DB_PASS"),
+    'root',
+    '',
   );
   /***/
   ```
@@ -366,10 +369,11 @@ routes/
   use Pkit\Database\Table;
 
   // o nome da classe deve ser o mesmo da tabela do banco de dados
-  class Users extends Table
+  class User extends Table
   {
-    // os atributos devem ser os mesmos da tabela do banco de dados
-
+    protected
+      $_table = 'Users'; // o atributo protected _table sobrepõe o nome da classe
+    # os atributos devem ser os mesmos da tabela do banco de dados
     // podem ser visto pelo cliente
     public
       $id,
@@ -454,6 +458,8 @@ routes/
   ```php
   // index.php
   /***/
+  # padrão '[root]/view'
+  # pode ser configurado pelo .env 'PATH_VIEW'
   View::config(__DIR__ . '/app/view');
   /***/
   ```
@@ -464,7 +470,7 @@ routes/
 
   ```php
   <?php
-  //.../app/view/home/index.phtml
+  //.../view/home/index.phtml
   use Pkit\Utils\View;
   ?>
   <main>
@@ -485,7 +491,7 @@ routes/
 
   ```phtml
   <?php
-  //.../app/view/home/__layout.phtml
+  //.../view/home/__layout.phtml
   use Pkit\Utils\View;
   ?>
   <!DOCTYPE html>
@@ -549,9 +555,24 @@ routes/
 
 ## Variáveis de ambiente especiais
 
-```sh
-PKIT_DEBUG=true  # se true, caso aja erro, mostra uma pagina com o código de erro e a mensagem do erro
-PKIT_CLEAR=false # se false, mantém o conteúdo renderizado mesmo que tenha sido ocasionado um erro
+```env
+DB_DRIVER=mysql
+DB_HOST=localhost
+DB_DBNAME=database
+DB_USER=root
+DB_PASS=
+DB_CHARSET=utf8
+DB_DIALECT=3
+ROUTE_PATH=/var/www/pkit/routes
+PUBLIC_PATH=/var/www/pkit/public
+VIEW_PATH=/var/www/pkit/view
+SESSION_TIME=0 # tempo da sessão do PHP
+JWT_KEY=abcde # chave do JWT
+JWT_EXPIRES=0 # tempo de expiração do JWT
+DOMAIN=pkit.com # domínio a ser desconsidera ao procura o subdomínio
+SUB_DOMAIN=true # se true o subdomínio declarado será considerado com parte da URI
+PKIT_DEBUG=true # se true, caso aja erro, mostra uma pagina com o código de erro e a mensagem do erro
+PKIT_CLEAR=false # se false, mantêm o conteúdo renderizado mesmo que tenha sido ocasionado um erro
 ```
 
 _para mais informações acesse as documentações nas pastas no framework_
