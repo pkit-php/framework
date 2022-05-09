@@ -14,7 +14,7 @@ class Connection
     $user,
     $pass;
 
-  public static function init($config, $user, $pass)
+  public static function config($config, $user, $pass)
   {
     self::$config = $config;
     self::$user = $user;

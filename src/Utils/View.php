@@ -10,7 +10,7 @@ class View
   private static string
     $path, $slotPath;
 
-  public static function init(string $path)
+  public static function config(string $path)
   {
     Self::$path = $path;
   }

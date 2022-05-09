@@ -21,7 +21,7 @@ class Router
     $especialRoute,
     $message = null;
 
-  public static function init(string $routePath, string $publicPath = null)
+  public static function config(string $routePath, string $publicPath = null)
   {
     self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
     if (!$publicPath) {

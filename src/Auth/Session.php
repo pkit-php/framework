@@ -10,7 +10,7 @@ class Session
 
   private static $time = 0;
 
-  public static function init(int $time)
+  public static function config(int $time)
   {
     self::$time = $time;
   }

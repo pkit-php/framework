@@ -13,7 +13,7 @@ class Jwt
 {
   private static $key, $expire = 0;
 
-  public static function init(string $key, $expire = 0)
+  public static function config(string $key, $expire = 0)
   {
     self::$key = $key;
     self::$expire = $expire;

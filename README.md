@@ -39,7 +39,7 @@ Pkit é um framework php para aplicações web que visa facilitar o desenvolvime
   use Pkit\Http\Router;
   /***/
 
-  Router::init(__DIR__ . "/routes");
+  Router::config(__DIR__ . "/routes");
   Router::run();
   ```
 
@@ -166,7 +166,7 @@ routes/
   /***/
   use App\Middlewares as MiddlewaresNamespace;
 
-  Middlewares::init(MiddlewaresNamespace::class);
+  Middlewares::config(MiddlewaresNamespace::class);
   /***/
   ```
 
@@ -286,7 +286,7 @@ routes/
   //.../routes/logout.php
   use Pkit\Auth\Jwt;
   /***/
-  Jwt::init(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/));
+  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/));
   /***/
   ```
 
@@ -331,7 +331,7 @@ routes/
   //.../index.php
   use Pkit\Database\Database;
   /***/
-  Database::init(
+  Database::config(
     [
       "driver" => getenv("DB"),
       "host" => getenv("DB_HOST"),
@@ -454,7 +454,7 @@ routes/
   ```php
   // index.php
   /***/
-  View::init(__DIR__ . '/app/view');
+  View::config(__DIR__ . '/app/view');
   /***/
   ```
 

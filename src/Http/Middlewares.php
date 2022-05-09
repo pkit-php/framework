@@ -13,7 +13,7 @@ class Middlewares
   private array $middlewares;
   private \Closure $controller;
 
-  public static function init(string $namespace)
+  public static function config(string $namespace)
   {
     self::$namespace = $namespace;
   }
