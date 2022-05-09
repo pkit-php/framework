@@ -1,6 +1,8 @@
-<?php namespace Pkit\Utils;
+<?php
 
-class DotEnv
+namespace Pkit\Utils;
+
+class Env
 {
   static function load(string $path): void
   {
@@ -21,5 +23,13 @@ class DotEnv
         $_SERVER[$name] = $value;
       }
     }
+  }
+
+  public static function getEnvOrValue(string $env, mixed $value)
+  {
+    $envValue = getenv($env, true);
+    return $envValue
+      ? $envValue
+      : $value;
   }
 }
