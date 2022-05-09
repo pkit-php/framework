@@ -35,7 +35,7 @@ class Middlewares
 
   private static function getNamespace($class)
   {
-    $class = str_replace("/", "\\", ucwords($class, '/'));
+    $class = str_replace("/", "\\", $class);
     if (substr($class, 0, 5) == 'Pkit\\') {
       $class = Text::removeFromStart($class, 'Pkit\\');
       return 'Pkit\\Middlewares\\' .  $class;
