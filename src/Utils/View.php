@@ -57,7 +57,7 @@ class View
 
     $path = self::getPathFile($file);
     if (!file_exists($path)) {
-      throw new \Exception("VIEW: view '$file' not exists", 500);
+      throw new \Exception("VIEW: view '$path' not exists", 500);
     }
     ob_start();
     include $path;
@@ -78,7 +78,7 @@ class View
 
     $path = self::getPathFile($file);
     if (!file_exists($path)) {
-      throw new \Exception("VIEW: view '$file' not exists", 500);
+      throw new \Exception("VIEW: view '$path' not exists", 500);
     }
     $layout = self::getLayoutPath($file);
 
