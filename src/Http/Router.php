@@ -3,10 +3,11 @@
 namespace Pkit\Http;
 
 use Pkit\Private\Debug;
-use Pkit\Private\Env;
 use Pkit\Private\Map;
 use Pkit\Private\Routes;
 use Pkit\Utils\Sanitize;
+use Pkit\Utils\Env;
+use Pkit\Utils\Text;
 
 class Router
 {
@@ -18,16 +19,22 @@ class Router
   private static Response $response;
 
   private static array $params = [];
+  private static ?bool $subDomain = null;
   private static ?string
     $especialRoute = null,
     $message = null,
     $routePath = null,
-    $publicPath = null;
+    $publicPath = null,
+    $domain = null;
 
-  public static function config(string $routePath, string $publicPath = null)
+  public static function config(string $routePath, ?string $publicPath = null, ?string $domain = null, bool $subDomain = false)
   {
     self::$routePath = rtrim($routePath, "/");
-    self::$publicPath = rtrim($publicPath, "/");
+    self::$publicPath = $publicPath
+      ? rtrim($publicPath, "/")
+      : null;
+    self::$domain = $domain;
+    self::$subDomain = $subDomain;
   }
 
   public static function getRoutePath()
@@ -46,9 +53,38 @@ class Router
     return self::$publicPath;
   }
 
+  public static function getDomain()
+  {
+    if (is_null(self::$domain)) {
+      self::$domain = Env::getEnvOrValue("DOMAIN", "");
+    }
+    return self::$domain;
+  }
+
+  public static function getSubDomain()
+  {
+    if (is_null(self::$subDomain)) {
+      self::$subDomain = Env::getEnvOrValue("SUB_DOMAIN", null) == "true";
+    }
+    return self::$subDomain;
+  }
+
+
   private static function init()
   {
-    self::$uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    $uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    if (self::getSubDomain()) {
+      $host = self::$request->headers['Host'];
+      $domain = self::getDomain();
+      if (strlen($domain)) {
+        $domain = ltrim($domain, ".");
+        $subdomain = Text::removeFromEnd($host, "." . $domain);
+        if ($subdomain != "www") {
+          $uri = "/" . $subdomain . rtrim($uri, "/");
+        }
+      }
+    }
+    self::$uri = $uri;
     $filePublic = file(self::getPublicPath() . self::$uri);
     if (file(self::getPublicPath() . self::$uri)) {
       self::$file = $filePublic;
@@ -80,16 +116,16 @@ class Router
 
   public static function run()
   {
-    self::init();
     self::$request = new Request;
     self::$response = new Response;
+    self::init();
     if (strlen(self::$file)) {
       try {
         ob_start();
         self::includeFile();
         exit;
       } catch (\Throwable $th) {
-        if (!getenv('PKIT_CLEAR') || getenv('PKIT_CLEAR') == "true") {
+        if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
           ob_end_clean();
         }
         $code = $th->getCode();
@@ -115,7 +151,7 @@ class Router
     if (self::$especialRoute) {
       include self::$especialRoute;
     } else {
-      if (getenv('PKIT_DEBUG') == 'true') {
+      if (Env::getEnvOrValue('PKIT_DEBUG', null) == 'true') {
         Debug::log(self::$request, self::$response, self::$message);
       } else {
         self::$response->send();
