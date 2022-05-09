@@ -4,7 +4,7 @@ namespace Pkit\Database;
 
 use \PDO;
 
-class Database
+class Connection
 {
   private PDO $pdo;
 
@@ -23,7 +23,8 @@ class Database
 
   private function connect()
   {
-    $config = self::$config['driver'] . ":" ?? "mysql:";
+    $driver = self::$config['driver'];
+    $config = strlen($driver) ? $driver . ":" : "mysql:";
     unset(self::$config['driver']);
     foreach (self::$config as $key => $value) {
       $config .= "$key=$value;";

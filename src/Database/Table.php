@@ -7,16 +7,18 @@ use PDO;
 
 class Table
 {
-  private string $_table;
-  private Database $_database;
+  private string $_table = "";
+  private Connection $_connection;
 
   public function __construct(array $properties = [])
   {
     foreach ($properties as $key => $value) {
       $this->{$key} = $value;
     }
-    $this->_table = Sanitize::sanitizeClass(get_class($this));
-    $this->_database = new Database;
+    $this->_table = strlen($this->_table) ?
+      $this->_table :
+      Sanitize::sanitizeClass(get_class($this));
+    $this->_connection = new Connection;
   }
 
   public function __set($prop, $value)
@@ -53,7 +55,7 @@ class Table
 
     $query = "INSERT INTO $this->_table ( $fields ) VALUES ( $binds ) $return";
 
-    $stmt = $this->_database->execute($query, array_values($array));
+    $stmt = $this->_connection->execute($query, array_values($array));
 
     if ($return) {
       return $stmt->fetch();
@@ -73,7 +75,7 @@ class Table
 
     $query = "SELECT count(*) FROM $this->_table $where";
 
-    $stmt = $this->_database->execute($query, array_values($params));
+    $stmt = $this->_connection->execute($query, array_values($params));
 
     return $stmt->fetch()[0];
   }
@@ -97,7 +99,7 @@ class Table
 
     $query = "SELECT $fields FROM $this->_table $where $order $limit";
 
-    $stmt = $this->_database->execute($query, array_values($params));
+    $stmt = $this->_connection->execute($query, array_values($params));
 
     return $stmt->fetchAll(PDO::FETCH_CLASS, get_class($this));
   }
@@ -124,7 +126,7 @@ class Table
 
     $query = "UPDATE $this->_table SET $fields $where";
 
-    $this->_database->execute($query, array_values($params));
+    $this->_connection->execute($query, array_values($params));
   }
 
   public function delete(array $where = null)
@@ -138,7 +140,7 @@ class Table
 
     $query = "DELETE FROM $this->_table $where";
 
-    $this->_database->execute($query, array_values($params));
+    $this->_connection->execute($query, array_values($params));
   }
 
   private static function where(array $where)
