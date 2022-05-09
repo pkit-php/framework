@@ -3,7 +3,7 @@
 namespace Pkit\Auth;
 
 use DateTime;
-use Pkit\Private\Env;
+use Pkit\Utils\Env;
 use Pkit\Utils\Date;
 
 class Session

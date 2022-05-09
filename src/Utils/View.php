@@ -4,7 +4,6 @@ namespace Pkit\Utils;
 
 use Pkit\Http\ContentType;
 use Pkit\Http\Response;
-use Pkit\Private\Env;
 
 class View
 {

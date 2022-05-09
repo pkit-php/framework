@@ -5,7 +5,7 @@ namespace Pkit\Auth;
 use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Private\Env;
+use Pkit\Utils\Env;
 use Pkit\Utils\Base64url;
 use Pkit\Utils\Date;
 use Pkit\Utils\Text;

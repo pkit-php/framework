@@ -3,7 +3,7 @@
 namespace Pkit\Database;
 
 use \PDO;
-use Pkit\Private\Env;
+use Pkit\Utils\Env;
 
 class Connection
 {
