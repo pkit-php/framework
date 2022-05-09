@@ -26,7 +26,9 @@ class Sanitize
       if (!preg_match('/\\\/', $key)) {
         $protected = chr(0) . "*" . chr(0);
         $key = str_replace($protected, "", $key);
-        $array[$key] = $value;
+        if (substr($key, 0, 1) != "_") {
+          $array[$key] = $value;
+        }
       }
     }
     return $array;
