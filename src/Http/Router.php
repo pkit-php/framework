@@ -99,8 +99,7 @@ class Router
     $routes = Map::mapPhpFiles(self::getRoutePath(), '/');
     self::$especialRoute = $routes['/*'];
     unset($routes['/*']);
-    $match = Routes::mathRoutes($routes, self::$uri);
-    [self::$file, self::$params] = [$match[0], $match[1]];
+    [self::$file, self::$params] = Routes::mathRoutes($routes, self::$uri);
   }
 
   private static function includeFile()
