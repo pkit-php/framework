@@ -10,12 +10,14 @@ class Request
   public readonly array
     $headers,
     $queryParams,
-    $postVars;
+    $postVars,
+    $cookies;
 
   public function __construct()
   {
     $this->httpMethod = $_SERVER['REQUEST_METHOD'];
     $this->queryParams = $_GET ?? [];
+    $this->cookies = $_COOKIE ?? [];
 
     $this->headers = getallheaders();
     if ($this->httpMethod != 'GET') {
