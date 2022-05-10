@@ -13,7 +13,6 @@ class Sanitize
   {
     $uri = urldecode($uri);
     $uri = explode('?', $uri)[0];
-    $uri = explode('#', $uri)[0];
 
     $uri = $uri ?? '/';
     return $uri == '/' ? $uri : rtrim($uri, '/');
