@@ -15,8 +15,7 @@ class Table
     foreach ($properties as $key => $value) {
       $this->{$key} = $value;
     }
-    $protected = chr(0) . "*" . chr(0);
-    $table = ((array)$this)[$protected . '_table'];
+    $table = ((array)$this)["\0" . static::class . "\0table"];
     $this->_table = strlen($table) ?
       $table :
       Sanitize::sanitizeClass(get_class($this));
