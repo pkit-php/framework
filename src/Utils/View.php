@@ -23,12 +23,12 @@ class View
     return self::$path;
   }
 
-  public static function slot($args)
+  public static function slot(mixed $args)
   {
     return self::render(self::$slotPath, null, $args);
   }
 
-  private static function getBasePath($file)
+  private static function getBasePath(string $file)
   {
     if (substr($file, 0, 5) == 'pkit/') {
       return __DIR__ . '/../view/';
@@ -50,7 +50,7 @@ class View
     $response->contentType(ContentType::HTML)->setStatus($code)->send($content);
   }
 
-  public static function render(string $file, ?Response $response = null, $args = null, $code = 200)
+  public static function render(string $file, ?Response $response = null, mixed $args = null, int $code = 200)
   {
     $_ARGS = $args;
 
@@ -71,7 +71,7 @@ class View
     return $content;
   }
 
-  public static function layout(string $file, ?Response $response = null, $args = null, $code = 200)
+  public static function layout(string $file, ?Response $response = null, mixed $args = null, int $code = 200)
   {
     $_ARGS = $args;
 
@@ -100,7 +100,7 @@ class View
     return $content;
   }
 
-  public static function getLayoutPath($file)
+  public static function getLayoutPath(string $file)
   {
     $arrayPath = explode("/", $file);
     $index = count($arrayPath) - 1;
