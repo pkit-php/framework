@@ -42,7 +42,7 @@ class Session
     return !is_null(@$_SESSION['payload']);
   }
 
-  public static function login($payload)
+  public static function login(mixed $payload)
   {
     self::start();
     $_SESSION['payload'] = $payload;

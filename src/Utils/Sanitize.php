@@ -4,7 +4,7 @@ namespace Pkit\Utils;
 
 class Sanitize
 {
-  static function sanitizeClass($class)
+  static function sanitizeClass(string $class)
   {
     return @end(explode("\\", $class));
   }
@@ -14,7 +14,7 @@ class Sanitize
     return urldecode(parse_url($uri, PHP_URL_PATH));
   }
 
-  static function sanitizeProperties($array)
+  static function sanitizeProperties(array $array)
   {
     foreach ($array as $key => $value) {
       unset($array[$key]);

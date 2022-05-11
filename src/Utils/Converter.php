@@ -5,7 +5,7 @@ namespace Pkit\Utils;
 class Converter
 {
 
-  public static function anyToArray($any)
+  public static function anyToArray(mixed $any)
   {
     if (!is_array($any)) {
       $any = [$any];
@@ -13,7 +13,7 @@ class Converter
     return $any;
   }
 
-  public static function objectToArray($object)
+  public static function objectToArray(object $object)
   {
     foreach ($object as $key => $value) {
       $array[$key] = $value;
@@ -21,7 +21,7 @@ class Converter
     return $array;
   }
 
-  public static function xmlToArray($xml)
+  public static function xmlToArray(string $xml)
   {
     $string = simplexml_load_string($xml);
     return json_decode(json_encode($string), 1);

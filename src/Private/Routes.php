@@ -26,7 +26,7 @@ class Routes
         return [$includeFile, $params ?? []];
     }
 
-    public static function mathRouteAndParams($route, $uri)
+    public static function mathRouteAndParams(string $route, string $uri)
     {
         $variables = [];
         $route = str_replace('.', '\.', $route);

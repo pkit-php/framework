@@ -4,7 +4,7 @@ namespace Pkit\Utils;
 
 class Text
 {
-  static function removeFromEnd($haystack, $needle)
+  static function removeFromEnd(string $haystack, string $needle)
   {
     $length = strlen($needle);
 
@@ -14,7 +14,7 @@ class Text
     return $haystack;
   }
 
-  static function removeFromStart($haystack, $needle)
+  static function removeFromStart(string $haystack, string $needle)
   {
     $length = strlen($needle);
     if (substr($haystack, 0, $length) === $needle) {

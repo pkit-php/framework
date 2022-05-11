@@ -9,7 +9,7 @@ class Paginator
   private int $limit;
   private int $total;
 
-  public function __construct($total, $limit, $page)
+  public function __construct(int $total, int $limit, int $page)
   {
     $this->total = $total;
     $this->limit = $limit;

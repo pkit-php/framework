@@ -7,7 +7,7 @@ use Pkit\Http\Response;
 use Pkit\Http\Route as HttpRoute;
 use Pkit\Http\Status;
 
-function methodNotAllowed($_, Response $response)
+function methodNotAllowed(Request $_, Response $response)
 {
   $response
     ->onlyCode()

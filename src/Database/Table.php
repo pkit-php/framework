@@ -38,12 +38,12 @@ class Table
     return $this->$prop;
   }
 
-  static private function binds($keys)
+  static private function binds(array $keys)
   {
     return implode(', ', array_pad([], count($keys), '?'));
   }
 
-  static private function fields($keys)
+  static private function fields(array $keys)
   {
     return implode(', ', array_map(function ($value) {
       return "`$value`";

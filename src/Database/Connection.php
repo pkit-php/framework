@@ -22,7 +22,7 @@ class Connection
     $user = null,
     $pass = null;
 
-  public static function config($config, $user, $pass)
+  public static function config(array $config, string $user, string $pass)
   {
     self::$config = $config;
     self::$user = $user;

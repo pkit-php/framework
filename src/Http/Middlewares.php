@@ -18,7 +18,7 @@ class Middlewares
     self::$namespace = $namespace;
   }
 
-  public static function getMiddlewares($middlewares, $method)
+  public static function getMiddlewares(array|string $middlewares, string $method)
   {
     $newMiddlewares = [];
     $middlewares = Converter::anyToArray($middlewares);
@@ -45,8 +45,8 @@ class Middlewares
   }
 
   public function __construct(
-    $controller,
-    $middlewares
+    \Closure $controller,
+    array $middlewares
   ) {
     $this->controller = $controller;
     $this->middlewares = $middlewares;

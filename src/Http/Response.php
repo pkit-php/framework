@@ -4,14 +4,9 @@ namespace Pkit\Http;
 
 class Response
 {
-  public array $headers;
+  public array $headers = [];
   private ?int $status = null;
   private ?string $contentType = null;
-
-  public function __construct()
-  {
-    $this->headers = [];
-  }
 
   public function setStatus($status = 200)
   {
