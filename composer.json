@@ -2,7 +2,12 @@
   "name": "kauaug/pkit",
   "type": "project",
   "description": "The Pkit Framework.",
-  "keywords": ["framework", "pkit", "api-rest", "jwt"],
+  "keywords": [
+    "framework",
+    "pkit",
+    "api-rest",
+    "jwt"
+  ],
   "license": "MIT",
   "authors": [
     {
@@ -12,6 +17,9 @@
   ],
   "require": {
     "php": ">=8.1"
+  },
+  "suggest": {
+    "ext-pdo": "Necessário para a conexão em caso de uso do banco de dados"
   },
   "autoload": {
     "psr-4": {
