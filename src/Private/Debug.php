@@ -23,20 +23,19 @@ class Debug
 
   public static function html(Response $response, $message)
   {
-    $response->contentType(ContentType::HTML);
-    $response->send(View::layout("pkit/code", [
-      'code' => $response->status(),
-      'message' => $message,
-    ]));
+    $response->contentType(ContentType::HTML)
+      ->send(View::layout("pkit/code", [
+        'code' => $response->status(),
+        'message' => $message,
+      ]));
   }
 
   public static function json(Response $response, $message)
   {
-    $response->contentType(ContentType::JSON)->send(
-      [
+    $response->contentType(ContentType::JSON)
+      ->send([
         'code' => $response->status(),
         'error' => $message,
-      ]
-    );
+      ]);
   }
 }
