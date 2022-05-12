@@ -89,7 +89,7 @@ class Connection
     $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
   }
 
-  public function execute($query, $params = [])
+  public function execute(string $query, $params = [])
   {
     $this->connect();
     $stmt = $this->pdo->prepare($query);
