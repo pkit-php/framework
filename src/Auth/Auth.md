@@ -16,7 +16,7 @@ Classe de autenticação e criação de tokens genéricos
 
   use Pkit\Auth\Session;
   /***/
-  Session::init(/*tempo em segundos*/);//opcional
+  Session::config(/*tempo em segundos*/);//opcional
   /***
   ```
 
@@ -50,7 +50,8 @@ Classe de autenticação e criação de tokens genéricos
 
   use Pkit\Auth\Jwt;
   /***/
-  Jwt::init(/*chave de criptografia*/,/*tempo em segundos(opcional)*/);
+  # pode ser configurado pelo .env 'JWT_KEY', 'JWT_EXPIRES' e 'JWT_ALG' respectivamente
+  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/, /*algoritmo de criptografia*/));
   /***
   ```
 

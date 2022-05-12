@@ -13,24 +13,32 @@ use Pkit\Utils\Text;
 class Jwt
 {
   private static ?string $key = null;
-  private static ?int $expire = null;
+  private static ?int $expire = 0;
+  private static string $alg = 'HS256';
+  public static $supported_algs = [
+    'HS256' => ['hash_hmac', 'SHA256'],
+    'HS384' => ['hash_hmac', 'SHA384'],
+    'HS512' => ['hash_hmac', 'SHA512'],
+  ];
 
-  public static function config(string $key, $expire = 0)
+  public static function config(string $key, $expire = 0, $alg = 'HS256')
   {
     self::$key = $key;
     self::$expire = $expire;
+    self::$alg = $alg;
   }
 
   private static function signature(string $header, string $payload)
   {
-    $signature = hash_hmac('sha256', "$header.$payload", self::getKey(), true);
+    $alg = self::$supported_algs[self::$alg];
+    $signature =  call_user_func($alg[0], strtolower($alg[1]), "$header.$payload", self::getKey(), true);
     return Base64url::encode($signature);
   }
 
   public static function tokenize(array $payload)
   {
     $header = [
-      'alg' => 'HS256',
+      'alg' => self::getAlg(),
       'typ' => 'JWT'
     ];
 
@@ -65,6 +73,14 @@ class Jwt
   {
     $authorization = $request->headers["authorization"] ?? "";
     return Text::removeFromStart($authorization, "Bearer ");
+  }
+
+  public static function getAlg()
+  {
+    if (is_null(self::$expire)) {
+      self::$expire = (int)Env::getEnvOrValue("JWT_ALG", 0);
+    }
+    return self::$expire;
   }
 
   public static function getExpire()

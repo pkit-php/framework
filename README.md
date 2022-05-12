@@ -287,8 +287,8 @@ routes/
   //.../routes/logout.php
   use Pkit\Auth\Jwt;
   /***/
-  # pode ser configurado pelo .env 'JWT_KEY' e 'JWT_EXPIRES' respectivamente
-  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/));
+  # pode ser configurado pelo .env 'JWT_KEY', 'JWT_EXPIRES' e 'JWT_ALG' respectivamente
+  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/, /*algoritmo de criptografia*/));
   /***/
   ```
 
@@ -581,6 +581,7 @@ VIEW_PATH=/var/www/pkit/view
 SESSION_TIME=0 # tempo da sessão do PHP
 JWT_KEY=abcde # chave do JWT
 JWT_EXPIRES=0 # tempo de expiração do JWT
+JWT_ALG=0 # algoritmo de criptografia do JWT
 DOMAIN=pkit.com # domínio a ser desconsidera ao procura o subdomínio
 SUB_DOMAIN=true # se true o subdomínio declarado será considerado com parte da URI
 PKIT_DEBUG=true # se true, caso aja erro, mostra uma pagina com o código de erro e a mensagem do erro
