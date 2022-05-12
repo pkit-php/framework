@@ -67,7 +67,7 @@ class QueryBuilder
       }
     }
     $query = rtrim($query, ", ");
-    return [$query, $binds];
+    return [$query . " ", $binds];
   }
 
   static private function mapTableAlias(array $array, ?string $keyAlias = null, ?string $valueAlias = null)
@@ -75,20 +75,20 @@ class QueryBuilder
     $arrayValues = array_values($array);
     $arrayKeys = array_keys($array);
     if ($keyAlias) {
-      $arrayValues = array_map(function ($fieldName) use ($keyAlias) {
+      $arrayKeys = array_map(function ($fieldName) use ($keyAlias) {
         if (strpos($fieldName, ".")) {
           return $fieldName;
         }
         return $keyAlias . $fieldName;
-      }, $arrayValues);
+      }, $arrayKeys);
     }
     if ($valueAlias) {
-      $arrayKeys = array_map(function ($fieldName) use ($valueAlias) {
+      $arrayValues = array_map(function ($fieldName) use ($valueAlias) {
         if (strpos($fieldName, ".")) {
           return $fieldName;
         }
         return $valueAlias . $fieldName;
-      }, $arrayKeys);
+      }, $arrayValues);
     }
     return array_combine($arrayKeys, $arrayValues);
   }
@@ -187,12 +187,12 @@ class QueryBuilder
     $as = $this->as ? "AS $this->as" : "";
 
     $tableAlias = $this->getTableAlias($table, $as);
-    $update = $this->mapTableAlias($command["update"], null, $tableAlias);
+    $update = $this->mapTableAlias($command["update"], $tableAlias, null);
 
     [$query, $binds] = self::relations($update, false);
 
     $this->params = array_merge($this->params, $binds);
-    $this->query .= "UPDATE $this->table $as SET $query ";
+    $this->query .= "UPDATE $this->table $as SET $query";
   }
 
   public function innerJoin(array $on, string $table, string $as = null)
@@ -218,7 +218,7 @@ class QueryBuilder
     [$query, $binds] = self::relations($on, true);
 
     $this->params = array_merge($this->params, $binds);
-    $this->query .= "INNER JOIN $table $as ON $query ";
+    $this->query .= "INNER JOIN $table $as ON $query";
   }
 
   public function and(array $and = null)
@@ -235,7 +235,7 @@ class QueryBuilder
     $as = $this->getAsOrThisTable($command["as"]);
     $table = $this->getTableOrThisTable($command["table"]);
     $tableAlias = $this->getTableAlias($table, $as);
-    $and = $this->mapTableAlias($command['and'], $tableAlias, $tableAlias);
+    $and = $this->mapTableAlias($command['and'], $tableAlias, null);
 
     [$query, $binds] = self::relations($and, false);
 
@@ -257,7 +257,7 @@ class QueryBuilder
     $as = $this->getAsOrThisTable($command["as"]);
     $table = $this->getTableOrThisTable($command["table"]);
     $tableAlias = $this->getTableAlias($table, $as);
-    $or = $this->mapTableAlias($command['or'], $tableAlias, $tableAlias);
+    $or = $this->mapTableAlias($command['or'], $tableAlias, null);
 
     [$query, $binds] = self::relations($or, false);
     $this->params = array_merge($this->params, $binds);
@@ -270,7 +270,7 @@ class QueryBuilder
       "type" => "not",
       "not" => $not
     ];
-    $this->query .= $this;
+    return $this;
   }
 
   private function setNot(array $command)
@@ -278,7 +278,7 @@ class QueryBuilder
     $as = $this->getAsOrThisTable($command["as"]);
     $table = $this->getTableOrThisTable($command["table"]);
     $tableAlias = $this->getTableAlias($table, $as);
-    $not = $this->mapTableAlias($command['not'], $tableAlias, $tableAlias);
+    $not = $this->mapTableAlias($command['not'], $tableAlias, null);
 
     [$query, $binds] = self::relations($not, false);
     $this->params = array_merge($this->params, $binds);
@@ -306,6 +306,6 @@ class QueryBuilder
       [$query, $binds] = self::relations($where, false);
       $this->params = array_merge($this->params, $binds);
     }
-    $this->query .= "WHERE " . $query . " ";
+    $this->query .= "WHERE " . $query;
   }
 }
