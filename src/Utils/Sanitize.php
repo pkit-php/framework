@@ -14,8 +14,9 @@ class Sanitize
     return urldecode(parse_url($uri, PHP_URL_PATH));
   }
 
-  static function sanitizeProperties(array $array)
+  static function sanitizeProperties(object $object)
   {
+    $array = (array)$object;
     foreach ($array as $key => $value) {
       unset($array[$key]);
       if (!preg_match('/\\\/', $key)) {
