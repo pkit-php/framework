@@ -35,7 +35,7 @@ class Debug
     $response->contentType(ContentType::JSON)
       ->send([
         'code' => $response->status(),
-        'error' => $message,
+        'message' => $message,
       ]);
   }
 }
