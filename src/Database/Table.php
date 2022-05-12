@@ -49,7 +49,7 @@ class Table
       $query->return($returns);
     }
 
-    $stmt = $this->_connection->execute($query, array_values($array));
+    $stmt = $this->_connection->execute($query, $query->getParams());
 
     return $stmt->fetch();
   }
