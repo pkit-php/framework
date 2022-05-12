@@ -6,9 +6,9 @@ use Pkit\Utils\Text;
 
 class QueryBuilder
 {
-  private array
+  private ?array
     $commands = [],
-    $params = [];
+    $params = null;
   private ?string
     $table,
     $as,
@@ -36,6 +36,9 @@ class QueryBuilder
 
   public function getParams()
   {
+    if (!$this->params) {
+      $this->__toString();
+    }
     return $this->params;
   }
 
@@ -76,7 +79,7 @@ class QueryBuilder
     $arrayKeys = array_keys($array);
     if ($keyAlias) {
       $arrayKeys = array_map(function ($fieldName) use ($keyAlias) {
-        if (strpos($fieldName, ".")) {
+        if (strpos($fieldName, ".") && strpos($fieldName, "(")) {
           return $fieldName;
         }
         return $keyAlias . $fieldName;
@@ -84,7 +87,7 @@ class QueryBuilder
     }
     if ($valueAlias) {
       $arrayValues = array_map(function ($fieldName) use ($valueAlias) {
-        if (strpos($fieldName, ".")) {
+        if (strpos($fieldName, ".") && strpos($fieldName, "(")) {
           return $fieldName;
         }
         return $valueAlias . $fieldName;
@@ -301,11 +304,84 @@ class QueryBuilder
       $as = $this->getAsOrThisTable($command["as"]);
       $table = $this->getTableOrThisTable($command["table"]);
       $tableAlias = $this->getTableAlias($table, $as);
-      $where = $this->mapTableAlias($command['where'], $tableAlias, $tableAlias);
+      $where = $this->mapTableAlias($command['where'], $tableAlias, null);
 
       [$query, $binds] = self::relations($where, false);
       $this->params = array_merge($this->params, $binds);
     }
     $this->query .= "WHERE " . $query;
+  }
+
+  public function order(array $by, ?string $order = null)
+  {
+    $this->commands[] = [
+      "type" => "order",
+      "by" => $by,
+      "order" => $order
+    ];
+    return $this;
+  }
+
+  private function setOrder(array $command)
+  {
+    $table = $this->table;
+    $as = $this->as ? ("AS " . $this->as) : "";
+    $tableAlias = $this->getTableAlias($table, $as);
+    $fieldsTable = $this->mapTableAlias($command["by"], null, $tableAlias);
+
+    $by = "BY " . self::fields($fieldsTable);
+
+    $this->query .= "ORDER $by " . $command["order"] . " ";
+  }
+
+  public function limit(array $limit)
+  {
+    $this->commands[] = [
+      "type" => "limit",
+      "limit" => $limit
+    ];
+    return $this;
+  }
+
+  private function setlimit(array $command)
+  {
+    $offset = array_keys($command["limit"])[0];
+    $row_count = array_values($command["limit"])[0];
+    $this->query .= "limit '$offset', '$row_count' ";
+  }
+
+  public function return(array $return)
+  {
+    $this->commands[] = [
+      "type" => "return",
+      "return" => $return
+    ];
+    return $this;
+  }
+
+  private function setReturn(array $command)
+  {
+    $table = $this->table;
+    $as = $this->as ? ("AS " . $this->as) : "";
+    $tableAlias = $this->getTableAlias($table, $as);
+    $returns = $this->mapTableAlias($command["return"], null, $tableAlias);
+    $fields = self::fields($returns);
+
+    $this->query .= "RETURNING $fields ";
+  }
+
+  public function delete(?string $as = null)
+  {
+    $this->commands[] = [
+      "type" => "delete",
+      "as" => $as
+    ];
+    return $this;
+  }
+
+  private function setDelete(array $command)
+  {
+    $as = $this->getAsOrThisTable($command["as"]);
+    $this->query .= "DELETE FROM $this->table $as ";
   }
 }
