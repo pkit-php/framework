@@ -343,7 +343,7 @@ class QueryBuilder
     return $this;
   }
 
-  private function setlimit(array $command)
+  private function setLimit(array $command)
   {
     $offset = array_keys($command["limit"])[0];
     $row_count = array_values($command["limit"])[0];
