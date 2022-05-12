@@ -100,6 +100,11 @@ class Response
     exit;
   }
 
+  public function render($content = '', $status = 200)
+  {
+    $this->setStatus($status)->contentType(ContentType::HTML)->send($content);
+  }
+
   public function onlyCode(): self
   {
     return $this->setContentType(ContentType::NONE);

@@ -24,7 +24,7 @@ class Debug
   public static function html(Response $response, $message)
   {
     $response->contentType(ContentType::HTML)
-      ->send(View::layout("pkit/code", [
+      ->render(View::layout("pkit/code", [
         'code' => $response->status(),
         'message' => $message,
       ]));

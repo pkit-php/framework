@@ -538,10 +538,10 @@ routes/
     public function get($request, $response)
     {
       # o método layout tem os mesmo parâmetros do render, porem envolto com o __layout
-      View::layout('home/index', [
+      $response->render(View::layout('home/index', [
         'title' => 'Home',
         'description' => 'tela inicial',
-      ], $response, 200);
+      ]));
     }
   }
 

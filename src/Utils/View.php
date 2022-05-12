@@ -25,7 +25,7 @@ class View
 
   public static function slot(mixed $args)
   {
-    return self::render(self::$slotPath, null, $args);
+    return self::render(self::$slotPath, $args);
   }
 
   private static function getBasePath(string $file)
