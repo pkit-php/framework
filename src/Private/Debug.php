@@ -23,10 +23,11 @@ class Debug
 
   public static function html(Response $response, $message)
   {
-    View::layout("pkit/code", $response, [
+    $response->contentType(ContentType::HTML);
+    $response->send(View::layout("pkit/code", [
       'code' => $response->status(),
       'message' => $message,
-    ], $response->status());
+    ]));
   }
 
   public static function json(Response $response, $message)

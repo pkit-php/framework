@@ -45,12 +45,7 @@ class View
     return $path . $file;
   }
 
-  private static function sendHtml(Response $response, int $code, string $content)
-  {
-    $response->contentType(ContentType::HTML)->setStatus($code)->send($content);
-  }
-
-  public static function render(string $file, ?Response $response = null, mixed $args = null, int $code = 200)
+  public static function render(string $file, mixed $args = null)
   {
     $_ARGS = $args;
 
@@ -65,13 +60,10 @@ class View
     ob_clean();
     ob_end_flush();
 
-    if ($response) {
-      View::sendHtml($response, $code, $content);
-    }
     return $content;
   }
 
-  public static function layout(string $file, ?Response $response = null, mixed $args = null, int $code = 200)
+  public static function layout(string $file, mixed $args = null)
   {
     $_ARGS = $args;
 
@@ -94,9 +86,6 @@ class View
     ob_clean();
     ob_end_flush();
 
-    if ($response) {
-      View::sendHtml($response, $code, $content);
-    }
     return $content;
   }
 
