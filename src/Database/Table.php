@@ -38,141 +38,79 @@ class Table
     return $this->$prop;
   }
 
-  static private function binds(array $keys)
+  public function insert(?array $returns = null)
   {
-    return implode(', ', array_pad([], count($keys), '?'));
-  }
-
-  static private function fields(array $keys)
-  {
-    return implode(', ', array_map(function ($value) {
-      return "`$value`";
-    }, $keys));
-  }
-
-  public function insert(?string $return = null)
-  {
-    $array = Sanitize::sanitizeProperties((array)$this);
+    $array = Sanitize::sanitizeProperties($this);
     $array = array_filter($array);
 
-    $keys = array_keys($array);
-    $fields = self::fields($keys);
-    $binds  = self::binds($keys);
-    $return  = " RETURNING $return" ?? "";
+    $query = (new QueryBuilder($this->_table))->insert($array);
 
-    $query = "INSERT INTO $this->_table ( $fields ) VALUES ( $binds ) $return";
+    if ($returns) {
+      $query->return($returns);
+    }
 
     $stmt = $this->_connection->execute($query, array_values($array));
 
-    if ($return) {
-      return $stmt->fetch();
-    }
+    return $stmt->fetch();
   }
 
   public function count(array $where = null)
   {
-    $params = [];
+    $query = (new QueryBuilder($this->_table))->select(["COUNT(*)"]);
 
     if ($where) {
-      [$where, $wheres] = self::where($where);
-      $params = array_merge($params, $wheres);
+      $query->where($where);
     }
 
-    $where = $where ?? "";
-
-    $query = "SELECT count(*) FROM $this->_table $where";
-
-    $stmt = $this->_connection->execute($query, array_values($params));
+    $stmt = $this->_connection->execute($query, $query->getParams());
 
     return $stmt->fetch()[0];
   }
 
-  public function select(array $where = null, string $orderBy = null, array $limit = null)
+  public function select(array $where = null, array $orderBy = null, array $limit = null)
   {
-    $array = Sanitize::sanitizeProperties((array)$this);
-
+    $array = Sanitize::sanitizeProperties($this);
     $keys = array_keys($array);
-    $fields = self::fields($keys);
-    $params = [];
+
+    $query = (new QueryBuilder($this->_table))->select($keys);
 
     if ($where) {
-      [$where, $wheres] = self::where($where);
-      $params = array_merge($params, $wheres);
+      $query->where($where);
+    }
+    if ($orderBy) {
+      $query->order($orderBy);
+    }
+    if ($limit) {
+      $query->limit($limit);
     }
 
-    $where = $where ?? "";
-    $order = strlen($orderBy) ? 'ORDER BY ' . $orderBy : '';
-    $order = !empty($limit) ? self::limit($limit) : '';
-
-    $query = "SELECT $fields FROM $this->_table $where $order $limit";
-
-    $stmt = $this->_connection->execute($query, array_values($params));
+    $stmt = $this->_connection->execute($query, $query->getParams());
 
     return $stmt->fetchAll(PDO::FETCH_CLASS, get_class($this));
   }
 
   public function update(array $where = null)
   {
-    $array = Sanitize::sanitizeProperties((array)$this);
+    $array = Sanitize::sanitizeProperties($this);
     $array = array_filter($array);
 
-    $fields = '';
-    foreach ($array as $field => $_) {
-      $fields .= "$field=?, ";
-    }
-    $fields = rtrim($fields, ", ");
-
-    $params = $array;
+    $query = (new QueryBuilder($this->_table))->update($array);
 
     if ($where) {
-      [$where, $wheres] = self::where($where);
-      $params = array_merge($params, $wheres);
+      $query->where($where);
     }
 
-    $where = $where ?? "";
-
-    $query = "UPDATE $this->_table SET $fields $where";
-
-    $this->_connection->execute($query, array_values($params));
+    $this->_connection->execute($query, $query->getParams());
   }
 
   public function delete(array $where = null)
   {
-    $params = [];
+    $query = (new QueryBuilder($this->_table))->delete();
+
     if ($where) {
-      [$where, $wheres] = self::where($where);
-      $params = array_merge($params, $wheres);
+      $query->where($where);
     }
-    $where = $where ?? "";
 
-    $query = "DELETE FROM $this->_table $where";
-
-    $this->_connection->execute($query, array_values($params));
-  }
-
-  private static function where(array $where)
-  {
-    $binds = [];
-    if (!empty($where)) {
-      $query = 'WHERE';
-      foreach ($where as $field => $bind) {
-        if (!is_int($field)) {
-          @[$field, $comp] = explode(":", $field);
-          $query .= (" `$field`" . ($comp ?? '=') . '?,');
-          $binds[] = $bind;
-        } else {
-          $query .= " $bind,";
-        }
-      }
-      $query = rtrim($query, ",");
-    }
-    return [$query ?? "", $binds];
-  }
-
-  private static function limit(array $limit)
-  {
-    $init = $limit[0];
-    $final = $limit[1];
-    return " LIMIT $init, $final";
+    $this->_connection->execute($query, $query->getParams());
   }
 }
