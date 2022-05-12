@@ -37,6 +37,111 @@ Classe de autenticação e criação de tokens genéricos
 
   ```
 
+## QueryBuilder
+
+- É feito a manipulação através dos seus parâmetros
+- Retorna string e parâmetros utilizados
+
+- uso:
+
+  - construção
+
+    ```php
+    <?php
+    // .../*
+    use Pkit\Database\QueryBuilder;
+    $query = new QueryBuilder(table:/*nome da Tabela*/, );
+    /***/
+    ```
+
+  - select
+
+    ```php
+    /***/
+    $query->select(['field1', 'field2', /***/]);
+    /***/
+    ```
+
+  - insert
+
+    ```php
+    /***/
+    $query->insert(['field1' => "value1", 'field2' => "value2", /***/]);
+    /***/
+    ```
+
+  - insert/select
+
+    ```php
+    /***/
+    $query->insert(['field1', 'field2', /***/])
+      ->select(['field1', 'field2', /***/]);
+    /***/
+    ```
+
+  - update
+    ```php
+    /***/
+    $query->update(['field1' => "value1", 'field2' => "value2", /***/]);
+    /***/
+    ```
+  - delete
+
+    ```php
+    /***/
+    $user->delete();
+    /***/
+
+    ```
+
+  - where / and / not / or
+
+    `\<field>:\<contition> => <value>`
+
+    - condition
+      | up | lo | di | eq |
+      |----|----|----|----|
+      | > | < | <> | = |
+
+    - exemplo
+      ```php
+      /***/
+      $query->/***/
+        ->where(['field' => "equality"]);
+      /***/
+      ```
+
+  - order
+
+    - exemplo
+
+      ```php
+      /***/
+      $query->/***/
+        ->order(['field1','field2',/***/], ?order: 'ASC'|'DES');
+      /***/
+      ```
+
+  - limit
+
+    - exemplo
+      ```php
+      /***/
+      $query->/***/
+        ->limit([/* item inicial */,/* quantidade de items */]);
+      /***/
+      ```
+
+  - query / params
+
+    - exemplo
+      ```php
+      /***/
+      echo $query; # é convertido em string automaticamente
+      var_dump($query->getParams()) # depois de convertido os parâmetros já são adicionados
+      /***/
+      ```
+
 ## Table
 
 - É estendido a um modelo, feito a manipulação através dos seus parâmetros
@@ -105,6 +210,17 @@ Classe de autenticação e criação de tokens genéricos
         "id" => $id, # a condição padrão é '='
       ]
       ```
+    - order
+
+  - exemplo
+
+    ```php
+    [
+      "name",
+      "email",
+      /***/
+    ]
+    ```
 
   - limit
     - exemplo
