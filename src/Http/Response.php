@@ -15,6 +15,7 @@ class Response
     }
     return $this;
   }
+
   public function setContentType($contentType = 'text/html')
   {
     if (!$this->contentType) {
