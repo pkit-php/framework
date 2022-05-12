@@ -390,7 +390,7 @@ routes/
 
   ```php
   /***/
-  (new Users)->select(where: ['id:>', $id], orderBy: 'name ASC', limit: [10, 40]);
+  (new Users)->select(where: ['id:>', $id], orderBy: ['name'], limit: [10, 40]);
   /***/
   ```
 
@@ -437,6 +437,18 @@ routes/
     [
       "status = 1", # valores sem chaves são escritos por extenso
       "id" => $id, # a condição padrão é '='
+    ]
+    ```
+
+- order
+
+  - exemplo
+
+    ```php
+    [
+      "name",
+      "email",
+      /***/
     ]
     ```
 
