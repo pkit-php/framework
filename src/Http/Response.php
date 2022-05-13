@@ -67,11 +67,7 @@ class Response
 
   private function sendCode()
   {
-    if ($this->status < 600 && $this->status >= 100) {
-      http_response_code($this->status);
-    } else {
-      http_response_code(500);
-    }
+    http_response_code($this->status);
   }
 
   public function sendStatus($status = 200)
