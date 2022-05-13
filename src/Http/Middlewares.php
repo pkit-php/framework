@@ -65,7 +65,9 @@ class Middlewares
       return $queue->next($request, $response);
     };
 
-    $namespace = self::getNamespace($middleware);
-    return (new $namespace)->handle($request, $response, $next);
+    @[$namespace, $params] = explode(":", self::getNamespace($middleware));
+    $object = (new $namespace);
+    $object->setParams(explode(",", $params ?? ""));
+    return $object->handle($request, $response, $next);
   }
 }
