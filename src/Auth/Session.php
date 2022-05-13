@@ -39,8 +39,7 @@ class Session
     if (session_status() != PHP_SESSION_ACTIVE) {
       session_save_path(self::getPath());
       session_start();
-      session_regenerate_id();
-      if (self::getTime() && !$_SESSION['created']) {
+      if (self::getTime() && is_null($_SESSION['created'])) {
         $_SESSION['created'] = Date::format(new DateTime());
         setcookie(session_name(), session_id(), (time() + self::getTime()), '/', httponly: true);
       }
@@ -61,8 +60,11 @@ class Session
 
   public static function logout()
   {
+    self::start();
     setcookie(session_name());
+    session_unset();
     session_destroy();
+    session_write_close();
   }
 
   public static function getSession()
