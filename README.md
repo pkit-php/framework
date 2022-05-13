@@ -180,7 +180,7 @@ routes/
 
   use Pkit\Abstracts\Middleware;
 
-  class Teste implements Middleware{
+  class Teste extends Middleware{
       public function handle($request, $response, $next)
       {
           echo 'teste';

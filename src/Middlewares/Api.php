@@ -5,7 +5,7 @@ namespace Pkit\Middlewares;
 use Pkit\Abstracts\Middleware;
 use Pkit\Http\ContentType;
 
-class Api implements Middleware
+class Api extends Middleware
 {
   public function handle($request, $response, $next)
   {

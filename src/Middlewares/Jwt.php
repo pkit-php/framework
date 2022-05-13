@@ -9,7 +9,7 @@ use Pkit\Http\Router;
 use Pkit\Http\Status;
 use Pkit\Utils\Date;
 
-class Jwt implements Middleware
+class Jwt extends Middleware
 {
     public function handle($request, $response, $next)
     {

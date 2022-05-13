@@ -6,7 +6,7 @@ use Pkit\Abstracts\Middleware;
 use Pkit\Http\Router;
 use Pkit\Http\Status;
 
-class Maintenance implements Middleware
+class Maintenance extends Middleware
 {
   public function handle($request, $response, $next)
   {

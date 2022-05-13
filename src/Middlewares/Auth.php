@@ -8,7 +8,7 @@ use Pkit\Auth\Session;
 use Pkit\Http\Status;
 use Pkit\Utils\Date;
 
-class Auth implements Middleware
+class Auth extends Middleware
 {
   public function handle($request, $response, $next)
   {

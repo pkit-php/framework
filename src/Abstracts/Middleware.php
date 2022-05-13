@@ -1,9 +1,23 @@
-<?php namespace Pkit\Abstracts;
+<?php
+
+namespace Pkit\Abstracts;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 
-interface Middleware
+abstract class Middleware
 {
-  public function handle(Request $request, Response $response, \Closure $next);
+  protected ?array $params = null;
+
+  abstract public function handle(Request $request, Response $response, \Closure $next);
+
+  public function setParams($params)
+  {
+    $this->params = $params;
+  }
+
+  public function getParams()
+  {
+    return $this->params;
+  }
 }

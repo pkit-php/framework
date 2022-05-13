@@ -16,8 +16,9 @@ São modelos bases para criação de Middlewares e Rotas
   use Pkit\Http\Request;
   use Pkit\Http\Response;
   use PKit\Http\ContentType;
+  use PKit\Abstracts\Middleware;
 
-  class Json implements Middleware
+  class Json extends Middleware
   {
     public function handle(Request $request, Response $response, \Closure $next){
       $request->setContentType(ContentType::JSON);
