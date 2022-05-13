@@ -130,7 +130,7 @@ class Router
         }
         $code = $th->getCode();
         self::$response->status(
-          is_int($code) && $code > 200 && $code != 600
+          is_int($code) && $code >= 200 && $code < 600
             ? $code
             : 500
         );
