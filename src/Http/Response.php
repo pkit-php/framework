@@ -5,6 +5,7 @@ namespace Pkit\Http;
 class Response
 {
   public array $headers = [];
+  private array $cookies = [];
   private ?int $status = null;
   private ?string $contentType = null;
 
@@ -45,6 +46,25 @@ class Response
     }
   }
 
+  public function setCookie(
+    string $name,
+    $value = "",
+    $expires_or_options = 0,
+    $path = "",
+    $domain = "",
+    $secure = false,
+    $httponly = false
+  ) {
+    $this->cookies[$name] = [
+      "value" => $value,
+      "expires_or_options" => $expires_or_options,
+      "path" => $path,
+      "domain" => $domain,
+      "secure" => $secure,
+      "httponly" => $httponly
+    ];
+  }
+
   private function sendCode()
   {
     if ($this->status < 600 && $this->status >= 100) {
@@ -75,12 +95,20 @@ class Response
     }
   }
 
+  private function sendCookies()
+  {
+    foreach ($this->cookies as $key => $value) {
+      call_user_func('setcookie', $key, ...$value);
+    }
+  }
+
   public function send($content = '')
   {
     $this->setStatus();
     $this->setContentType();
     $this->sendCode();
     $this->sendHeaders();
+    $this->sendCookies();
 
     switch ($this->contentType) {
       case 'text/html':
