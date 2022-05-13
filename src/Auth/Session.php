@@ -10,10 +10,12 @@ class Session
 {
 
   private static ?int $time = null;
+  private static ?string $path = null;
 
-  public static function config(int $time)
+  public static function config(int $time, ?string $path = null)
   {
     self::$time = $time;
+    self::$path = $path;
   }
 
   public static function getTime()
@@ -24,9 +26,18 @@ class Session
     return self::$time;
   }
 
+  public static function getPath()
+  {
+    if (is_null(self::$path)) {
+      self::$path = Env::getEnvOrValue("SESSION_PATH", session_save_path());
+    }
+    return self::$path;
+  }
+
   private static function start()
   {
     if (session_status() != PHP_SESSION_ACTIVE) {
+      session_save_path(self::getPath());
       session_start();
       session_regenerate_id();
       if (self::getTime() && !$_SESSION['created']) {

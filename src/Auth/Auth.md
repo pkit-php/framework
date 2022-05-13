@@ -16,7 +16,8 @@ Classe de autenticação e criação de tokens genéricos
 
   use Pkit\Auth\Session;
   /***/
-  Session::config(/*tempo em segundos*/);//opcional
+  # pode ser configurado pelo .env 'SESSION_EXPIRES' e 'SESSION_PATH' respectivamente
+  Session::config(/*tempo em segundos*/, /*caminho para a sessão(opcional)*/);//opcional
   /***
   ```
 

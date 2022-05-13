@@ -232,6 +232,20 @@ routes/
 
 ## Session
 
+- configuração:
+
+  ```php
+  <?php
+   // .../index.php
+  require __DIR__ . '/pkit/load.php';
+
+  use Pkit\Auth\Session;
+  /***/
+  # pode ser configurado pelo .env 'SESSION_EXPIRES' e 'SESSION_PATH' respectivamente
+  Session::config(/*tempo em segundos*/, /*caminho para a sessão(opcional)*/);//opcional
+  /***
+  ```
+
 - login
 
   ```php
