@@ -227,66 +227,44 @@ class QueryBuilder
   public function and(array $and = null)
   {
     $this->commands[] = [
-      "type" => "and",
-      "and" => $and
+      "type" => "andNotOr",
+      "action" => $and,
+      "actionQuery" => 'AND'
     ];
     return $this;
-  }
-
-  private function setAnd(array $command)
-  {
-    $as = $this->getAsOrThisTable($command["as"]);
-    $table = $this->getTableOrThisTable($command["table"]);
-    $tableAlias = $this->getTableAlias($table, $as);
-    $and = $this->mapTableAlias($command['and'], $tableAlias, null);
-
-    [$query, $binds] = self::relations($and, false);
-
-    $this->params = array_merge($this->params, $binds);
-    $this->query .= "AND " . $query;
   }
 
   public function or(array $or)
   {
     $this->commands[] = [
-      "type" => "or",
-      "or" => $or
+      "type" => "andNotOr",
+      "action" => $or,
+      "actionQuery" => 'OR'
     ];
     return $this;
-  }
-
-  private function setOr(array $command)
-  {
-    $as = $this->getAsOrThisTable($command["as"]);
-    $table = $this->getTableOrThisTable($command["table"]);
-    $tableAlias = $this->getTableAlias($table, $as);
-    $or = $this->mapTableAlias($command['or'], $tableAlias, null);
-
-    [$query, $binds] = self::relations($or, false);
-    $this->params = array_merge($this->params, $binds);
-    $this->query .= "OR " . $query;
   }
 
   public function not(array $not)
   {
     $this->commands[] = [
-      "type" => "not",
-      "not" => $not
+      "type" => "andNotOr",
+      "action" => $not,
+      "actionQuery" => 'NOT'
     ];
     return $this;
   }
 
-  private function setNot(array $command)
+  private function setAndNotOr(array $command)
   {
-    $as = $this->getAsOrThisTable($command["as"]);
-    $table = $this->getTableOrThisTable($command["table"]);
-    $tableAlias = $this->getTableAlias($table, $as);
-    $not = $this->mapTableAlias($command['not'], $tableAlias, null);
+    $tableAlias = $this->as ? "$this->as." : "$this->table.";
+    $action = $this->mapTableAlias($command['action'], $tableAlias, null);
 
-    [$query, $binds] = self::relations($not, false);
+    [$query, $binds] = self::relations($action, false);
     $this->params = array_merge($this->params, $binds);
 
-    $this->query .= "NOT " . $query;
+    $actionQuery = $command['actionQuery'];
+
+    $this->query .= "$actionQuery " . $query;
   }
 
   public function where(?array $where = null)
