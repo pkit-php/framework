@@ -14,7 +14,7 @@ class Jwt
 {
   private static ?string $key = null;
   private static ?int $expire = null;
-  private static string $alg = 'HS256';
+  private static ?string $alg = null;
   public static $supported_algs = [
     'HS256' => ['hash_hmac', 'SHA256'],
     'HS384' => ['hash_hmac', 'SHA384'],
@@ -79,7 +79,7 @@ class Jwt
   public static function getAlg()
   {
     if (is_null(self::$alg)) {
-      self::$alg = Env::getEnvOrValue("JWT_ALG", 0);
+      self::$alg = Env::getEnvOrValue("JWT_ALG", 'HS256');
     }
     return self::$alg;
   }
