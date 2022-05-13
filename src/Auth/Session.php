@@ -51,7 +51,6 @@ class Session
   public static function logout()
   {
     setcookie(session_name());
-    session_unset();
     session_destroy();
   }
 
