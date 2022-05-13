@@ -593,6 +593,7 @@ ROUTE_PATH=/var/www/pkit/routes
 PUBLIC_PATH=/var/www/pkit/public
 VIEW_PATH=/var/www/pkit/view
 SESSION_TIME=0 # tempo da sessão do PHP
+SESSION_PATH=/var/lib/php/sessions # path da sessão
 JWT_KEY=abcde # chave do JWT
 JWT_EXPIRES=0 # tempo de expiração do JWT
 JWT_ALG=0 # algoritmo de criptografia do JWT
