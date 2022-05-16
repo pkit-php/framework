@@ -107,7 +107,7 @@ class Router
     include self::$file;
 
     if ($extension != '.php') {
-      if ($mime_content = mime_content_type('.css')) {
+      if ($mime_content = mime_content_type(self::$file)) {
         self::$response->contentType($mime_content);
       } else {
         self::$response->status(Status::INTERNAL_SERVER_ERROR);
