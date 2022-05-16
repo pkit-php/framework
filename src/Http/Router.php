@@ -86,7 +86,7 @@ class Router
     }
     self::$uri = $uri;
     $publicPath = self::getPublicPath();
-    $filePublic = file($publicPath . self::$uri);
+    $filePublic = $publicPath . self::$uri;
     if (file($publicPath . self::$uri)) {
       self::$file = $filePublic;
     } else {
@@ -106,11 +106,13 @@ class Router
   {
     include self::$file;
 
-    $extension = '.' . @end(explode('.', self::$file));
     if ($extension != '.php') {
-      (new Response)
-        ->contentType(mime_content_type($extension) ?? "")
-        ->send();
+      if ($mime_content = mime_content_type('.css')) {
+        self::$response->contentType($mime_content);
+      } else {
+        self::$response->status(Status::INTERNAL_SERVER_ERROR);
+      }
+      self::$response->send();
     }
   }
 
