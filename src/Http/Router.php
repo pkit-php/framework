@@ -128,12 +128,7 @@ class Router
         if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
           ob_end_clean();
         }
-        $code = $th->getCode();
-        self::$response->status(
-          is_int($code) && $code >= 200 && $code < 600
-            ? $code
-            : 500
-        );
+        self::$response->status($th->getCode());
         self::$message = $th->getMessage();
       }
     } else {
@@ -149,13 +144,27 @@ class Router
   public static function runEspecialRoute()
   {
     if (self::$especialRoute) {
-      include self::$especialRoute;
-    } else {
-      if (Env::getEnvOrValue('PKIT_DEBUG', null) == 'true') {
-        Debug::log(self::$request, self::$response, self::$message);
-      } else {
-        self::$response->send();
+      try {
+        ob_start();
+        include self::$especialRoute;
+        exit;
+      } catch (\Throwable $th) {
+        if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
+          ob_end_clean();
+        }
+        self::$response->status($th->getCode());
+        self::$message = $th->getMessage();
       }
+    }
+    self::runDebugIfPossible();
+  }
+
+  private static function runDebugIfPossible()
+  {
+    if (Env::getEnvOrValue('PKIT_DEBUG', null) == 'true') {
+      Debug::log(self::$request, self::$response, self::$message);
+    } else {
+      self::$response->send();
     }
   }
 
