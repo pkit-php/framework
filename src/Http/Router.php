@@ -136,7 +136,8 @@ class Router
         if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
           ob_end_clean();
         }
-        self::$response->status($th->getCode());
+        $code = $th->getCode();
+        self::$response->status(is_string($code) ? 500 : $code);
         self::$message = $th->getMessage();
       }
     } else {
