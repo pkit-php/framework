@@ -42,7 +42,6 @@ class Jwt
       'typ' => 'JWT'
     ];
 
-    var_dump(self::getExpire());
     if (self::getExpire()) {
       $payload['_created'] = Date::format(new DateTime());
     }
