@@ -33,8 +33,7 @@ class Route
     }
     $method = strtolower($request->httpMethod);
     $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
-    if (in_array($method, $methods) && method_exists($this, $method)) {
-      # o método 'run' também pode ser executado desa forma
+    if (in_array($method, $methods)) {
       $this->$method($request, $response);
     } else {
       $response->onlyCode()->setStatus(Status::NOT_IMPLEMENTED);
