@@ -79,7 +79,7 @@ class QueryBuilder
     $arrayKeys = array_keys($array);
     if ($keyAlias) {
       $arrayKeys = array_map(function ($fieldName) use ($keyAlias) {
-        if (strpos($fieldName, ".") && strpos($fieldName, "(")) {
+        if (strpos($fieldName, ".") || strpos($fieldName, "(")) {
           return $fieldName;
         }
         return $keyAlias . $fieldName;
@@ -87,7 +87,7 @@ class QueryBuilder
     }
     if ($valueAlias) {
       $arrayValues = array_map(function ($fieldName) use ($valueAlias) {
-        if (strpos($fieldName, ".") && strpos($fieldName, "(")) {
+        if (strpos($fieldName, ".") || strpos($fieldName, "(")) {
           return $fieldName;
         }
         return $valueAlias . $fieldName;
