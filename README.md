@@ -165,6 +165,8 @@ routes/
   ```php
   //.../index.php
   /***/
+  # padrão 'App\Middlewares'
+  # pode ser configurado pelo .env 'MIDDLEWARES_NAMESPACE'
   use App\Middlewares as MiddlewaresNamespace;
 
   Middlewares::config(MiddlewaresNamespace::class);
@@ -589,6 +591,7 @@ DB_USER=root
 DB_PASS=
 DB_CHARSET=utf8
 DB_DIALECT=3
+MIDDLEWARES_NAMESPACE=\App\Middlewares # namespace onde se encontra os middlewares que não são do framework
 ROUTE_PATH=/var/www/pkit/routes
 PUBLIC_PATH=/var/www/pkit/public
 VIEW_PATH=/var/www/pkit/view

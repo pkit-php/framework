@@ -59,7 +59,7 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 
   use Pkit\Http\Router;
   /***/
-  Router::init(__DIR__ . '/routes');
+  Router::config(__DIR__ . '/routes');
   Router::run();
 
   ```
@@ -177,7 +177,9 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   use Pkit\Http\Middlewares;
   /***/
   # namespace onde se localiza os middlewares a serem usados
-  Middlewares::init('\App\Middlewares');
+  # padrão 'App\Middlewares'
+  # pode ser configurado pelo .env 'MIDDLEWARES_NAMESPACE'
+  Middlewares::config('\App\Middlewares');
   # Obs.: o framework já possui middlewares padrões
   /***/
   ```

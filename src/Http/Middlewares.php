@@ -5,17 +5,26 @@ namespace Pkit\Http;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Utils\Converter;
+use Pkit\Utils\Env;
 use Pkit\Utils\Text;
 
 class Middlewares
 {
-  private static $namespace = '\App\Middlewares';
+  private static ?string $namespace = null;
   private array $middlewares;
   private \Closure $controller;
 
   public static function config(string $namespace)
   {
     self::$namespace = $namespace;
+  }
+
+  private static function getNamespace()
+  {
+    if (is_null(self::$namespace)) {
+      self::$namespace = Env::getEnvOrValue("MIDDLEWARES_NAMESPACE", 'App\\Middlewares');
+    }
+    return self::$namespace;
   }
 
   public static function getMiddlewares(array|string $middlewares, string $method)
@@ -33,14 +42,14 @@ class Middlewares
     return array_merge($newMiddlewares, $methodsMiddlewares);
   }
 
-  private static function getNamespace($class)
+  private static function getNamespaceByClass($class)
   {
     $class = str_replace("/", "\\", $class);
     if (substr($class, 0, 5) == 'Pkit\\') {
       $class = Text::removeFromStart($class, 'Pkit\\');
       return 'Pkit\\Middlewares\\' .  $class;
     } else {
-      return self::$namespace . '\\' . $class;
+      return self::getNamespace() . '\\' . $class;
     }
   }
 
@@ -65,7 +74,7 @@ class Middlewares
       return $queue->next($request, $response);
     };
 
-    @[$namespace, $params] = explode(":", self::getNamespace($middleware));
+    @[$namespace, $params] = explode(":", self::getNamespaceByClass($middleware));
     $object = (new $namespace);
     $object->setParams(explode(",", $params ?? ""));
     return $object->handle($request, $response, $next);
