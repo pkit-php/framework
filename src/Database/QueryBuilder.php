@@ -325,7 +325,7 @@ class QueryBuilder
   {
     $offset = array_keys($command["limit"])[0];
     $row_count = array_values($command["limit"])[0];
-    $this->query .= "limit '$offset', '$row_count' ";
+    $this->query .= "LIMIT $offset, $row_count ";
   }
 
   public function return(array $return)
