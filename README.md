@@ -88,18 +88,17 @@ routes/
 
 - rotas avançadas
 
-  - `(...)` 'somente letras e números'
-  - `[...]` 'qualquer coisa entre `/`'
-  - `{...}` 'qualquer coisa'
+  - `[abc]` 'qualquer coisa entre `/`'
+  - `{...abc}` 'qualquer coisa'
 
   ```files
   .htaccess
   index.php
   pkit/
   routes/
-  ├ (id)/
+  ├ [id]/
   │ ├ [repo]/
-  │ │ ├ {file}.php
+  │ │ ├ [...file].php
   │ │ └ index.php
   │ └ index.php
   ├ home.php
@@ -110,7 +109,7 @@ routes/
 
     ```php
     <?php
-    //.../routes/(id)/[repo]/{file}.php
+    //.../routes/[id]/[repo]/[...file].php
 
     use PKit\Abstracts\Route;
     use PKit\Http\Router;
@@ -121,7 +120,7 @@ routes/
       {
         /**
          * $params = [
-         *  'id' => '[a-zA-Z0-9]',
+         *  'id' => '[^\/]',
          *  'repo' => '[^\/]'
          *  'file' => '.*'
          * ]

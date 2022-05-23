@@ -8,9 +8,8 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 - O `index.php` sempre se referem as pasta que se encontram
 - Gerencia URI dinâmica com base em parâmetros de rotas:
 
-  - `(...)` 'somente letras e números'
-  - `[...]` 'qualquer coisa entre `/`'
-  - `{...}` 'qualquer coisa'
+  - `[abc]` 'qualquer coisa entre `/`'
+  - `{...abc}` 'qualquer coisa'
 
     ```
     .htaccess
