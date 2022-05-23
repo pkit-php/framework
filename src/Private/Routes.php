@@ -7,9 +7,8 @@ class Routes
     private static
         $patternGeral = '/{(.*?)}|\[(.*?)\]|\((.*?)\)/',
         $patternSymbols = '/[{}\[\]\(\)]/',
-        $patternVariable = '/\((.*?)\)/',
-        $patternPath = '/\[(.*?)\]/',
-        $patternRest = '/{(.*?)}/';
+        $patternVariable = '/\[...(.*?)\]/',
+        $patternRest = '/\[(.*?)\]/';
 
     public static function mathRoutes(array $routes, string $uri)
     {
@@ -32,8 +31,7 @@ class Routes
         $route = str_replace('.', '\.', $route);
         $route = '/^' . str_replace('/', '\/', $route) . '$/';
         if (preg_match_all(self::$patternGeral, $route, $matches)) {
-            $route = preg_replace(self::$patternVariable, '(\d*\w*)', $route);
-            $route = preg_replace(self::$patternPath, '([^\/]*)', $route);
+            $route = preg_replace(self::$patternVariable, '([^\/]*)', $route);
             $route = preg_replace(self::$patternRest, '(.*)', $route);
             $variables = $matches[0];
             $patternSymbols = self::$patternSymbols;
