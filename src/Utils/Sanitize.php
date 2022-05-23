@@ -11,7 +11,8 @@ class Sanitize
 
   static function sanitizeURI(string $uri)
   {
-    return urldecode(parse_url($uri, PHP_URL_PATH));
+    $uri = urldecode(parse_url($uri, PHP_URL_PATH));
+    return $uri != "/" ? rtrim($uri, "/") : $uri;
   }
 
   static function sanitizeProperties(object $object)
