@@ -80,7 +80,7 @@ class Router
         $domain = ltrim($domain, ".");
         $subdomain = Text::removeFromEnd($host, "." . $domain);
         if ($subdomain != "www") {
-          $uri = "/" . $subdomain . rtrim($uri, "/");
+          $uri = "/" . trim($subdomain, "/") . rtrim($uri, "/");
         }
       }
     }
