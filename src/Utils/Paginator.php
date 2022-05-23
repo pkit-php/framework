@@ -5,23 +5,28 @@ namespace Pkit\Utils;
 class Paginator
 {
 
-  private int $page = 1;
-  private int $limit;
-  private int $total;
+  public readonly int
+    $total,
+    $limit,
+    $page,
+    $remainingPages,
+    $firstItem;
 
   public function __construct(int $total, int $limit, int $page)
   {
     $this->total = $total;
     $this->limit = $limit;
     $this->page = $page;
+    $this->setFirstItem();
+    $this->setRemainingPages();
   }
 
-  public function getFirstItem()
+  private function setFirstItem()
   {
-    return $this->limit * ($this->page - 1);
+    $this->firstItem = $this->limit * ($this->page - 1);
   }
 
-  public function getRemainingPages()
+  private function setRemainingPages()
   {
     $remainingPages = $this->total / $this->limit - $this->page;
     if ((int)$remainingPages < $remainingPages) {
@@ -30,6 +35,6 @@ class Paginator
     if ($remainingPages < 0) {
       $remainingPages = 0;
     }
-    return $remainingPages;
+    $this->remainingPages = $remainingPages;
   }
 }
