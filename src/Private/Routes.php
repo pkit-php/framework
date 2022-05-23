@@ -29,6 +29,12 @@ class Routes
     {
         $variables = [];
         $route = str_replace('.', '\.', $route);
+        $route = str_replace('*', '\*', $route);
+        $route = str_replace('(', '\(', $route);
+        $route = str_replace(')', '\)', $route);
+        $route = str_replace('{', '\{', $route);
+        $route = str_replace('}', '\}', $route);
+        $route = str_replace('\\', '\\\\', $route);
         $route = '/^' . str_replace('/', '\/', $route) . '$/';
         if (preg_match_all(self::$patternGeral, $route, $matches)) {
             $route = preg_replace(self::$patternVariable, '([^\/]*)', $route);
