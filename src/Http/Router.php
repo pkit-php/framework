@@ -87,7 +87,7 @@ class Router
     self::$uri = $uri;
     $publicPath = self::getPublicPath();
     $filePublic = $publicPath . self::$uri;
-    if (file($publicPath . self::$uri)) {
+    if (file($publicPath . str_replace("/../", "/", self::$uri))) {
       self::$file = $filePublic;
     } else {
       self::setFileAndParams();
