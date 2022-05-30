@@ -7,7 +7,6 @@ class Text
   static function removeFromEnd(string $haystack, string $needle)
   {
     $length = strlen($needle);
-
     if (substr($haystack, -$length) === $needle) {
       $haystack = substr($haystack, 0, -$length);
     }
