@@ -12,10 +12,10 @@ class Env
       if (strpos($line, '#') === 0) {
         continue;
       }
-      $line = trim(explode("#", $line, 2)[0]);
+      $line = rtrim(explode("#", $line, 2)[0]);
       [$name, $value] = explode('=', $line, 2);
-      $name = trim($name);
-      $value = trim($value);
+      $name = rtrim($name);
+      $value = ltrim($value);
 
       if (!array_key_exists($name, $_SERVER) && !array_key_exists($name, $_ENV)) {
         putenv(sprintf('%s=%s', $name, $value));
