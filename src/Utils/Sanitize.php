@@ -2,11 +2,14 @@
 
 namespace Pkit\Utils;
 
+use ReflectionClass;
+use ReflectionProperty;
+
 class Sanitize
 {
   static function class(string $class)
   {
-    return @end(explode("\\", $class));
+    return (new ReflectionClass($class))->getShortName();
   }
 
   static function uri(string $uri)
@@ -17,15 +20,11 @@ class Sanitize
 
   static function objectProperties(object $object)
   {
-    $array = (array)$object;
-    foreach ($array as $key => $value) {
-      unset($array[$key]);
-      if (!preg_match('/\\\/', $key)) {
-        $key = str_replace("\0*\0", "", $key);
-        if (substr($key, 0, 1) != "_") {
-          $array[$key] = $value;
-        }
-      }
+    $reflect = new ReflectionClass($object);
+    $props = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
+    $array = [];
+    foreach ($props as $prop) {
+      $array[$prop->getName()] = $prop->getValue($object);
     }
     return $array;
   }
