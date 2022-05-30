@@ -4,6 +4,7 @@ namespace Pkit\Database;
 
 use Pkit\Utils\Sanitize;
 use PDO;
+use ReflectionProperty as PrivateProperty;
 
 class Table
 {
@@ -15,10 +16,12 @@ class Table
     foreach ($properties as $key => $value) {
       $this->{$key} = $value;
     }
-    $table = ((array)$this)["\0" . static::class . "\0table"];
-    $this->_table = strlen($table) ?
-      $table :
-      Sanitize::class(get_class($this));
+    try {
+      $this->_table = (new PrivateProperty($this, "table"))
+        ->getValue($this);
+    } catch (\Throwable $_) {
+      $this->_table = Sanitize::class(get_class($this));
+    }
     $this->_connection = new Connection;
   }
 
