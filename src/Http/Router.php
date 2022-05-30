@@ -72,7 +72,7 @@ class Router
 
   private static function init()
   {
-    $uri = Sanitize::sanitizeURI($_SERVER['REQUEST_URI']);
+    $uri = Sanitize::uri($_SERVER['REQUEST_URI']);
     if (self::getSubDomain()) {
       $host = self::$request->headers['Host'];
       $domain = self::getDomain();

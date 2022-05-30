@@ -4,18 +4,18 @@ namespace Pkit\Utils;
 
 class Sanitize
 {
-  static function sanitizeClass(string $class)
+  static function class(string $class)
   {
     return @end(explode("\\", $class));
   }
 
-  static function sanitizeURI(string $uri)
+  static function uri(string $uri)
   {
     $uri = urldecode(parse_url($uri, PHP_URL_PATH));
     return $uri != "/" ? rtrim($uri, "/") : $uri;
   }
 
-  static function sanitizeProperties(object $object)
+  static function objectProperties(object $object)
   {
     $array = (array)$object;
     foreach ($array as $key => $value) {

@@ -18,7 +18,7 @@ class Table
     $table = ((array)$this)["\0" . static::class . "\0table"];
     $this->_table = strlen($table) ?
       $table :
-      Sanitize::sanitizeClass(get_class($this));
+      Sanitize::class(get_class($this));
     $this->_connection = new Connection;
   }
 
@@ -40,7 +40,7 @@ class Table
 
   public function insert(?array $returns = null)
   {
-    $array = Sanitize::sanitizeProperties($this);
+    $array = Sanitize::objectProperties($this);
     $array = array_filter($array);
 
     $query = (new QueryBuilder($this->_table))->insert($array);
@@ -69,7 +69,7 @@ class Table
 
   public function select(array $where = null, array $orderBy = null, array $limit = null)
   {
-    $array = Sanitize::sanitizeProperties($this);
+    $array = Sanitize::objectProperties($this);
     $keys = array_keys($array);
 
     $query = (new QueryBuilder($this->_table))->select($keys);
@@ -91,7 +91,7 @@ class Table
 
   public function update(array $where = null)
   {
-    $array = Sanitize::sanitizeProperties($this);
+    $array = Sanitize::objectProperties($this);
     $array = array_filter($array);
 
     $query = (new QueryBuilder($this->_table))->update($array);
