@@ -24,7 +24,12 @@ class Sanitize
     $props = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
     $array = [];
     foreach ($props as $prop) {
-      $array[$prop->getName()] = $prop->getValue($object);
+      try {
+        $value = $prop->getValue($object);
+      } catch (\Throwable $th) {
+        $value = null;
+      }
+      $array[$prop->getName()] = $value;
     }
     return $array;
   }
