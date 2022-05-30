@@ -8,12 +8,12 @@ class Env
   {
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-
-      if (strpos(trim($line), '#') === 0) {
+      $line = trim($line);
+      if (strpos($line, '#') === 0) {
         continue;
       }
-
-      list($name, $value) = explode('=', $line, 2);
+      $line = trim(explode("#", $line, 2)[0]);
+      [$name, $value] = explode('=', $line, 2);
       $name = trim($name);
       $value = trim($value);
 
