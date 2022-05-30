@@ -24,7 +24,7 @@ class Table
 
   public function __set($prop, $value)
   {
-    if (strpos($prop, 0, 1) == "_") {
+    if (str_starts_with($prop, "_")) {
       throw new \Exception("A propriedade $prop não pode ser definida, pois é privada", 500);
     }
     return $this->$prop = $value;
@@ -32,7 +32,7 @@ class Table
 
   public function __get($prop)
   {
-    if (strpos($prop, 0, 1) == "_") {
+    if (str_starts_with($prop, "_")) {
       throw new \Exception("A propriedade $prop não pode ser retornada, pois é privada", 500);
     }
     return $this->$prop;
