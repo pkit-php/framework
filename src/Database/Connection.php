@@ -21,6 +21,13 @@ class Connection
   private static ?string
     $user = null,
     $pass = null;
+  private const KEYS = [
+    "dbname",
+    "host",
+    "port",
+    "charset",
+    "dialect"
+  ];
 
   public static function config(array $config, string $user, string $pass)
   {
@@ -67,8 +74,7 @@ class Connection
   {
     $driver = self::getDriver();
     $config = $driver . ":";
-    $keys = ["dbname", "host", "port", "charset", "dialect"];
-    foreach ($keys as $key) {
+    foreach (self::KEYS as $key) {
       $value = self::getAttribute($key);
       if ($value) {
         $config .= "$key=$value;";
