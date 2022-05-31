@@ -29,12 +29,10 @@ class Paginator
   private function setRemainingPages()
   {
     $remainingPages = $this->total / $this->limit - $this->page;
-    if ((int)$remainingPages < $remainingPages) {
+    if ((int)$remainingPages < $remainingPages)
       $remainingPages = (int)$remainingPages + 1;
-    }
-    if ($remainingPages < 0) {
+    if ($remainingPages < 0)
       $remainingPages = 0;
-    }
     $this->remainingPages = $remainingPages;
   }
 }
