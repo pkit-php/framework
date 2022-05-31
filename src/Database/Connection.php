@@ -33,8 +33,7 @@ class Connection
   {
     if (is_null(self::$driver)) {
       self::$driver = self::$config['driver']
-        ? self::$config['driver']
-        : Env::getEnvOrValue("DB_DRIVER", "mysql");
+        ?? Env::getEnvOrValue("DB_DRIVER", "mysql");
     }
     return self::$driver;
   }
@@ -43,8 +42,7 @@ class Connection
   {
     if (is_null(self::${$attribute})) {
       self::${$attribute} = self::$config[$attribute]
-        ? self::$config[$attribute]
-        : Env::getEnvOrValue("DB_" . strtoupper($attribute), null);
+        ?? Env::getEnvOrValue("DB_" . strtoupper($attribute), null);
     }
     return self::${$attribute};
   }
@@ -70,7 +68,7 @@ class Connection
     $driver = self::getDriver();
     $config = $driver . ":";
     $keys = ["dbname", "host", "port", "charset", "dialect"];
-    foreach ($keys as  $key) {
+    foreach ($keys as $key) {
       $value = self::getAttribute($key);
       if ($value) {
         $config .= "$key=$value;";
