@@ -7,7 +7,7 @@ use Pkit\Utils\Env;
 
 class Connection
 {
-  private PDO $pdo;
+  private ?PDO $pdo = null;
 
   private static array
     $config = [];
@@ -78,6 +78,13 @@ class Connection
   }
 
   private function connect()
+  {
+    if (is_null($this->pdo)) {
+      $this->setConnection();
+    }
+  }
+
+  private function setConnection()
   {
     $config = self::getConfig();
     $this->pdo = new PDO($config, self::getUser(), self::getPass());
