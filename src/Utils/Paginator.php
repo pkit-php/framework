@@ -30,7 +30,7 @@ class Paginator
     if ($firstItem > $this->total) {
       $firstItem = $this->total;
     }
-    $this->firstItem;
+    $this->firstItem = $firstItem;
   }
 
   private function setTotalPages()
