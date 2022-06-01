@@ -27,9 +27,8 @@ class Paginator
   private function setFirstItem()
   {
     $firstItem = $this->limit * ($this->page - 1);
-    if ($firstItem > $this->total) {
+    if ($firstItem > $this->total)
       $firstItem = $this->total;
-    }
     $this->firstItem = $firstItem;
   }
 
