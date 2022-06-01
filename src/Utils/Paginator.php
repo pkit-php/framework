@@ -9,6 +9,7 @@ class Paginator
     $total,
     $limit,
     $page,
+    $totalPages,
     $remainingPages,
     $firstItem;
 
@@ -19,6 +20,15 @@ class Paginator
     $this->page = $page;
     $this->setFirstItem();
     $this->setRemainingPages();
+    $this->setRemainingPages();
+  }
+
+  public function setTotalPages()
+  {
+    $totalPages = $this->total / $this->limit;
+    if ((int)$totalPages < $totalPages)
+      $totalPages = (int)$totalPages + 1;
+    $this->totalPages = $totalPages;
   }
 
   private function setFirstItem()
@@ -28,9 +38,7 @@ class Paginator
 
   private function setRemainingPages()
   {
-    $remainingPages = $this->total / $this->limit - $this->page;
-    if ((int)$remainingPages < $remainingPages)
-      $remainingPages = (int)$remainingPages + 1;
+    $remainingPages = $this->totalPages - $this->page;
     if ($remainingPages < 0)
       $remainingPages = 0;
     $this->remainingPages = $remainingPages;
