@@ -19,7 +19,7 @@ class Paginator
     $this->limit = $limit;
     $this->page = $page;
     $this->setFirstItem();
-    $this->setRemainingPages();
+    $this->setTotalPages();
     $this->setRemainingPages();
   }
 
