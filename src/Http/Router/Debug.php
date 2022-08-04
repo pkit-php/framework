@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Private;
+namespace Pkit\Http\Router;
 
 use Pkit\Http\ContentType;
 use Pkit\Http\Request;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Private;
+namespace Pkit\Http\Router;
 
 class Routes
 {
@@ -9,23 +9,9 @@ class Routes
         $patternRest = '/\[\.{3}\w+\]/',
         $patternGeral = '/\[(?:\.{3})?(\w+)\]/';
 
-    public static function mathRoutes(array $routes, string $uri)
+    public static function matchRouteAndParams(string $route, string $uri): array | false
     {
-        $includeFile = '';
-        $params = [];
-        foreach ($routes as $route => $file) {
-            $result = self::mathRouteAndParams($route, $uri);
-            if (is_array($result)) {
-                $params = $result;
-                $includeFile = $file;
-                break;
-            }
-        }
-        return [$includeFile, $params ?? []];
-    }
-
-    public static function mathRouteAndParams(string $route, string $uri)
-    {
+        $variables = [];
         if (preg_match_all(self::$patternGeral, $route, $matches)) {
             $variables = $matches[1];
             $regex = [
@@ -49,10 +35,9 @@ class Routes
 
         if (preg_match($route, $uri, $matches)) {
             unset($matches[0]);
-            $params = array_combine($variables ?? [], $matches);
-            return $params;
+            return array_combine(@$variables ?? [], $matches);
         };
-
+        
         return false;
     }
 }
