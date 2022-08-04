@@ -3,10 +3,10 @@
 namespace Pkit\Http;
 
 use Pkit\Private\Debug;
-use Pkit\Private\Map;
 use Pkit\Private\Routes;
 use Pkit\Utils\Sanitize;
 use Pkit\Utils\Env;
+use Pkit\Utils\FS;
 use Pkit\Utils\Text;
 
 class Router
@@ -87,19 +87,29 @@ class Router
     self::$uri = $uri;
     $publicPath = self::getPublicPath();
     $filePublic = $publicPath . str_replace("/../", "/", self::$uri);
-    if (file($filePublic)) {
+    if (@file($filePublic)) {
       self::$file = $filePublic;
-    } else {
+    } 
+    else {
       self::setFileAndParams();
     }
   }
 
   private static function setFileAndParams()
   {
-    $routes = Map::mapPhpFiles(self::getRoutePath(), '/');
-    self::$especialRoute = $routes['/*'];
-    unset($routes['/*']);
-    [self::$file, self::$params] = Routes::mathRoutes($routes, self::$uri);
+    $params = [];
+    self::$file = FS::someFile(self::getRoutePath(), function ($file) use ($params) {
+      $file = Text::removeFromStart($file, self::$routePath);
+      $file = Text::removeFromEnd($file, ".php");
+      $file = Text::removeFromEnd($file, "index");
+      $file = "/".trim($file, "/");
+      
+      $params = Routes::matchRouteAndParams($file, self::$uri);
+
+      return is_array($params);
+    }, true) ?? "";
+    self::$params = $params;
+    self::$especialRoute = self::$routePath . '/*';
   }
 
   private static function includeFile()
@@ -113,7 +123,7 @@ class Router
     ];
 
     if ($extension != '.php') {
-      if (($mime_content = $mime_types[$extension]) || ($mime_content = mime_content_type(self::$file))) {
+      if (($mime_content = @$mime_types[$extension]) || ($mime_content = mime_content_type(self::$file))) {
         self::$response->contentType($mime_content);
       } else {
         self::$response->status(Status::INTERNAL_SERVER_ERROR);
