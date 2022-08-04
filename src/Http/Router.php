@@ -2,8 +2,8 @@
 
 namespace Pkit\Http;
 
-use Pkit\Private\Debug;
-use Pkit\Private\Routes;
+use Pkit\Http\Router\Debug;
+use Pkit\Http\Router\Routes;
 use Pkit\Utils\Sanitize;
 use Pkit\Utils\Env;
 use Pkit\Utils\FS;
