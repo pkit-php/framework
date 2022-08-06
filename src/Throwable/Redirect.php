@@ -13,7 +13,10 @@ class Redirect extends \Exception
             $code >= 400 ||
             !Status::validate($code)
         ) {
-            throw new Error("Redirect: Status '$code' is not valid", 500);
+            throw new Error(
+                "Redirect: Status '$code' is not valid",
+                Status::INTERNAL_SERVER_ERROR
+            );
         }
         parent::__construct($location, $code);
     }

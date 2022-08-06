@@ -13,7 +13,10 @@ class Error extends \Exception
             $code >= 600 ||
             !Status::validate($code)
         ) {
-            throw new Error("Error: Status '$code' is not valid", 500);
+            throw new Error(
+                "Error: Status '$code' is not valid",
+                Status::INTERNAL_SERVER_ERROR
+            );
         }
         parent::__construct($message, $code);
     }
