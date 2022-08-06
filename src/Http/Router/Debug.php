@@ -9,33 +9,34 @@ use Pkit\Utils\View;
 
 class Debug
 {
-  public static function log(Request $request, Response $response, $message)
+  public static function log(Request $request, $message, $code)
   {
     $accepts = $request->headers['Accept'];
     if (strpos($accepts, 'text/html') !== false) {
-      self::html($response, $message);
+      self::html($message, $code);
     } else if (strpos($accepts, 'application/json') !== false) {
-      self::json($response, $message);
+      self::json($message, $code);
     } else {
-      $response->send($message);
+      echo (new Response($message, $code));
+      exit;
     }
   }
 
-  public static function html(Response $response, $message)
+  public static function html($message, $code)
   {
-    $response->contentType(ContentType::HTML)
-      ->render(View::layout("pkit/code", [
-        'code' => $response->status(),
-        'message' => $message,
-      ]));
+    echo new Response(View::layout("pkit/code", [
+      'code' => $code,
+      'message' => $message,
+    ]), $code);
+    exit;
   }
 
-  public static function json(Response $response, $message)
+  public static function json($message, $code)
   {
-    $response->contentType(ContentType::JSON)
-      ->send([
-        'code' => $response->status(),
-        'message' => $message,
-      ]);
+    echo (new Response([
+      "message" => $message,
+    "code" => $code]))
+      ->contentType(ContentType::JSON);
+    exit;
   }
 }

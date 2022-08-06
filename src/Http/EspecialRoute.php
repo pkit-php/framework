@@ -2,37 +2,31 @@
 
 namespace Pkit\Http;
 
-use Pkit\Http\Middlewares;
 use Pkit\Http\Request;
 
-class Route
+class EspecialRoute
 {
-  public $middlewares;
-
-  public static function run(Request $request)
+  public static function run(Request $request, string $message, int $code)
   {
     $class = static::class;
     $route = new $class;
-
-    $middlewares = Middlewares::filterMiddlewares($route->middlewares ?? [], $request->httpMethod);
-
-    return (new Middlewares(function ($request) use ($route) {
-      return $route->runMethod($request);
-    }, $middlewares))->next($request);
+    
+    return $route->runMethod($request, $message, $code);
+    
   }
 
-  public function runMethod(Request $request)
+  public function runMethod(Request $request, string $message, int $code)
   {
     $all = 'all';
     if (method_exists($this, $all)) {
-      $return = $this->$all($request);
+      $return = $this->$all($request, $message, $code);
       if($return)
         return $return;
     }
     $method = strtolower($request->httpMethod);
     $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
     if (in_array($method, $methods) && method_exists($this, $method)) {
-      return $this->$method($request);
+      return $this->$method($request, $message, $code);
     } else {
       return new Response("", Status::NOT_IMPLEMENTED);
     }

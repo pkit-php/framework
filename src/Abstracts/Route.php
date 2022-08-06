@@ -7,57 +7,54 @@ use Pkit\Http\Response;
 use Pkit\Http\Route as HttpRoute;
 use Pkit\Http\Status;
 
-function methodNotAllowed(Request $_, Response $response)
+function methodNotAllowed()
 {
-  $response
-    ->onlyCode()
-    ->setStatus(Status::METHOD_NOT_ALLOWED)
-    ->send();
+  return new Response("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
 }
 
 abstract class Route extends HttpRoute
 {
   public $middlewares = [];
 
-  public function options(Request $request, Response $response)
+  public function options(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function delete(Request $request, Response $response)
+  public function delete(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function patch(Request $request, Response $response)
+  public function patch(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function trace(Request $request, Response $response)
+  public function trace(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function post(Request $request, Response $response)
+  public function post(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function head(Request $request, Response $response)
+  public function head(Request $_)
   {
-    $response->headers['Accept'] =
-      'application/x-www-form-urlencoded, ' .
-      'application/json, ' .
-      'application/xml, ' .
-      'multipart/form-data';
-    $response->onlyCode();
-    $response->send();
+    echo (new Response(""))
+      ->header('Accept',
+    'application/x-www-form-urlencoded, ' .
+    'application/json, ' .
+    'application/xml, ' .
+    'multipart/form-data');
+      exit;
   }
-  public function get(Request $request, Response $response)
+  public function get(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function put(Request $request, Response $response)
+  public function put(Request $_)
   {
-    methodNotAllowed($request, $response);
+    methodNotAllowed();
   }
-  public function all(Request $request, Response $response)
+  public function all(Request $_)
   {
   }
 }

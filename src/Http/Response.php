@@ -2,51 +2,29 @@
 
 namespace Pkit\Http;
 
+use Pkit\Throwable\Error;
+
 class Response
 {
-  public array $headers = [];
+  private array $headers = [];
   private array $cookies = [];
-  private ?int $status = null;
   private ?string $contentType = null;
+  private int $status;
+  private mixed $content;
 
-  public function setStatus($status = 200)
+  public function __construct(mixed $content, $status = 200)
   {
-    if (!$this->status) {
-      $this->status($status);
-    }
+    $this->content = $content;
+    $this->status = $status;
+  }
+
+  public function header(string $key, string $value)
+  {
+    $this->headers[$key] = $value;
     return $this;
   }
 
-  public function setContentType($contentType = 'text/html')
-  {
-    if (!$this->contentType) {
-      $this->contentType($contentType);
-    }
-    return $this;
-  }
-
-
-  public function contentType(?string $contentType = null): self | string
-  {
-    if ($contentType) {
-      $this->contentType = $contentType;
-      return $this;
-    } else {
-      return $this->contentType ?? "text/html";
-    }
-  }
-
-  public function status(int $statusCode = 0): self | int
-  {
-    if ($statusCode) {
-      $this->status = $statusCode;
-      return $this;
-    } else {
-      return $this->status ?? 200;
-    }
-  }
-
-  public function setCookie(
+  public function cookie(
     string $name,
     $value = "",
     $expires_or_options = 0,
@@ -63,6 +41,35 @@ class Response
       "secure" => $secure,
       "httponly" => $httponly
     ];
+    return $this;
+  }
+
+  public function contentType(string $contentType)
+  {
+    $this->contentType = $contentType;
+    return $this;
+  }
+
+  public function status(int $statusCode = 0): self | int
+  {
+    if (!Status::validate($statusCode))
+      throw new Error(
+        "Response: Status '$statusCode' is not valid",
+        Status::INTERNAL_SERVER_ERROR
+      );
+    $this->status = $statusCode;
+    return $this;
+  }
+
+  private function fixContentType()
+  {
+    if(is_null($this->contentType)){
+      if(is_string($this->content)){
+        $this->contentType = ContentType::HTML;
+      } else {
+        $this->contentType = ContentType::JSON;
+      }
+    }
   }
 
   private function sendCode()
@@ -70,24 +77,12 @@ class Response
     http_response_code($this->status);
   }
 
-  public function sendStatus($status = 200)
-  {
-    $this
-      ->onlyCode()
-      ->status($status)
-      ->send();
-  }
-
   private function sendHeaders()
   {
-    $this->headers['Content-Type'] = $this->contentType;
+    $this->headers['Content-Type'] = $this->contentType ?? "text/html";
 
     foreach ($this->headers as $key => $value) {
-      if ($value) {
-        header($key . ':' . $value);
-      } else {
-        header_remove($value);
-      }
+      header($key . ':' . $value);
     }
   }
 
@@ -98,39 +93,23 @@ class Response
     }
   }
 
-  public function send($content = '')
+  public function __toString()
   {
-    $this->setStatus();
-    $this->setContentType();
+    $this->fixContentType();
     $this->sendCode();
     $this->sendHeaders();
     $this->sendCookies();
 
     switch ($this->contentType) {
       case 'text/html':
-        echo $content;
-        break;
+        return $this->content;
       case 'application/json':
-        echo json_encode(
-          $content,
+        return json_encode(
+          $this->content,
           JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
-        break;
       default:
-        echo $content;
-        break;
+        return $this->content;
     }
-
-    exit;
-  }
-
-  public function render($content = '', $status = 200)
-  {
-    $this->setStatus($status)->contentType(ContentType::HTML)->send($content);
-  }
-
-  public function onlyCode(): self
-  {
-    return $this->setContentType(ContentType::NONE);
   }
 }

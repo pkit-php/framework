@@ -3,80 +3,69 @@
 namespace Pkit\Http;
 
 use Pkit\Http\Request;
-use Pkit\Http\Response;
+use Pkit\Throwable\Error;
 use Pkit\Utils\Converter;
-use Pkit\Utils\Env;
-use Pkit\Utils\Text;
 
 class Middlewares
 {
-  private static ?string $namespace = null;
-  private array $middlewares;
-  private \Closure $controller;
 
-  public static function config(string $namespace)
+  public static function filterMiddlewares(array|string $middlewares, string $method)
   {
-    self::$namespace = $namespace;
-  }
-
-  private static function getNamespace()
-  {
-    if (is_null(self::$namespace)) {
-      self::$namespace = Env::getEnvOrValue("MIDDLEWARES_NAMESPACE", 'App\\Middlewares');
-    }
-    return self::$namespace;
-  }
-
-  public static function getMiddlewares(array|string $middlewares, string $method)
-  {
-    $newMiddlewares = [];
     $middlewares = Converter::anyToArray($middlewares);
-    foreach ($middlewares as $key => $middleware) {
-      if (is_int($key)) {
-        $newMiddlewares[] = $middleware;
-      }
-    }
+
     $methodsMiddlewares = $middlewares[strtolower($method)] ?? [];
     $methodsMiddlewares = Converter::anyToArray($methodsMiddlewares);
 
-    return array_merge($newMiddlewares, $methodsMiddlewares);
-  }
+    $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
+    $middlewares = array_filter($middlewares, function ($key) use ($methods) {
+      return in_array($key, $methods) == false;
+    }, ARRAY_FILTER_USE_KEY);
 
-  private static function getNamespaceByClass($class)
-  {
-    $class = str_replace("/", "\\", $class);
-    if (substr($class, 0, 5) == 'Pkit\\') {
-      $class = Text::removeFromStart($class, 'Pkit\\');
-      return 'Pkit\\Middlewares\\' .  $class;
-    } else {
-      return self::getNamespace() . '\\' . $class;
-    }
+    return array_merge($middlewares, $methodsMiddlewares);
   }
 
   public function __construct(
-    \Closure $controller,
-    array $middlewares
+    private \Closure $controller,
+    private array $middlewares,
   ) {
-    $this->controller = $controller;
-    $this->middlewares = $middlewares;
   }
 
-  public function next(Request $request, Response $response)
+  public function next(Request $request)
   {
     if (empty($this->middlewares)) {
-      return call_user_func_array($this->controller, [$request, $response]);
+      return call_user_func_array($this->controller, [$request]);
     }
 
-    $middleware = array_shift($this->middlewares);
+    $lastKeyMiddleware = array_key_last($this->middlewares);
+    if (is_numeric($lastKeyMiddleware)) {
+      $middleware = array_shift($this->middlewares);
+    } else {
+      $params = array_shift($this->middlewares);
+      $middleware = $lastKeyMiddleware;
+    }
+
+    if (class_exists($middleware) == false)
+      throw new Error(
+        "Middlewares: Class '$middleware' not exists",
+        Status::INTERNAL_SERVER_ERROR
+      );
+
+    if (method_exists($middleware, "handle") == false)
+      throw new Error(
+        "Middlewares: Class '$middleware' is not valid",
+        Status::INTERNAL_SERVER_ERROR
+      );
+
+    $object = (new $middleware);
+
+    if ($params != null)
+      $params = Converter::anyToArray($params);
 
     $queue = $this;
-    $next = function ($request, $response) use ($queue) {
-      return $queue->next($request, $response);
+    $next = function ($request) use ($queue) {
+      return $queue->next($request);
     };
 
-    @[$namespace, $params] = explode(":", self::getNamespaceByClass($middleware));
-    $object = (new $namespace);
-    $object->setParams(explode(",", $params ?? ""));
-    return $object->handle($request, $response, $next);
+    return $object->handle($request, $next, $params ?? []);
   }
 }

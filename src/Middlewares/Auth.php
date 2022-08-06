@@ -6,32 +6,31 @@ use Pkit\Abstracts\Middleware;
 use Pkit\Http\Router;
 use Pkit\Auth\Session;
 use Pkit\Http\Status;
+use Pkit\Throwable\Error;
 use Pkit\Utils\Date;
 
 class Auth extends Middleware
 {
-  public function handle($request, $response, $next)
+  public function handle($request, $next, $_)
   {
-    if (Session::logged()) {
-      $expire = Session::getTime();
-      if ($expire) {
-        $created = Session::getCreated();
-        if ($created) {
-          $interval = Date::deltaTime(
-            new \DateTime($created),
-            new \DateTime('now')
-          );
-          if ($interval < $expire) {
-            return $next($request, $response);
-          }
-        }
-      } else {
-        return $next($request, $response);
+    if (!Session::logged()) {
+      Session::logout();
+      throw new Error("Session: User Unauthorized", Status::UNAUTHORIZED);
+    }
+
+    $expire = Session::getTime();
+    if ($expire > 0) {
+      $created = Session::getCreated();
+      $interval = Date::deltaTime(
+        new \DateTime($created),
+        new \DateTime('now')
+      );
+      if ($interval > $expire) {
+        Session::logout();
+        throw new Error("Session: Session Expired", Status::UNAUTHORIZED);
       }
     }
-    Session::logout();
-    $response->status(Status::UNAUTHORIZED);
-    Router::setMessage('User unauthorized');
-    Router::runEspecialRoute();
+
+    return $next($request);
   }
 }
