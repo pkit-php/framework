@@ -23,16 +23,14 @@ class Router
   private static ?string
     $especialRoute = null,
     $routePath = null,
-    $publicPath = null,
-    $domain = null;
+    $publicPath = null;
 
-  public static function config(string $routePath, ?string $publicPath = null, ?string $domain = null, bool $subDomain = false)
+  public static function config(string $routePath, ?string $publicPath = null, bool $subDomain = false)
   {
     self::$routePath = rtrim($routePath, "/");
     self::$publicPath = $publicPath
       ? rtrim($publicPath, "/")
       : null;
-    self::$domain = $domain;
     self::$subDomain = $subDomain;
   }
 
@@ -48,13 +46,6 @@ class Router
     if (is_null(self::$publicPath))
       self::$publicPath = Env::getEnvOrValue("PUBLIC_PATH", $_SERVER["DOCUMENT_ROOT"] . "/public");
     return self::$publicPath;
-  }
-
-  public static function getDomain()
-  {
-    if (is_null(self::$domain))
-      self::$domain = Env::getEnvOrValue("DOMAIN", "");
-    return self::$domain;
   }
 
   public static function getSubDomain()
@@ -112,7 +103,7 @@ class Router
       $code = $err->getCode();
       $message = $err->getMessage();
     } catch (Redirect $red) {
-      echo (new Response("...", $red->getCode()))
+      echo (new Response("", $red->getCode()))
         ->header("Location", $red->getMessage());
       exit;
     } catch (\Throwable $th) {
@@ -219,13 +210,11 @@ class Router
       $message = "page '" . self::$uri . "' not found";
     }
 
-
     if (@file(self::$especialRoute)) {
       [$message, $code] = self::tryRunRoute(function () use ($request, $message, $code) {
         self::runEspecialRoute($request, $message, $code);
       });
     }
-
 
     if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true') {
       Debug::log($request, $message, $code);
