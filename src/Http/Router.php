@@ -192,7 +192,7 @@ class Router
     ) {
       echo (new Response($content))->contentType($mime_content);
     } else {
-      echo new Response("Internal Server Error", Status::INTERNAL_SERVER_ERROR);
+      echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
     }
     exit;
   }
