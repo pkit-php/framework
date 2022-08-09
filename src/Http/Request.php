@@ -49,11 +49,12 @@ class Request
           $this->postVars = $_POST;
           break;
         default:
-          (new Response)->status(Status::UNSUPPORTED_MEDIA_TYPE)->onlyCode()->send();
-          break;
+          echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
+          exit;
       }
     } catch (\Throwable $th) {
-      (new Response)->status(Status::BAD_REQUEST)->onlyCode()->send($th);
+      echo new Response("",Status::BAD_REQUEST);
+      exit;
     }
   }
 }
