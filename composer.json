@@ -19,7 +19,8 @@
     "php": ">=8.1"
   },
   "suggest": {
-    "ext-pdo": "Necessário para a conexão em caso de uso do banco de dados"
+    "ext-pdo": "Necessário para a conexão em caso de uso do banco de dados",
+    "php-xml": "Necessário para a conversão para array e vice-versa"
   },
   "autoload": {
     "psr-4": {
