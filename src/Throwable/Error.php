@@ -3,10 +3,11 @@
 namespace Pkit\Throwable;
 
 use Pkit\Http\Status;
+use Throwable;
 
 class Error extends \Exception
 {
-    public function __construct(string $message, int $code)
+    public function __construct(string $message, int $code, Throwable|null $th = null)
     {
         if (
             $code < 400 ||
@@ -15,9 +16,10 @@ class Error extends \Exception
         ) {
             throw new Error(
                 "Error: Status '$code' is not valid",
-                Status::INTERNAL_SERVER_ERROR
+                Status::INTERNAL_SERVER_ERROR,
+                $th
             );
         }
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $th);
     }
 }
