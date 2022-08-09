@@ -4,37 +4,53 @@ namespace Pkit\Http;
 
 use Pkit\Http\Middlewares;
 use Pkit\Http\Request;
+use ReflectionClass;
 
 class Route
 {
-  public $middlewares;
+  public $middlewares = [];
 
   public static function run(Request $request)
   {
     $class = static::class;
     $route = new $class;
 
-    $middlewares = Middlewares::filterMiddlewares($route->middlewares ?? [], $request->httpMethod);
+    if ($method = $route->getMethod($request)) {
 
-    return (new Middlewares(function ($request) use ($route) {
-      return $route->runMethod($request);
-    }, $middlewares))->next($request);
+      $middlewares = Middlewares::filterMiddlewares(
+        $route->middlewares,
+        $request->httpMethod
+      );
+      return (new Middlewares(function ($request) use ($route, $method) {
+        return $route->$method($request);
+      }, $middlewares))->next($request);
+    }
+
+    return new Response("", Status::NOT_IMPLEMENTED);
   }
 
-  public function runMethod(Request $request)
+  public function getMethod(Request $request)
   {
     $all = 'all';
     if (method_exists($this, $all)) {
-      $return = $this->$all($request);
-      if($return)
-        return $return;
+      if ((new ReflectionClass($this))
+        ->getMethod($all)
+        ->getDocComment() !== "/** @abstract */"
+      ) {
+        return $all;
+      }
     }
     $method = strtolower($request->httpMethod);
     $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
-    if (in_array($method, $methods) && method_exists($this, $method)) {
-      return $this->$method($request);
-    } else {
-      return new Response("", Status::NOT_IMPLEMENTED);
+    if (
+      in_array($method, $methods) &&
+      method_exists($this, $method) &&
+      (new ReflectionClass($this))
+      ->getMethod($method)
+      ->getDocComment() !== "/** @abstract */"
+    ) {
+      return $method;
     }
+    return false;
   }
 }

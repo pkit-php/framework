@@ -7,54 +7,59 @@ use Pkit\Http\Response;
 use Pkit\Http\Route as HttpRoute;
 use Pkit\Http\Status;
 
-function methodNotAllowed()
-{
-  return new Response("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
-}
-
 abstract class Route extends HttpRoute
 {
   public $middlewares = [];
 
-  public function options(Request $_)
+  /** @abstract */
+  public function options(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function delete(Request $_)
+  /** @abstract */
+  public function delete(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function patch(Request $_)
+  /** @abstract */
+  public function patch(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function trace(Request $_)
+  /** @abstract */
+  public function trace(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function post(Request $_)
+  /** @abstract */
+  public function post(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function head(Request $_)
+  public function head(Request $_): Response
   {
-    echo (new Response(""))
-      ->header('Accept',
-    'application/x-www-form-urlencoded, ' .
-    'application/json, ' .
-    'application/xml, ' .
-    'multipart/form-data');
-      exit;
+    return (new Response(""))
+      ->header(
+        'Accept',
+        'application/x-www-form-urlencoded, ' .
+          'application/json, ' .
+          'application/xml, ' .
+          'multipart/form-data'
+      );
   }
-  public function get(Request $_)
+  /** @abstract */
+  public function get(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function put(Request $_)
+  /** @abstract */
+  public function put(Request $_): Response
   {
-    methodNotAllowed();
+    return new Response("");
   }
-  public function all(Request $_)
+  /** @abstract */
+  public function all(Request $_): Response
   {
+    return new Response("");
   }
 }

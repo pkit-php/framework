@@ -9,44 +9,49 @@ use Throwable;
 
 abstract class EspecialRoute extends HttpEspecialRoute
 {
-  public function options(Request $_, Throwable $err)
+  /** @abstract */
+  public function options(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function delete(Request $_, Throwable $err)
+  /** @abstract */
+  public function delete(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function patch(Request $_, Throwable $err)
+  /** @abstract */
+  public function patch(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function trace(Request $_, Throwable $err)
+  /** @abstract */
+  public function trace(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function post(Request $_, Throwable $err)
+  /** @abstract */
+  public function post(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function head(Request $_, Throwable $err)
+  /** @abstract */
+  public function head(Request $_, Throwable $err): Response
   {
-    return (new Response(""))
-      ->header('Accept',
-    'application/x-www-form-urlencoded, ' .
-    'application/json, ' .
-    'application/xml, ' .
-    'multipart/form-data');
+    return new Response("");
   }
-  public function get(Request $_, Throwable $err)
+  /** @abstract */
+  public function get(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function put(Request $_, Throwable $err)
+  /** @abstract */
+  public function put(Request $_, Throwable $err): Response
   {
-    return methodNotAllowed();
+    return new Response("");
   }
-  public function all(Request $_, Throwable $err)
+  /** @abstract */
+  public function all(Request $_, Throwable $err): Response
   {
+    return new Response("");
   }
 }
