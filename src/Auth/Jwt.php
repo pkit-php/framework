@@ -28,35 +28,7 @@ class Jwt
     self::$alg = $alg;
   }
 
-  private static function signature(string $header, string $payload)
-  {
-    $alg = self::$supported_algs[self::$alg];
-    $signature =  call_user_func($alg[0], strtolower($alg[1]), "$header.$payload", self::getKey(), true);
-    return Base64url::encode($signature);
-  }
-
-  public static function tokenize(array $payload)
-  {
-    $header = [
-      'alg' => self::getAlg(),
-      'typ' => 'JWT'
-    ];
-
-    if (self::getExpire()) {
-      $payload['_created'] = Date::format(new DateTime());
-    }
-
-    $header = json_encode($header);
-    $header = Base64url::encode($header);
-
-    $payload = json_encode($payload);
-    $payload = Base64url::encode($payload);
-
-    $signature = self::signature($header, $payload);
-
-    return "$header.$payload.$signature";
-  }
-
+  
   public static function getPayload(string $token)
   {
     $part = explode(".", $token);
@@ -97,6 +69,35 @@ class Jwt
       self::$key = Env::getEnvOrValue("JWT_KEY", "");
     }
     return self::$key;
+  }
+
+  private static function signature(string $header, string $payload)
+  {
+    $alg = self::$supported_algs[self::$alg];
+    $signature =  call_user_func($alg[0], strtolower($alg[1]), "$header.$payload", self::getKey(), true);
+    return Base64url::encode($signature);
+  }
+
+  public static function tokenize(array $payload)
+  {
+    $header = [
+      'alg' => self::getAlg(),
+      'typ' => 'JWT'
+    ];
+
+    if (self::getExpire()) {
+      $payload['_created'] = Date::format(new DateTime());
+    }
+
+    $header = json_encode($header);
+    $header = Base64url::encode($header);
+
+    $payload = json_encode($payload);
+    $payload = Base64url::encode($payload);
+
+    $signature = self::signature($header, $payload);
+
+    return "$header.$payload.$signature";
   }
 
   public static function validate(string $token)
