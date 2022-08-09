@@ -6,36 +6,43 @@ use Pkit\Http\ContentType;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Utils\View;
+use Throwable;
 
 class Debug
 {
-  public static function log(Request $request, $message, $code)
+  public static function error(Request $request, Throwable $err)
   {
     $accepts = $request->headers['Accept'];
     if (strpos($accepts, 'text/html') !== false) {
-      self::html($message, $code);
+      self::html_err($err);
     } else if (strpos($accepts, 'application/json') !== false) {
-      self::json($message, $code);
+      self::json_err($err);
     } else {
-      echo (new Response($message, $code));
+      echo new Response($err, $err->getCode());
       exit;
     }
   }
 
-  public static function html($message, $code)
+  public static function html_err(Throwable $err)
   {
     echo new Response(View::layout("pkit/code", [
-      'code' => $code,
-      'message' => $message,
-    ]), $code);
+      'code' => $err->getCode(),
+      'description' => $err->getMessage(), 
+      'message' => $err->getMessage(),
+      'title' => $err->getMessage(),
+      "traces" => $err->getTrace(),
+    ]), $err->getCode());
     exit;
   }
 
-  public static function json($message, $code)
+  public static function json_err(Throwable $err)
   {
     echo (new Response([
-      "message" => $message,
-    "code" => $code]))
+      "code" => $err->getCode(),
+      "message" => $err->getMessage(),
+      "trace" => $err->getTrace(),
+  ],
+    $err->getCode()))
       ->contentType(ContentType::JSON);
     exit;
   }

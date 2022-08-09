@@ -6,7 +6,7 @@ use Pkit\Utils\View;
 <html lang="en">
 
 <head>
-  <?php if ($_ARGS['redirect']) : ?>
+  <?php if (@$_ARGS['redirect']) : ?>
     <meta http-equiv="refresh" content="0;url=<?= $_ARGS['redirect'] ?? '/' ?>" />
   <?php endif ?>
   <meta charset="UTF-8">
@@ -41,12 +41,9 @@ use Pkit\Utils\View;
 </head>
 
 <body>
-  <?= $_ARGS['header'] ?>
-  <?= $_ARGS['aside'] ?>
   <main>
     <?= View::slot($_ARGS) ?>
   </main>
-  <?= $_ARGS['footer'] ?>
 </body>
 
 </html>
