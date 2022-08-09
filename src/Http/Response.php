@@ -3,6 +3,8 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
+use Pkit\Utils\Converter;
+use Pkit\Utils\Env;
 
 class Response
 {
@@ -63,8 +65,8 @@ class Response
 
   private function fixContentType()
   {
-    if(is_null($this->contentType)){
-      if(is_string($this->content)){
+    if (is_null($this->contentType)) {
+      if (is_string($this->content)) {
         $this->contentType = ContentType::HTML;
       } else {
         $this->contentType = ContentType::JSON;
@@ -100,16 +102,27 @@ class Response
     $this->sendHeaders();
     $this->sendCookies();
 
-    switch ($this->contentType) {
-      case 'text/html':
-        return $this->content;
-      case 'application/json':
-        return json_encode(
-          $this->content,
-          JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-        );
-      default:
-        return $this->content;
+    try {
+      return match ($this->contentType) {
+        'text/html' => $this->content,
+        'application/json' => is_array($this->content)
+          ? json_encode(
+            $this->content,
+          )
+          : $this->content,
+        'application/xml' => is_array($this->content)
+          ? Converter::arrayToXml($this->content)
+          : $this->content,
+        default => $this->content
+      };
+    } catch (\Throwable $th) {
+      throw new Error(
+        "Response: convertion for content-type'"
+          . $this->contentType
+          . "'",
+        500,
+        $th
+      );
     }
   }
 }
