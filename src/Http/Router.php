@@ -11,6 +11,7 @@ use Pkit\Utils\Env;
 use Pkit\Utils\FS;
 use Pkit\Utils\Text;
 use ReflectionClass;
+use ReflectionObject;
 
 class Router
 {
@@ -101,20 +102,26 @@ class Router
       $function();
     } catch (Error $err) {
       $code = $err->getCode();
-      $message = $err->getMessage();
     } catch (Redirect $red) {
       echo (new Response("", $red->getCode()))
         ->header("Location", $red->getMessage());
       exit;
-    } catch (\Throwable $th) {
-      $err = new Error($th->getMessage(), $th->getCode());
-      $code = $err->getCode();
-      $message = $err->getMessage();
+    } catch (\Throwable $err) {
+      $code = Status::validate($err->getCode())
+        ? $err->getCode()
+        : 500;
+      $codeProperty = (new ReflectionObject($err))
+        ->getProperty("code");
+      $codeProperty->setAccessible(true);
+      $codeProperty->setValue($err, $code);
     } finally {
       if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
         ob_end_clean();
       }
-      return [$message, $code];
+      return $err ?? new Error(
+        "Router: status and message is null or invalid",
+        Status::INTERNAL_SERVER_ERROR
+      );
     }
   }
 
@@ -148,7 +155,7 @@ class Router
     }
   }
 
-  private static function runEspecialRoute(Request $request, string $message, int $code)
+  private static function runEspecialRoute(Request $request, Error $message)
   {
     $classes = get_declared_classes();
     include self::$especialRoute;
@@ -167,7 +174,7 @@ class Router
       $parentClassName == "Pkit\Http\EspecialRoute" ||
       $parentClassName == "Pkit\Abstracts\EspecialRoute"
     ) {
-      echo $class::run($request, $message, $code);
+      echo $class::run($request, $message);
     }
     exit;
   }
@@ -202,24 +209,26 @@ class Router
     $request = new Request;
     self::init($request);
     if (strlen(self::$file)) {
-      [$message, $code] = self::tryRunRoute(function () use ($request) {
+      $err = self::tryRunRoute(function () use ($request) {
         self::runRoute($request, self::$file);
       });
     } else {
-      $code = Status::NOT_FOUND;
-      $message = "page '" . self::$uri . "' not found";
+      $err = new Error(
+        "page '" . self::$uri . "' not found",
+        Status::NOT_FOUND
+      );
     }
 
     if (@file(self::$especialRoute)) {
-      [$message, $code] = self::tryRunRoute(function () use ($request, $message, $code) {
-        self::runEspecialRoute($request, $message, $code);
+      $err = self::tryRunRoute(function () use ($request, $err) {
+        self::runEspecialRoute($request, $err);
       });
     }
 
     if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true') {
-      Debug::log($request, $message, $code);
+      Debug::error($request, $err);
     } else {
-      echo (new Response("", $code));
+      echo new Response("", $err->getCode());
       exit;
     }
   }
