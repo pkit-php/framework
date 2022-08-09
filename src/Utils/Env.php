@@ -25,7 +25,7 @@ class Env
     }
   }
 
-  public static function getEnvOrValue(string $env, mixed $value)
+  public static function getEnvOrValue(string $env, mixed $value): mixed
   {
     $envValue = getenv($env, true);
     return $envValue
