@@ -225,12 +225,11 @@ class Router
       });
     }
 
-    if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true') {
-      Debug::error($request, $err);
-    } else {
+    if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true')
+      echo Debug::error($request, $err);
+    else
       echo new Response("", $err->getCode());
-      exit;
-    }
+    exit;
   }
 
   public static function getUri()
