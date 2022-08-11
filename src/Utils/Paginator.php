@@ -35,8 +35,7 @@ class Paginator
   private function setTotalPages()
   {
     $totalPages = $this->total / $this->limit;
-    if ((int)$totalPages < $totalPages)
-      $totalPages = (int)$totalPages + 1;
+    $totalPages = ceil($totalPages);
     $this->totalPages = $totalPages;
   }
 
