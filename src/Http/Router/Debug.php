@@ -12,10 +12,13 @@ class Debug
 {
   public static function error(Request $request, Throwable $err)
   {
-    $accepts = $request->headers['Accept'];
+    $accepts = $request->headers['accept'];
     if (strpos($accepts, 'text/html') !== false) {
       self::html_err($err);
-    } else if (strpos($accepts, 'application/json') !== false) {
+    } else if (
+      strpos($accepts, 'application/json') !== false ||
+      strpos($accepts, '*/*') !== false
+      ) {
       self::json_err($err);
     } else {
       echo new Response($err, $err->getCode());
