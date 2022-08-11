@@ -37,7 +37,7 @@
     <strong style="color: var(--color);"><?= $_ARGS['code'] ?? "'code'" ?></strong>
     <?= $_ARGS['message'] ? (" - " . $_ARGS['message']) : "" ?>
   </p>
-  <pre style="max-width: 50vw; max-height: 40vh; overflow: auto;">
+  <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;">
   <?= @$_ARGS['trace'] ? $_ARGS['trace'] : "" ?>
   <?php foreach ((@$_ARGS['traces'] ?? []) as $key => $line): ?>
 #<?=$key?><?php if(@$line["file"]) : ?>
