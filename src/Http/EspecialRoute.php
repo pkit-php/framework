@@ -3,10 +3,10 @@
 namespace Pkit\Http;
 
 use Pkit\Http\Request;
-use ReflectionClass;
+use Pkit\Http\Route\Base;
 use Throwable;
 
-class EspecialRoute
+class EspecialRoute extends Base
 {
   public static function run(Request $request, Throwable $err)
   {
@@ -18,30 +18,5 @@ class EspecialRoute
     }
 
     return new Response($err->getMessage(), $err->getCode());
-  }
-
-  public function runMethod(Request $request, Throwable $err)
-  {
-    $all = 'all';
-    if (
-      method_exists($this, $all) &&
-      (new ReflectionClass($this))
-      ->getMethod($all)
-      ->getDocComment() !== "/** @abstract */"
-    ) {
-      return $all;
-    }
-    $method = strtolower($request->httpMethod);
-    $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
-    if (
-      in_array($method, $methods) &&
-      method_exists($this, $method) &&
-      (new ReflectionClass($this))
-      ->getMethod($method)
-      ->getDocComment() !== "/** @abstract */"
-    ) {
-      return $method;
-    }
-    return false;
   }
 }

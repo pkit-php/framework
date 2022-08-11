@@ -2,11 +2,11 @@
 
 namespace Pkit\Http;
 
+use Pkit\Http\Route\Base;
 use Pkit\Http\Middlewares;
 use Pkit\Http\Request;
-use ReflectionClass;
 
-class Route
+class Route extends Base
 {
   public $middlewares = [];
 
@@ -27,30 +27,5 @@ class Route
     }
 
     return new Response("", Status::NOT_IMPLEMENTED);
-  }
-
-  public function getMethod(Request $request)
-  {
-    $all = 'all';
-    if (method_exists($this, $all)) {
-      if ((new ReflectionClass($this))
-        ->getMethod($all)
-        ->getDocComment() !== "/** @abstract */"
-      ) {
-        return $all;
-      }
-    }
-    $method = strtolower($request->httpMethod);
-    $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
-    if (
-      in_array($method, $methods) &&
-      method_exists($this, $method) &&
-      (new ReflectionClass($this))
-      ->getMethod($method)
-      ->getDocComment() !== "/** @abstract */"
-    ) {
-      return $method;
-    }
-    return false;
   }
 }
