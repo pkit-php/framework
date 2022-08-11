@@ -46,7 +46,7 @@ class Request
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
         case null:
-          $this->postVars = $_POST;
+          $this->postVars = array_merge($_POST, $_FILES);
           break;
         default:
           echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
