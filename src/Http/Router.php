@@ -82,13 +82,21 @@ class Router
   private static function setFileAndParams()
   {
     $params = [];
-    self::$file = FS::someFile(self::getRoutePath(), function ($file) use ($params) {
-      $file = Text::removeFromStart($file, self::$routePath);
-      $file = Text::removeFromEnd($file, ".php");
-      $file = Text::removeFromEnd($file, "index");
+    self::$file = FS::someFile(self::getRoutePath(), function ($file) use (&$params) {
+      $route = Text::removeFromStart($file, self::$routePath);
+      if (str_ends_with($route, "/*.php"))
+        return false;
 
-      $params = Routes::matchRouteAndParams($file, self::$uri);
+      if (str_ends_with($route, "/index.php")) {
+        $route = Text::removeFromEnd($route, "/index.php");
+        if ($route == "") {
+          $route = "/";
+        }
+      } else {
+        $route = Text::removeFromEnd($route, ".php");
+      }
 
+      $params = Routes::matchRouteAndParams($route, self::$uri);
       return is_array($params);
     }, true) ?? "";
     self::$params = $params;
