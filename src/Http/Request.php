@@ -19,10 +19,20 @@ class Request
     $this->queryParams = $_GET ?? [];
     $this->cookies = $_COOKIE ?? [];
 
-    $this->headers = getallheaders();
+    $this->setHeaders();
     if ($this->httpMethod != 'GET') {
       $this->setPostVars();
     }
+  }
+
+  public function setHeaders()
+  {
+    $headers = getallheaders() ?? [];
+    $headersKeys = array_map(
+      fn ($value) => strtolower($value),
+      array_keys($headers)
+    );
+    $this->headers = array_combine($headersKeys, $headers);
   }
 
   private function setPostVars()
@@ -41,7 +51,7 @@ class Request
           break;
         case 'application/xml':
           $xml = file_get_contents('php://input');
-          $this->postVars = Converter::xmlToArray($xml);
+          $this->postVars = Parse::xmlToArray($xml);
           break;
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
@@ -53,7 +63,7 @@ class Request
           exit;
       }
     } catch (\Throwable $th) {
-      echo new Response("",Status::BAD_REQUEST);
+      echo new Response("", Status::BAD_REQUEST);
       exit;
     }
   }
