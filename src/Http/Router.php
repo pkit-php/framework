@@ -125,40 +125,10 @@ class Router
     }
   }
 
-  private static function runRoute(Request $request)
-  {
-    $extension = @end(explode(".", self::$file));
-    if ($extension != 'php') {
-      self::sendMimeFile($extension);
-    } else {
-      $classes = get_declared_classes();
-      include self::$file;
-      $classes = array_diff(get_declared_classes(), $classes);
-
-      $class = @array_values($classes)[0];
-      if (is_null($class))
-        exit;
-
-      $parentClass = (new ReflectionClass($class))->getParentClass();
-      if ($parentClass == false)
-        exit;
-
-      $parentClassName = $parentClass->name;
-
-      if (
-        $parentClassName == "Pkit\Http\Route" ||
-        $parentClassName == "Pkit\Abstracts\Route"
-      ) {
-        echo $class::run($request);
-      }
-      exit;
-    }
-  }
-
-  private static function runEspecialRoute(Request $request, Error $message)
+  private static function runRoute(string $route, Request $request, ?Error $err = null)
   {
     $classes = get_declared_classes();
-    include self::$especialRoute;
+    include $route;
     $classes = array_diff(get_declared_classes(), $classes);
 
     $class = @array_values($classes)[0];
@@ -169,12 +139,17 @@ class Router
     if ($parentClass == false)
       exit;
 
+    if (is_null($err))
+      $typeRoute = "Route";
+    else
+      $typeRoute = "EspecialRoute";
+
     $parentClassName = $parentClass->name;
     if (
-      $parentClassName == "Pkit\Http\EspecialRoute" ||
-      $parentClassName == "Pkit\Abstracts\EspecialRoute"
+      $parentClassName == "Pkit\Http\\$typeRoute" ||
+      $parentClassName == "Pkit\Abstracts\\$typeRoute"
     ) {
-      echo $class::run($request, $message);
+      echo $class::run($request, $err);
     }
     exit;
   }
@@ -204,14 +179,27 @@ class Router
     exit;
   }
 
+  public static function getExtension($file)
+  {
+    $explode = explode(".", $file);
+    if (str_starts_with($file, ".") == false)
+      unset($explode[0]);
+    return implode(".", $explode);
+  }
+
   public static function run()
   {
     $request = new Request;
     self::init($request);
     if (strlen(self::$file)) {
-      $err = self::tryRunRoute(function () use ($request) {
-        self::runRoute($request, self::$file);
-      });
+      $extension = self::getExtension(self::$file);
+      if ($extension != 'php') {
+        self::sendMimeFile($extension);
+      } else {
+        $err = self::tryRunRoute(function () use ($request) {
+          self::runRoute(self::$file, $request);
+        });
+      }
     } else {
       $err = new Error(
         "page '" . self::$uri . "' not found",
@@ -219,11 +207,10 @@ class Router
       );
     }
 
-    if (@file(self::$especialRoute)) {
+    if (@file(self::$especialRoute))
       $err = self::tryRunRoute(function () use ($request, $err) {
-        self::runEspecialRoute($request, $err);
+        self::runRoute(self::$especialRoute, $request, $err);
       });
-    }
 
     if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true')
       echo Debug::error($request, $err);
