@@ -19,10 +19,21 @@ class Request
     $this->queryParams = $_GET ?? [];
     $this->cookies = $_COOKIE ?? [];
 
-    $this->headers = getallheaders();
+    $this->setHeaders();
+    
     if ($this->httpMethod != 'GET') {
       $this->setPostVars();
     }
+  }
+
+  public function setHeaders()
+  {
+    $headers = getallheaders() ?? [];
+    $headersKeys = array_map(function ($headerKey)
+    {
+      return ctype_lower($headerKey);
+    }, array_keys($headers));
+    $this->headers = array_combine($headersKeys, $headers);
   }
 
   private function setPostVars()
