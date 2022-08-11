@@ -6,7 +6,7 @@ use Pkit\Http\Status;
 
 class Redirect extends \Exception
 {
-    public function __construct(string $location, int $code)
+    public function __construct(string $location, $code = 301)
     {
         if (
             $code < 300 ||
