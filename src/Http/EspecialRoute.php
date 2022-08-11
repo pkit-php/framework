@@ -17,6 +17,6 @@ class EspecialRoute extends Base
       return $route->$method($request, $err);
     }
 
-    return new Response($err->getMessage(), $err->getCode());
+    throw $err;
   }
 }
