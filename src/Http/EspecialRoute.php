@@ -14,7 +14,7 @@ class EspecialRoute
     $route = new $class;
 
     if ($method = $route->getMethod($request)) {
-      return $route->$method($request);
+      return $route->$method($request, $err);
     }
 
     return new Response($err->getMessage(), $err->getCode());
