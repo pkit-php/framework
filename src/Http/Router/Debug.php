@@ -5,6 +5,7 @@ namespace Pkit\Http\Router;
 use Pkit\Http\ContentType;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Utils\Parse;
 use Pkit\Utils\View;
 use Throwable;
 
@@ -12,10 +13,12 @@ class Debug
 {
   public static function error(Request $request, Throwable $err)
   {
-    $accepts = $request->headers['Accept'];
-    if (strpos($accepts, 'text/html') !== false) {
+    $accepts = Parse::headerToArray($request->headers['accept'], false);
+    if (in_array('text/html', $accepts)) {
       self::html_err($err);
-    } else if (strpos($accepts, 'application/json') !== false) {
+    } else if (
+      in_array('application/json', $accepts ) ||
+      in_array('*/*',$accepts)) {
       self::json_err($err);
     } else {
       echo new Response($err, $err->getCode());
