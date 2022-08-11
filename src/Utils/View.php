@@ -65,7 +65,7 @@ class View
 
   public static function layout(string $file, mixed $args = null)
   {
-    $_ARGS = Converter::anyToArray($args);
+    $_ARGS = Parse::anyToArray($args);
 
     $path = self::getPathFile($file);
     if (!file_exists($path)) {

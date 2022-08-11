@@ -2,7 +2,7 @@
 
 namespace Pkit\Http;
 
-use Pkit\Utils\Converter;
+use Pkit\Utils\Parse;
 
 class Request
 {
@@ -20,6 +20,7 @@ class Request
     $this->cookies = $_COOKIE ?? [];
 
     $this->setHeaders();
+
     if ($this->httpMethod != 'GET') {
       $this->setPostVars();
     }

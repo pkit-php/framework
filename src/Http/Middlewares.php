@@ -4,17 +4,17 @@ namespace Pkit\Http;
 
 use Pkit\Http\Request;
 use Pkit\Throwable\Error;
-use Pkit\Utils\Converter;
+use Pkit\Utils\Parse;
 
 class Middlewares
 {
 
   public static function filterMiddlewares(array|string $middlewares, string $method)
   {
-    $middlewares = Converter::anyToArray($middlewares);
+    $middlewares = Parse::anyToArray($middlewares);
 
     $methodsMiddlewares = $middlewares[strtolower($method)] ?? [];
-    $methodsMiddlewares = Converter::anyToArray($methodsMiddlewares);
+    $methodsMiddlewares = Parse::anyToArray($methodsMiddlewares);
 
     $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
     $middlewares = array_filter($middlewares, function ($key) use ($methods) {
@@ -59,7 +59,7 @@ class Middlewares
     $object = (new $middleware);
 
     if ($params != null)
-      $params = Converter::anyToArray($params);
+      $params = Parse::anyToArray($params);
 
     $queue = $this;
     $next = function ($request) use ($queue) {

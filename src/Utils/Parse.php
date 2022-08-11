@@ -4,7 +4,7 @@ namespace Pkit\Utils;
 
 use Pkit\Throwable\Error;
 
-class Converter
+class Parse
 {
 
   public static function anyToArray(mixed $any)

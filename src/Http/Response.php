@@ -3,7 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
-use Pkit\Utils\Converter;
+use Pkit\Utils\Parse;
 use Pkit\Utils\Env;
 
 class Response
@@ -111,7 +111,7 @@ class Response
           )
           : $this->content,
         'application/xml' => is_array($this->content)
-          ? Converter::arrayToXml($this->content)
+          ? Parse::arrayToXml($this->content)
           : $this->content,
         default => $this->content
       };
