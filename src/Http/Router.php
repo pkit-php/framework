@@ -52,7 +52,7 @@ class Router
   public static function getSubDomain()
   {
     if (is_null(self::$subDomain))
-      self::$subDomain = Env::getEnvOrValue("SUB_DOMAIN", null) == "true";
+      self::$subDomain = Env::getEnvOrValue("SUB_DOMAIN", "false") == "true";
     return self::$subDomain;
   }
 
