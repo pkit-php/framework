@@ -6,8 +6,11 @@ class Routes
 {
     private static
         $patternVariable = '/\[\w+\]/',
+        $patternInteger = '/\[\w+\:(int|integer)\]/',
+        $patternFloat = '/\[\w+\:(float)\]/',
+        $patternWord = '/\[\w+\:(word)\]/',
         $patternRest = '/\[\.{3}\w+\]/',
-        $patternGeral = '/\[(?:\.{3})?(\w+)\]/';
+        $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|word))?\]/';
 
     public static function matchRouteAndParams(string $route, string $uri): array | false
     {
@@ -17,6 +20,9 @@ class Routes
             $regex = [
                 self::$patternRest => "\1",
                 self::$patternVariable => "\2",
+                self::$patternInteger => "\3",
+                self::$patternFloat => "\4",
+                self::$patternWord => "\5",
             ];
             $route = preg_replace(
                 array_keys($regex),
@@ -28,8 +34,11 @@ class Routes
         $route = preg_quote($route);
         $route = str_replace('/', '\/', $route);
         $route = strtr($route, [
-            "\1" => '(.*)',
-            "\2" => '([^\/]*)',
+            "\1" => '(.+)',
+            "\2" => '([^\/]+)',
+            "\3" => '([0-9]+)',
+            "\4" => '([0-9]+(:?\.[0-9])?)',
+            "\5" => '(\w+)',
         ]);
         $route = '/^' . $route . '$/';
 
