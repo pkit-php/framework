@@ -45,11 +45,11 @@ class Connection
     return self::$driver;
   }
 
-  public static function getAttribute(string $attribute)
+  public static function getAttribute(string $attribute): string
   {
     if (is_null(self::${$attribute})) {
       self::${$attribute} = self::$config[$attribute]
-        ?? Env::getEnvOrValue("DB_" . strtoupper($attribute), null);
+        ?? Env::getEnvOrValue("DB_" . strtoupper($attribute), "");
     }
     return self::${$attribute};
   }
@@ -76,7 +76,7 @@ class Connection
     $config = $driver . ":";
     foreach (self::KEYS as $key) {
       $value = self::getAttribute($key);
-      if ($value) {
+      if (strlen($value)) {
         $config .= "$key=$value;";
       }
     }
