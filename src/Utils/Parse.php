@@ -2,8 +2,6 @@
 
 namespace Pkit\Utils;
 
-use Pkit\Throwable\Error;
-
 class Parse
 {
 
