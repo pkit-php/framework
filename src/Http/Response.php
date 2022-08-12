@@ -3,8 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
-use Pkit\Utils\Converter;
-use Pkit\Utils\Env;
+use Pkit\Utils\Parse;
 
 class Response
 {
@@ -12,9 +11,9 @@ class Response
   private array $cookies = [];
   private ?string $contentType = null;
   private int $status;
-  private mixed $content;
+  private array | string | object $content;
 
-  public function __construct(mixed $content, $status = 200)
+  public function __construct(array | string | object $content, $status = 200)
   {
     $this->content = $content;
     $this->status = $status;
@@ -111,7 +110,7 @@ class Response
           )
           : $this->content,
         'application/xml' => is_array($this->content)
-          ? Converter::arrayToXml($this->content)
+          ? Parse::arrayToXml($this->content)
           : $this->content,
         default => $this->content
       };

@@ -25,11 +25,10 @@ class Env
     }
   }
 
-  public static function getEnvOrValue(string $env, mixed $value): mixed
+  public static function getEnvOrValue(string $env, array|string $value, bool $local_only = true): array|string
   {
-    $envValue = getenv($env, true);
-    return $envValue
-      ? $envValue
-      : $value;
+    if($var = getenv($env, $local_only))
+      return $var;
+    return $value;
   }
 }
