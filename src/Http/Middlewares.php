@@ -58,7 +58,7 @@ class Middlewares
 
     $object = (new $middleware);
 
-    if ($params != null)
+    if (@$params != null)
       $params = Parse::anyToArray($params);
 
     $queue = $this;
