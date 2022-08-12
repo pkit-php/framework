@@ -99,7 +99,8 @@ class Router
       $params = Routes::matchRouteAndParams($route, self::$uri);
       return is_array($params);
     }, true) ?? "";
-    self::$params = $params;
+    if($params)
+      self::$params = $params;
     self::$especialRoute = self::$routePath . '/*.php';
   }
 
