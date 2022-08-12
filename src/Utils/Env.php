@@ -27,6 +27,8 @@ class Env
 
   public static function getEnvOrValue(string $env, array|string $value, bool $local_only = true): array|string
   {
-    return getenv($env, $local_only) ?? $value;
+    if($var = getenv($env, $local_only))
+      return $var;
+    return $value;
   }
 }
