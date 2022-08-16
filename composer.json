@@ -16,10 +16,10 @@
     }
   ],
   "require": {
-    "php": ">=8.1"
+    "php": ">=8.1",
+    "pkit/phutilities": "dev-master"
   },
   "suggest": {
-    "ext-pdo": "Necessário para a conexão em caso de uso do banco de dados",
     "php-xml": "Necessário para a conversão para array e vice-versa"
   },
   "autoload": {
