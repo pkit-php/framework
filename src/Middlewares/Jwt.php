@@ -7,7 +7,7 @@ use Pkit\Abstracts\Middleware;
 use Pkit\Auth\Jwt as AuthJwt;
 use Pkit\Http\Status;
 use Pkit\Throwable\Error;
-use Pkit\Utils\Date;
+use Phutilities\Date;
 
 class Jwt extends Middleware
 {

@@ -3,7 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
-use Pkit\Utils\Parse;
+use Phutilities\Parse;
 
 class Response
 {

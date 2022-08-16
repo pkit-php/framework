@@ -4,7 +4,7 @@ namespace Pkit\Http;
 
 use Pkit\Http\Request;
 use Pkit\Throwable\Error;
-use Pkit\Utils\Parse;
+use Phutilities\Parse;
 
 class Middlewares
 {

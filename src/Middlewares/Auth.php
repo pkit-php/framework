@@ -3,11 +3,10 @@
 namespace Pkit\Middlewares;
 
 use Pkit\Abstracts\Middleware;
-use Pkit\Http\Router;
 use Pkit\Auth\Session;
 use Pkit\Http\Status;
 use Pkit\Throwable\Error;
-use Pkit\Utils\Date;
+use Phutilities\Date;
 
 class Auth extends Middleware
 {

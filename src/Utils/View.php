@@ -2,8 +2,8 @@
 
 namespace Pkit\Utils;
 
-use Pkit\Http\ContentType;
-use Pkit\Http\Response;
+use Phutilities\Parse;
+use Phutilities\Text;
 
 class View
 {

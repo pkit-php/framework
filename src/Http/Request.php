@@ -2,7 +2,7 @@
 
 namespace Pkit\Http;
 
-use Pkit\Utils\Parse;
+use Phutilities\Parse;
 
 class Request
 {
