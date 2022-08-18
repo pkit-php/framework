@@ -1,6 +1,6 @@
 {
   "name": "pkit/pkit",
-  "type": "project",
+  "type": "library",
   "description": "The Pkit Framework.",
   "keywords": [
     "framework",
