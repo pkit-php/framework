@@ -18,11 +18,11 @@ class Routes
         if (preg_match_all(self::$patternGeral, $route, $matches)) {
             $variables = $matches[1];
             $regex = [
-                self::$patternRest => "\1",
-                self::$patternVariable => "\2",
                 self::$patternInteger => "\3",
                 self::$patternFloat => "\4",
+                self::$patternVariable => "\2",
                 self::$patternWord => "\5",
+                self::$patternRest => "\1",
             ];
             $route = preg_replace(
                 array_keys($regex),
