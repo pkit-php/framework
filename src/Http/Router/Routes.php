@@ -10,7 +10,7 @@ class Routes
         $patternFloat = '/\[\w+\:(float)\]/',
         $patternWord = '/\[\w+\:(word)\]/',
         $patternRest = '/\[\.{3}\w+\]/',
-        $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|word))?\]/';
+        $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|float|word))?\]/';
 
     public static function matchRouteAndParams(string $route, string $uri): array | false
     {
