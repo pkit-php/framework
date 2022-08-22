@@ -38,20 +38,24 @@
     <?= $_ARGS['message'] ? (" - " . $_ARGS['message']) : "" ?>
   </p>
   <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;">
-  <?= @$_ARGS['trace'] ? $_ARGS['trace'] : "" ?>
-  <?php foreach ((@$_ARGS['traces'] ?? []) as $key => $line): ?>
-#<?=$key?><?php if(@$line["file"]) : ?>
-<a target="_blank" href="file://<?=$line["file"]?>">
-<?=$line["file"]?>
-</a><?php else:?>
-<?=" [internal function]"?>
-<?php endif?>
-<?=(@$line['line'] ? "(".$line['line'] .")" : "")
-  .": ".@$line["class"] . @$line["type"] 
-  .(@$line["function"] ? $line["function"] ."()" : "")
-  . "\n" ?>
-  <?php endforeach?>
-  </pre>
+<?php
+echo @$_ARGS['trace'] ? $_ARGS['trace'] : "";
+foreach ((@$_ARGS['traces'] ?? []) as $key => $line) :
+  if (@$line["file"]) :
+    echo "#$key "
+      . '<a target="_blank" href="file://' . $line["file"] . '">'
+      . $line["file"]
+      . "</a>";
+  else :
+    echo " [internal function]";
+  endif;
+  echo (@$line['line'] ? "(" . $line['line'] . ")" : "");
+  echo ": " . @$line["class"] . @$line["type"];
+  echo (@$line["function"] ? $line["function"] . "()" : "");
+  echo "\n";
+endforeach
+?>
+</pre>
 </div>
 
 <style>
