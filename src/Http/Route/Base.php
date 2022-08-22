@@ -3,6 +3,8 @@
 namespace Pkit\Http\Route;
 
 use Pkit\Http\Request;
+use Pkit\Http\Status;
+use Pkit\Throwable\Error;
 use ReflectionClass;
 
 class Base
@@ -20,14 +22,16 @@ class Base
         }
         $method = strtolower($request->httpMethod);
         $methods = ['get', 'post', 'patch', 'put', 'delete', 'options', 'trace', 'head'];
-        if (
-            in_array($method, $methods) &&
-            method_exists($this, $method) &&
-            (new ReflectionClass($this))
-            ->getMethod($method)
-            ->getDocComment() !== "/** @abstract */"
-        ) {
-            return $method;
+        if (in_array($method, $methods)) {
+            if (
+                method_exists($this, $method) &&
+                (new ReflectionClass($this))
+                ->getMethod($method)
+                ->getDocComment() !== "/** @abstract */"
+            ) {
+                return $method;
+            }
+            throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
         }
         return false;
     }
