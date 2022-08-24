@@ -14,6 +14,12 @@ class Response
   private int $status;
   private array | string | object $content;
 
+  const CONTENT_TYPE_SUPPORT = [
+    ContentType::JSON,
+    ContentType::HTML,
+    ContentType::XML,
+  ];
+
   public function __construct(array | string | object $content, $status = 200)
   {
     $this->content = $content;
@@ -48,6 +54,12 @@ class Response
 
   public function contentType(string $contentType)
   {
+    if (in_array($contentType, self::CONTENT_TYPE_SUPPORT) == false)
+      throw new Error(
+        "Response: content-type $contentType not supported for conversion",
+        Status::INTERNAL_SERVER_ERROR
+      );
+
     $this->contentType = $contentType;
     return $this;
   }
@@ -88,12 +100,18 @@ class Response
 
   private function fixContentType()
   {
-    if (is_null($this->contentType)) {
+    if ($this->headers['Content-Type'])
+      return;
+    
+    if ($this->contentType){
+      $this->headers['Content-Type'] = $this->contentType;
+      return;
+    }
+
     if (is_string($this->content)) {
-        $this->contentType = ContentType::HTML;
+      $this->headers['Content-Type'] = ContentType::HTML;
     } else {
-        $this->contentType = ContentType::JSON;
-      }
+      $this->headers['Content-Type'] = ContentType::JSON;
     }
   }
 
