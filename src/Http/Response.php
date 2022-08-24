@@ -23,7 +23,7 @@ class Response
   public function __construct(array | string | object $content, $status = 200)
   {
     $this->content = $content;
-    $this->status = $status;
+    $this->status($status);
   }
 
   public function header(string $key, string $value)
@@ -64,7 +64,7 @@ class Response
     return $this;
   }
 
-  public function status(int $statusCode = 0): self | int
+  public function status(int $statusCode): self
   {
     if (!Status::validate($statusCode))
       throw new Error(
