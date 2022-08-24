@@ -4,6 +4,7 @@ namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
 use Phutilities\Parse;
+use Pkit\Utils\View;
 
 class Response
 {
@@ -62,12 +63,35 @@ class Response
     return $this;
   }
 
+  public static function render(string $file, int $status = 200,mixed $args = null, bool $layout = true)
+  {
+    if($layout)
+      $render = View::layout($file, $args);
+    else
+      $render = View::render($file, $args);
+    
+    return (new Response($render, $status))
+      ->contentType(ContentType::HTML);
+  }
+
+  public static function json(array|string $content, int $status)
+  {
+    return (new Response($content, $status))
+      ->contentType(ContentType::JSON);
+  }
+
+  public static function xml(array|string $content, int $status)
+  {
+    return (new Response($content, $status))
+      ->contentType(ContentType::XML);
+  }
+
   private function fixContentType()
   {
     if (is_null($this->contentType)) {
-      if (is_string($this->content)) {
+    if (is_string($this->content)) {
         $this->contentType = ContentType::HTML;
-      } else {
+    } else {
         $this->contentType = ContentType::JSON;
       }
     }
@@ -80,8 +104,6 @@ class Response
 
   private function sendHeaders()
   {
-    $this->headers['Content-Type'] = $this->contentType ?? "text/html";
-
     foreach ($this->headers as $key => $value) {
       header($key . ':' . $value);
     }
