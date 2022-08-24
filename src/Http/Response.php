@@ -156,7 +156,7 @@ class Response
       };
     } catch (\Throwable $th) {
       throw new Error(
-        "Response: convertion for content-type'"
+        "Response: conversion for content-type'"
           . $this->contentType
           . "'",
         500,
