@@ -4,12 +4,13 @@ namespace Pkit\Http;
 
 class ContentType
 {
-  public static function validate(string $content)
+  public static function validate(string $contentType)
   {
     $constantNames = (new \ReflectionClass(self::class))
       ->getConstants();
-    return in_array($content, $constantNames);
+      return in_array($contentType, $constantNames);
   }
+
   const NONE = "*";
   const AAC =  "audio/aac";
   const ABW =  "application/x-abiword";
