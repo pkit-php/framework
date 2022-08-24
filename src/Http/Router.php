@@ -174,14 +174,11 @@ class Router
   {
     $content = self::includeFile();
 
-    $mime_types = [
-      "css" => "text/css"
-    ];
-
-    if (($mime_content = @$mime_types[$extension])
+    if (($mime_content = ContentType::getContentType($extension))
       || ($mime_content = mime_content_type(self::$file))
     ) {
-      echo (new Response($content))->contentType($mime_content);
+      echo (new Response($content))
+      ->header("Content-Type", $mime_content);
     } else {
       echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
     }
