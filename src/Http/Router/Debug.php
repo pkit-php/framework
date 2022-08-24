@@ -27,13 +27,13 @@ class Debug
 
   public static function html_err(Throwable $err): Response
   {
-    return new Response(View::layout("pkit/code", [
+    return Response::render("pkit/code", $err->getCode(), [
       'code' => $err->getCode(),
       'description' => $err->getMessage(), 
       'message' => $err->getMessage(),
       'title' => $err->getMessage(),
       "traces" => $err->getTrace(),
-    ]), $err->getCode());
+    ]);
   }
 
   public static function json_err(Throwable $err): Response
