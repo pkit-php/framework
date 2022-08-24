@@ -8,7 +8,20 @@ class ContentType
   {
     $constantNames = (new \ReflectionClass(self::class))
       ->getConstants();
-      return in_array($contentType, $constantNames);
+    return in_array($contentType, $constantNames);
+  }
+
+  public static function getContentType(string $extension)
+  {
+    $extension = str_replace(".", "_", $extension);
+    $extension = strtoupper($extension);
+
+    $firstLetter = substr($extension, 0, 1);
+    if (is_numeric($firstLetter))
+      $extension = "_$extension";
+
+    return (new \ReflectionClass(self::class))
+      ->getConstant($extension);
   }
 
   const NONE = "*";
