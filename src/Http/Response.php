@@ -28,7 +28,7 @@ class Response
 
   public function header(string $key, string $value)
   {
-    $this->headers[$key] = $value;
+    $this->headers[urlencode($key)] = urlencode($value);
     return $this;
   }
 
@@ -123,7 +123,7 @@ class Response
   private function sendHeaders()
   {
     foreach ($this->headers as $key => $value) {
-      header($key . ':' . $value);
+      header(strtolower($key) . ':' . $value);
     }
   }
 
