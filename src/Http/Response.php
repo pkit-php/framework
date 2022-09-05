@@ -100,8 +100,10 @@ class Response
 
   private function fixContentType()
   {
-    if ($this->headers['Content-Type'])
+    if ($this->headers['Content-Type']){
+      $this->contentType = $this->headers['Content-Type'];
       return;
+    }
     
     if ($this->contentType){
       $this->headers['Content-Type'] = $this->contentType;
@@ -113,6 +115,7 @@ class Response
     } else {
       $this->headers['Content-Type'] = ContentType::JSON;
     }
+    $this->contentType = $this->headers['Content-Type'];
   }
 
   private function sendCode()
@@ -156,7 +159,7 @@ class Response
       };
     } catch (\Throwable $th) {
       throw new Error(
-        "Response: conversion for content-type'"
+        "Response: conversion for content-type '"
           . $this->contentType
           . "'",
         500,
