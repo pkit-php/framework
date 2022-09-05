@@ -2,15 +2,26 @@
 
 namespace Pkit\Http\Router;
 
+use Phutilities\Env;
 use Pkit\Http\ContentType;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Utils\View;
 use Phutilities\Parse;
 use Throwable;
 
 class Debug
 {
+  private static ?bool $canTraces = null;
+
+  private static function getCanTraces()
+  {
+    if (is_null(self::$canTraces)){
+      self::$canTraces = 
+      Env::getEnvOrValue("PKIT_TRACES", "true") == "true";
+    }
+    return self::$canTraces;
+  }
+
   public static function error(Request $request, Throwable $err): Response
   {
     $accepts = Parse::headerToArray($request->headers['accept'], false);
@@ -32,17 +43,17 @@ class Debug
       'description' => $err->getMessage(), 
       'message' => $err->getMessage(),
       'title' => $err->getMessage(),
-      "traces" => $err->getTrace(),
+      "traces" => self::getCanTraces() ? $err->getTrace() : null,
     ]);
   }
 
   public static function json_err(Throwable $err): Response
   {
-    return (new Response([
+    return (new Response(array_filter([
       "code" => $err->getCode(),
       "message" => $err->getMessage(),
-      "trace" => $err->getTrace(),
-  ],
+      "trace" => self::getCanTraces() ? $err->getTrace() : null,
+  ]),
     $err->getCode()))
       ->contentType(ContentType::JSON);
   }
