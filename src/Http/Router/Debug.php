@@ -15,9 +15,9 @@ class Debug
 
   private static function getCanTraces()
   {
-    if (is_null(self::$canTraces)){
-      self::$canTraces = 
-      Env::getEnvOrValue("PKIT_TRACES", "true") == "true";
+    if (is_null(self::$canTraces)) {
+      self::$canTraces =
+        Env::getEnvOrValue("PKIT_TRACES", "true") == "true";
     }
     return self::$canTraces;
   }
@@ -30,8 +30,9 @@ class Debug
     } else if (in_array('application/xml', $accepts)) {
       return self::xml_err($err);
     } else if (
-      in_array('application/json', $accepts ) ||
-      in_array('*/*',$accepts)) {
+      in_array('application/json', $accepts) ||
+      in_array('*/*', $accepts)
+    ) {
       return self::json_err($err);
     } else {
       return new Response($err, $err->getCode());
@@ -50,12 +51,14 @@ class Debug
 
   public static function json_err(Throwable $err): Response
   {
-    return (new Response(array_filter([
-      "code" => $err->getCode(),
-      "message" => $err->getMessage(),
-      "trace" => self::getCanTraces() ? $err->getTrace() : null,
-  ]),
-    $err->getCode()))
+    return (new Response(
+      array_filter([
+        "code" => $err->getCode(),
+        "message" => $err->getMessage(),
+        "trace" => self::getCanTraces() ? $err->getTrace() : null,
+      ]),
+      $err->getCode()
+    ))
       ->contentType(ContentType::JSON);
   }
 
