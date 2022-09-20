@@ -27,6 +27,8 @@ class Debug
     $accepts = Parse::headerToArray($request->headers['accept'], false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
+    } else if (in_array('application/xml', $accepts)) {
+      return self::xml_err($err);
     } else if (
       in_array('application/json', $accepts ) ||
       in_array('*/*',$accepts)) {
@@ -56,5 +58,18 @@ class Debug
   ]),
     $err->getCode()))
       ->contentType(ContentType::JSON);
+  }
+
+  public static function xml_err(Throwable $err): Response
+  {
+    return (new Response(
+      array_filter([
+        "code" => $err->getCode(),
+        "message" => $err->getMessage(),
+        "trace" => self::getCanTraces() ? $err->getTrace() : null,
+      ]),
+      $err->getCode()
+    ))
+      ->contentType(ContentType::XML);
   }
 }
