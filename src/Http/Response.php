@@ -75,13 +75,13 @@ class Response
     return $this;
   }
 
-  public static function render(string $file, int $status = 200,mixed $args = null, bool $layout = true)
+  public static function render(string $file, int $status = 200, mixed $args = null, bool $layout = true)
   {
-    if($layout)
+    if ($layout)
       $render = View::layout($file, $args);
     else
       $render = View::render($file, $args);
-    
+
     return (new Response($render, $status))
       ->contentType(ContentType::HTML);
   }
