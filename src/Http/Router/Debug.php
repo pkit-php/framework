@@ -44,6 +44,7 @@ class Debug
     return Response::render("pkit/code", $err->getCode(), [
       'code' => $err->getCode(),
       'message' => $err->getMessage(),
+      'description' => $err->getMessage(),
       'title' => $err->getMessage(),
       "traces" => self::getCanTraces() ? $err->getTrace() : null,
     ]);
