@@ -6,9 +6,15 @@ use Pkit\Http\Request;
 use Pkit\Http\Status;
 use Pkit\Throwable\Error;
 use ReflectionClass;
+use Throwable;
 
-class Base
+abstract class Base
 {
+    public function __invoke(Request $request, ?Throwable $err = null)
+    {
+        return $this->{"run"}($request, $err);
+    }
+
     public function getMethod(Request $request)
     {
         $all = 'all';

@@ -99,7 +99,7 @@ class Router
       $params = Routes::matchRouteAndParams($route, self::$uri);
       return is_array($params);
     }, true) ?? "";
-    if($params)
+    if ($params)
       self::$params = $params;
     self::$especialRoute = self::$routePath . '/*.php';
   }
@@ -136,30 +136,19 @@ class Router
 
   private static function runRoute(string $route, Request $request, ?Error $err = null)
   {
-    $classes = get_declared_classes();
-    include $route;
-    $classes = array_diff(get_declared_classes(), $classes);
-
-    $class = @array_values($classes)[0];
-    if (is_null($class))
+    $return = include $route;
+    if (is_object($return) && get_class($return) == "Pkit\Http\Response") {
+      echo $return;
       exit;
-
-    $parentClass = (new ReflectionClass($class))->getParentClass();
-    if ($parentClass == false)
-      exit;
-
-    if (is_null($err))
-      $typeRoute = "Route";
-    else
-      $typeRoute = "EspecialRoute";
-
-    $parentClassName = $parentClass->name;
-    if (
-      $parentClassName == "Pkit\Http\\$typeRoute" ||
-      $parentClassName == "Pkit\Abstracts\\$typeRoute"
-    ) {
-      echo $class::run($request, $err);
     }
+
+    if (is_callable($return) == false && Env::getEnvOrValue("PKIT_RETURN", "true") == "true")
+      throw new Error("The route $route was not a valid return", 500);
+
+    if ($return === 1 || is_null($return))
+      exit;
+
+    echo $return($request, $err);
     exit;
   }
 
@@ -178,7 +167,7 @@ class Router
       || ($mime_content = mime_content_type(self::$file))
     ) {
       echo (new Response($content))
-      ->header("Content-Type", $mime_content);
+        ->header("Content-Type", $mime_content);
     } else {
       echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
     }
