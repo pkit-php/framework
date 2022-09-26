@@ -100,12 +100,12 @@ class Response
 
   private function fixContentType()
   {
-    if ($this->headers['Content-Type']){
+    if (@$this->headers['Content-Type']) {
       $this->contentType = $this->headers['Content-Type'];
       return;
     }
-    
-    if ($this->contentType){
+
+    if (@$this->contentType) {
       $this->headers['Content-Type'] = $this->contentType;
       return;
     }
