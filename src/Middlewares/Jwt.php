@@ -18,7 +18,7 @@ class Jwt extends Middleware
             throw new Error("Jwt: User Unauthorized", Status::UNAUTHORIZED);
 
         $expire = AuthJwt::getExpire();
-        if (AuthJwt::getExpire() > 0) {
+        if ($expire > 0) {
             $created = AuthJwt::getPayload($token)->_created;
             $interval = Date::deltaTime(
                 new DateTime($created),
