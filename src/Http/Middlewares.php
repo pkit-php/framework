@@ -58,9 +58,6 @@ class Middlewares
 
     $object = (new $middleware);
 
-    if (@$params != null)
-      $params = Parse::anyToArray($params);
-
     $queue = $this;
     $next = function ($request) use ($queue) {
       return $queue->next($request);
