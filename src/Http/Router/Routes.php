@@ -46,7 +46,7 @@ class Routes
             unset($matches[0]);
             return array_combine(@$variables ?? [], $matches);
         };
-        
+
         return false;
     }
 }
