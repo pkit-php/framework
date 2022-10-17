@@ -15,7 +15,7 @@ abstract class Base
         return $this->{"run"}($request, $err);
     }
 
-    public function getMethod(Request $request)
+    public function getMethod(Request $request, bool $especialRoute = false)
     {
         $all = 'all';
         if (method_exists($this, $all)) {
@@ -37,7 +37,8 @@ abstract class Base
             ) {
                 return $method;
             }
-            throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
+            if ($especialRoute == false)
+                throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
         }
         return false;
     }

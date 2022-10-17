@@ -13,7 +13,7 @@ class EspecialRoute extends Base
     $class = static::class;
     $route = new $class;
 
-    if ($method = $route->getMethod($request)) {
+    if ($method = $route->getMethod($request, true)) {
       return $route->$method($request, $err);
     }
 
