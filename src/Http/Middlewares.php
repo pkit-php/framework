@@ -36,12 +36,14 @@ class Middlewares
       return call_user_func_array($this->controller, [$request]);
     }
 
-    $lastKeyMiddleware = array_key_last($this->middlewares);
-    if (is_numeric($lastKeyMiddleware)) {
-      $middleware = array_shift($this->middlewares);
+    $firstKey = array_keys($this->middlewares)[0];
+    if (is_numeric($firstKey)) {
+      $middleware = $this->middlewares[$firstKey];
+      unset($this->middlewares[$firstKey]);
     } else {
-      $params = array_shift($this->middlewares);
-      $middleware = $lastKeyMiddleware;
+      $params = $this->middlewares[$firstKey];
+      $middleware = $firstKey;
+      unset($this->middlewares[$firstKey]);
     }
 
     if (class_exists($middleware) == false)
