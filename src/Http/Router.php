@@ -10,8 +10,8 @@ use Phutilities\Sanitize;
 use Phutilities\Env;
 use Phutilities\FS;
 use Phutilities\Text;
-use ReflectionClass;
 use ReflectionObject;
+use Throwable;
 
 class Router
 {
@@ -134,7 +134,7 @@ class Router
     }
   }
 
-  private static function runRoute(string $route, Request $request, ?Error $err = null)
+  private static function runRoute(string $route, Request $request, ?Throwable $err = null)
   {
     $return = include $route;
     if (is_object($return) && get_class($return) == "Pkit\Http\Response") {
