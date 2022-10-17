@@ -28,7 +28,7 @@ class Response
 
   public function header(string $key, string $value)
   {
-    $this->headers[urlencode($key)] = urlencode($value);
+    $this->headers[$key] = $value;
     return $this;
   }
 
