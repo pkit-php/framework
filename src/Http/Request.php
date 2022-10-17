@@ -20,10 +20,7 @@ class Request
     $this->cookies = $_COOKIE ?? [];
 
     $this->setHeaders();
-
-    if ($this->httpMethod != 'GET') {
-      $this->setPostVars();
-    }
+    $this->setPostVars();
   }
 
   public function setHeaders()
