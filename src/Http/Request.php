@@ -57,12 +57,10 @@ class Request
           $this->postVars = array_merge($_POST, $_FILES);
           break;
         default:
-          echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
-          exit;
+          exit(new Response("", Status::UNSUPPORTED_MEDIA_TYPE));
       }
     } catch (\Throwable $th) {
-      echo new Response("", Status::BAD_REQUEST);
-      exit;
+      exit(new Response("", Status::BAD_REQUEST));
     }
   }
 }
