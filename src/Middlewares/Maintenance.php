@@ -8,7 +8,7 @@ use Pkit\Throwable\Error;
 
 class Maintenance extends Middleware
 {
-  public function handle($request, $next, $_)
+  public function __invoke($request, $next, $_)
   {
     throw new Error("page in maintenance", Status::SERVICE_UNAVAILABLE);
   }

@@ -14,7 +14,7 @@ use ReflectionMethod;
 
 class Auth extends Middleware
 {
-  public function handle($request, $next, $params)
+  public function __invoke($request, $next, $params)
   {
     if (!is_array($params))
       if (is_null($params))

@@ -46,25 +46,14 @@ class Middlewares
       unset($this->middlewares[$firstKey]);
     }
 
-    if (class_exists($middleware) == false)
-      throw new Error(
-        "Middlewares: Class '$middleware' not exists",
-        Status::INTERNAL_SERVER_ERROR
-      );
-
-    if (method_exists($middleware, "handle") == false)
-      throw new Error(
-        "Middlewares: Class '$middleware' is not valid",
-        Status::INTERNAL_SERVER_ERROR
-      );
-
-    $object = (new $middleware);
+    if (class_exists($middleware))
+      $middleware = (new $middleware);
 
     $queue = $this;
     $next = function ($request) use ($queue) {
       return $queue->next($request);
     };
 
-    return $object->handle($request, $next, $params ?? []);
+    return $middleware($request, $next, $params ?? []);
   }
 }
