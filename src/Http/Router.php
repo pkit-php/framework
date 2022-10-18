@@ -94,6 +94,7 @@ class Router
       return Routes::matchRouteAndParams($route, self::$uri, $params);
     }, true) ?? "";
     self::$params = $params;
+    self::$especialRoute = self::$routePath . "/*.php";
   }
 
   private static function tryRunRoute(\Closure $function)
