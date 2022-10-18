@@ -96,12 +96,9 @@ class Router
         $route = Text::removeFromEnd($route, ".php");
       }
 
-      $params = Routes::matchRouteAndParams($route, self::$uri);
-      return is_array($params);
+      return Routes::matchRouteAndParams($route, self::$uri, $params);
     }, true) ?? "";
-    if ($params)
-      self::$params = $params;
-    self::$especialRoute = self::$routePath . '/*.php';
+    self::$params = $params;
   }
 
   private static function tryRunRoute(\Closure $function)

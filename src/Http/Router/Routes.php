@@ -12,7 +12,7 @@ class Routes
         $patternRest = '/\[\.{3}\w+\]/',
         $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|float|word))?\]/';
 
-    public static function matchRouteAndParams(string $route, string $uri): array | false
+    public static function matchRouteAndParams(string $route, string $uri, array &$array): bool
     {
         $variables = [];
         if (preg_match_all(self::$patternGeral, $route, $matches)) {
@@ -44,7 +44,8 @@ class Routes
 
         if (preg_match($route, $uri, $matches)) {
             unset($matches[0]);
-            return array_combine(@$variables ?? [], $matches);
+            $array = array_combine(@$variables ?? [], $matches);
+            return true;
         };
 
         return false;
