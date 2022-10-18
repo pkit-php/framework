@@ -109,9 +109,8 @@ class Router
     } catch (Error $err) {
       $code = $err->getCode();
     } catch (Redirect $red) {
-      echo (new Response("", $red->getCode()))
-        ->header("Location", $red->getMessage());
-      exit;
+      exit((new Response("", $red->getCode()))
+        ->header("Location", $red->getMessage()));
     } catch (\Throwable $err) {
       $code = Status::validate($err->getCode())
         ? $err->getCode()
@@ -134,10 +133,11 @@ class Router
   private static function runRoute(string $route, Request $request, ?Throwable $err = null)
   {
     $return = include $route;
-    if (is_object($return) && get_class($return) == "Pkit\Http\Response") {
-      echo $return;
-      exit;
-    }
+    if (
+      is_string($return) ||
+      (is_object($return) && method_exists($return, "__toString"))
+    )
+      exit($return);
 
     if (is_callable($return) == false && Env::getEnvOrValue("PKIT_RETURN", "true") == "true")
       throw new Error("The route $route was not a valid return", 500);
@@ -145,8 +145,7 @@ class Router
     if ($return === 1 || is_null($return))
       exit;
 
-    echo $return($request, $err);
-    exit;
+    exit($return($request, $err));
   }
 
   private static function includeFile()
@@ -162,13 +161,11 @@ class Router
 
     if (($mime_content = ContentType::getContentType($extension))
       || ($mime_content = mime_content_type(self::$file))
-    ) {
-      echo (new Response($content))
-        ->header("Content-Type", $mime_content);
-    } else {
-      echo new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
-    }
-    exit;
+    )
+      exit((new Response($content))
+        ->header("Content-Type", $mime_content));
+    else
+      exit(new Response("", Status::UNSUPPORTED_MEDIA_TYPE));
   }
 
   public static function getExtension($file)
@@ -204,11 +201,10 @@ class Router
         self::runRoute(self::$especialRoute, $request, $err);
       });
 
-    if (Env::getEnvOrValue('PKIT_DEBUG', "false") == 'true')
-      echo Debug::error($request, $err);
+    if (Env::getEnvOrValue("PKIT_DEBUG", "false") == "true")
+      exit(Debug::error($request, $err));
     else
-      echo new Response("", $err->getCode());
-    exit;
+      exit(new Response("", $err->getCode()));
   }
 
   public static function getUri()
