@@ -59,14 +59,14 @@ class Router
 
   private static function init(Request $request)
   {
-    $uri = Sanitize::uri($_SERVER['REQUEST_URI']);
+    $uri = Sanitize::uri($_SERVER["REQUEST_URI"]);
     if (self::getSubDomain()) {
-      $host = $request->headers['Host'];
+      $host = $request->headers["Host"];
       $subdomain = explode($host, ".")[0];
       if (
         $subdomain != "www" &&
         !is_numeric($subdomain) &&
-        preg_match('/^\p{L}+$/u', $subdomain)
+        preg_match("/^\p{L}+$/u", $subdomain)
       )
         $uri = "/" . $subdomain . rtrim($uri, "/");
     }
@@ -185,7 +185,7 @@ class Router
     self::init($request);
     if (strlen(self::$file)) {
       $extension = self::getExtension(self::$file);
-      if ($extension != 'php') {
+      if ($extension != "php") {
         self::sendMimeFile($extension);
       } else {
         $err = self::tryRunRoute(function () use ($request) {
