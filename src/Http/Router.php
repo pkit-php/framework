@@ -115,9 +115,11 @@ class Router
       $codeProperty->setAccessible(true);
       $codeProperty->setValue($err, $code);
     } finally {
-      if (Env::getEnvOrValue('PKIT_CLEAR', 'true') == "true") {
+      if (
+        Env::getEnvOrValue("PKIT_CLEAR", "true") == "true" &&
+        Env::getEnvOrValue("PKIT_RETURN", "true") == "true"
+      )
         ob_end_clean();
-      }
       return $err ?? new Error(
         "Router: status and message is null or invalid",
         Status::INTERNAL_SERVER_ERROR
