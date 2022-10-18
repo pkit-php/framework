@@ -87,14 +87,9 @@ class Router
       if (str_ends_with($route, "/*.php"))
         return false;
 
-      if (str_ends_with($route, "/index.php")) {
-        $route = Text::removeFromEnd($route, "/index.php");
-        if ($route == "") {
-          $route = "/";
-        }
-      } else {
-        $route = Text::removeFromEnd($route, ".php");
-      }
+      $route = str_ends_with($route, "/index.php")
+        ? Text::removeFromEnd($route, "index.php")
+        : Text::removeFromEnd($route, ".php");
 
       return Routes::matchRouteAndParams($route, self::$uri, $params);
     }, true) ?? "";
