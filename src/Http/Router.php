@@ -103,7 +103,6 @@ class Router
       ob_start();
       $function();
     } catch (Error $err) {
-      $code = $err->getCode();
     } catch (Redirect $red) {
       exit((new Response("", $red->getCode()))
         ->header("Location", $red->getMessage()));
