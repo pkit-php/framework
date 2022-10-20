@@ -5,7 +5,6 @@ namespace Pkit\Abstracts;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Route as HttpRoute;
-use Pkit\Http\Status;
 
 abstract class Route extends HttpRoute
 {
