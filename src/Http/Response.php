@@ -137,6 +137,11 @@ class Response
     }
   }
 
+  public function __invoke()
+  {
+    return $this->__toString();
+  }
+
   public function __toString()
   {
     $this->fixContentType();
