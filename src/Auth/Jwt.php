@@ -9,6 +9,7 @@ use Phutilities\Env;
 use Phutilities\Base64url;
 use Phutilities\Date;
 use Phutilities\Text;
+use Pkit\Throwable\Error;
 
 class Jwt
 {
@@ -74,6 +75,9 @@ class Jwt
   private static function signature(string $header, string $payload)
   {
     $alg = self::$supported_algs[self::getAlg()];
+    if (is_null($alg))
+      throw new Error("Jwt: algorithm '" . self::getAlg() . "' not supported", 500);
+
     $signature =  call_user_func_array($alg[0], [
       strtolower($alg[1]),
       "$header.$payload",
@@ -111,6 +115,9 @@ class Jwt
     $header = $part[0];
     $payload = $part[1];
     $signature = $part[2];
+
+    if (is_null($signature))
+      return false;
 
     $valid = self::signature($header, $payload);
 
