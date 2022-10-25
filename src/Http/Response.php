@@ -98,6 +98,16 @@ class Response
       ->contentType(ContentType::XML);
   }
 
+  public static function code(int $status)
+  {
+    return new Response("", $status);
+  }
+
+  public static function empty()
+  {
+    return new Response("");
+  }
+
   private function fixContentType()
   {
     if (@$this->headers['Content-Type']) {
