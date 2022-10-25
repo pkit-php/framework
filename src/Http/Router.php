@@ -51,7 +51,7 @@ class Router extends RouterEnv
     if (Env::getEnvOrValue("PKIT_DEBUG", "false") == "true")
       exit(Debug::error($request, $err));
     else
-      exit(new Response("", $err->getCode()));
+      exit(Response::code($err->getCode()));
   }
 
   public static function getUri()
@@ -134,6 +134,6 @@ class Router extends RouterEnv
       return (new Response($content))
         ->header("Content-Type", $mime_content);
     else
-      return new Response("", Status::UNSUPPORTED_MEDIA_TYPE);
+      return Response::code(Status::UNSUPPORTED_MEDIA_TYPE);
   }
 }
