@@ -28,7 +28,7 @@ class Jwt
     self::$alg = $alg;
   }
 
-  
+
   public static function getPayload(string $token)
   {
     $part = explode(".", $token);
@@ -73,8 +73,13 @@ class Jwt
 
   private static function signature(string $header, string $payload)
   {
-    $alg = self::$supported_algs[self::$alg];
-    $signature =  call_user_func($alg[0], strtolower($alg[1]), "$header.$payload", self::getKey(), true);
+    $alg = self::$supported_algs[self::getAlg()];
+    $signature =  call_user_func_array($alg[0], [
+      strtolower($alg[1]),
+      "$header.$payload",
+      self::getKey(),
+      true
+    ]);
     return Base64url::encode($signature);
   }
 
