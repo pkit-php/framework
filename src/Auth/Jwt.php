@@ -38,7 +38,7 @@ class Jwt
 
   public static function setBearer(Response $response, string $token)
   {
-    $response->header["authorization"] = "Bearer " . $token;
+    return $response->header("authorization", "Bearer " . $token);
   }
 
   public static function getBearer(Request $request)
