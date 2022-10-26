@@ -44,7 +44,9 @@ class Jwt
 
   public static function getBearer(Request $request)
   {
-    $authorization = $request->headers["authorization"] ?? "";
+    $authorization = $request->headers["authorization"];
+    if (is_null($authorization))
+      return false;
     return Text::removeFromStart($authorization, "Bearer ");
   }
 
