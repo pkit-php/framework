@@ -3,37 +3,11 @@
 namespace Pkit\Auth;
 
 use DateTime;
-use Phutilities\Env;
 use Phutilities\Date;
+use Pkit\Auth\Session\SessionEnv;
 
-class Session
+class Session extends SessionEnv
 {
-
-  private static ?int $time = null;
-  private static ?string $path = null;
-
-  public static function config(int $time, ?string $path = null)
-  {
-    self::$time = $time;
-    self::$path = $path;
-  }
-
-  public static function getTime()
-  {
-    if (is_null(self::$time)) {
-      self::$time = (int)Env::getEnvOrValue("SESSION_TIME", 0);
-    }
-    return self::$time;
-  }
-
-  public static function getPath()
-  {
-    if (is_null(self::$path)) {
-      self::$path = Env::getEnvOrValue("SESSION_PATH", session_save_path());
-    }
-    return self::$path;
-  }
-
   private static function start()
   {
     if (session_status() != PHP_SESSION_ACTIVE) {
