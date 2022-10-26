@@ -5,13 +5,13 @@ namespace Pkit\Auth;
 use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Phutilities\Env;
+use Pkit\Auth\Jwt\JwtEnv;
 use Phutilities\Base64url;
 use Phutilities\Date;
 use Phutilities\Text;
 use Pkit\Throwable\Error;
 
-class Jwt
+class Jwt extends JwtEnv
 {
   private static ?string $key = null;
   private static ?int $expire = null;
