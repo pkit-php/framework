@@ -6,43 +6,32 @@ use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Auth\Jwt\JwtEnv;
+use Pkit\Throwable\Error;
 use Phutilities\Base64url;
 use Phutilities\Date;
 use Phutilities\Text;
-use Pkit\Throwable\Error;
 
 class Jwt extends JwtEnv
 {
-  private static ?string $key = null;
-  private static ?int $expire = null;
-  private static ?string $alg = null;
   public static $supported_algs = [
     'HS256' => ['hash_hmac', 'SHA256'],
     'HS384' => ['hash_hmac', 'SHA384'],
     'HS512' => ['hash_hmac', 'SHA512'],
   ];
 
-  public static function config(string $key, $expire = 0, $alg = 'HS256')
-  {
-    self::$key = $key;
-    self::$expire = $expire;
-    self::$alg = $alg;
-  }
-
-
-  public static function getPayload(string $token)
+  public static function getPayload(string $token): string
   {
     $part = explode(".", $token);
     $payload = Base64url::decode($part[1]);
     return json_decode($payload);
   }
 
-  public static function setBearer(Response $response, string $token)
+  public static function setBearer(Response $response, string $token): Response
   {
     return $response->header("authorization", "Bearer " . $token);
   }
 
-  public static function getBearer(Request $request)
+  public static function getBearer(Request $request): string | false
   {
     $authorization = $request->headers["authorization"];
     if (is_null($authorization))
@@ -65,7 +54,7 @@ class Jwt extends JwtEnv
     return Base64url::encode($signature);
   }
 
-  public static function tokenize(array $payload)
+  public static function tokenize(array $payload): string
   {
     $header = [
       'alg' => self::getAlg(),
@@ -87,7 +76,7 @@ class Jwt extends JwtEnv
     return "$header.$payload.$signature";
   }
 
-  public static function validate(string $token)
+  public static function validate(string $token): bool
   {
     $part = explode(".", $token);
     $header = $part[0];

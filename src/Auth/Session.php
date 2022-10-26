@@ -20,7 +20,7 @@ class Session extends SessionEnv
     }
   }
 
-  public static function logged()
+  public static function logged(): bool
   {
     self::start();
     return !is_null(@$_SESSION['payload']);
@@ -41,13 +41,13 @@ class Session extends SessionEnv
     session_write_close();
   }
 
-  public static function getSession()
+  public static function getSession(): mixed
   {
     self::start();
     return $_SESSION['payload'];
   }
 
-  public static function getCreated()
+  public static function getCreated(): string
   {
     self::start();
     return $_SESSION['created'];
