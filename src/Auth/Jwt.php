@@ -50,31 +50,7 @@ class Jwt
     return Text::removeFromStart($authorization, "Bearer ");
   }
 
-  public static function getAlg()
-  {
-    if (is_null(self::$alg)) {
-      self::$alg = Env::getEnvOrValue("JWT_ALG", 'HS256');
-    }
-    return self::$alg;
-  }
-
-  public static function getExpire()
-  {
-    if (is_null(self::$expire)) {
-      self::$expire = (int)Env::getEnvOrValue("JWT_EXPIRES", 0);
-    }
-    return self::$expire;
-  }
-
-  public static function getKey()
-  {
-    if (is_null(self::$key)) {
-      self::$key = Env::getEnvOrValue("JWT_KEY", "");
-    }
-    return self::$key;
-  }
-
-  private static function signature(string $header, string $payload)
+  private static function signature(string $header, string $payload): string
   {
     $alg = self::$supported_algs[self::getAlg()];
     if (is_null($alg))
