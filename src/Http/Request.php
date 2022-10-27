@@ -7,10 +7,10 @@ use Phutilities\Parse;
 class Request
 {
   public readonly string $httpMethod;
+  public readonly mixed $postVars;
   public readonly array
     $headers,
     $queryParams,
-    $postVars,
     $cookies;
 
   public function __construct()
@@ -39,15 +39,11 @@ class Request
     try {
       switch ($contentType) {
         case 'text/plain':
-          $this->postVars["text"] = file_get_contents('php://input');
+          $this->postVars = file_get_contents('php://input');
           break;
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
           $json = json_decode($inputRaw, true);
-          if (!is_array($json)) {
-            $this->postVars[] = $json;
-            break;
-          }
           $this->postVars = $json;
           break;
         case 'application/xml':
