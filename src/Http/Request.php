@@ -60,10 +60,10 @@ class Request
           $this->postVars = array_merge($_POST, $_FILES);
           break;
         default:
-          exit(new Response("", Status::UNSUPPORTED_MEDIA_TYPE));
+          exit(Response::code(Status::UNSUPPORTED_MEDIA_TYPE));
       }
     } catch (\Throwable $th) {
-      exit(new Response("", Status::BAD_REQUEST));
+      exit(Response::code(Status::BAD_REQUEST));
     }
   }
 }
