@@ -6,7 +6,7 @@ use Exception;
 use Phutilities\Debug as PhutilitiesDebug;
 use ReflectionMethod;
 
-class Debug extends PhutilitiesDebug
+class Debug
 {
     public function __invoke($request, $next, $params)
     {
@@ -17,7 +17,8 @@ class Debug extends PhutilitiesDebug
         if (!in_array($params, ["console", "pde", "json"]))
             throw new Exception("Debug: command not is valid", 500);
 
-        (new ReflectionMethod($this, $params))->invoke($this, $request);
+        (new ReflectionMethod(PhutilitiesDebug::class, $params))
+            ->invoke(new PhutilitiesDebug, $request);
         $next($request);
     }
 }
