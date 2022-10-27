@@ -38,6 +38,9 @@ class Request
     $contentType = trim(explode(';', @$this->headers['content-type'])[0]);
     try {
       switch ($contentType) {
+        case 'text/plain':
+          $this->postVars["text"] = file_get_contents('php://input');
+          break;
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
           $json = json_decode($inputRaw, true);
