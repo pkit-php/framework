@@ -5,80 +5,56 @@ namespace Pkit\Auth;
 use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Phutilities\Env;
+use Pkit\Auth\Jwt\JwtEnv;
+use Pkit\Throwable\Error;
 use Phutilities\Base64url;
 use Phutilities\Date;
 use Phutilities\Text;
 
-class Jwt
+class Jwt extends JwtEnv
 {
-  private static ?string $key = null;
-  private static ?int $expire = null;
-  private static ?string $alg = null;
   public static $supported_algs = [
     'HS256' => ['hash_hmac', 'SHA256'],
     'HS384' => ['hash_hmac', 'SHA384'],
     'HS512' => ['hash_hmac', 'SHA512'],
   ];
 
-  public static function config(string $key, $expire = 0, $alg = 'HS256')
-  {
-    self::$key = $key;
-    self::$expire = $expire;
-    self::$alg = $alg;
-  }
-
-  
-  public static function getPayload(string $token)
+  public static function getPayload(string $token): string
   {
     $part = explode(".", $token);
     $payload = Base64url::decode($part[1]);
     return json_decode($payload);
   }
 
-  public static function setBearer(Response $response, string $token)
+  public static function setBearer(Response $response, string $token): Response
   {
-    $response->header["authorization"] = "Bearer " . $token;
+    return $response->header("authorization", "Bearer " . $token);
   }
 
-  public static function getBearer(Request $request)
+  public static function getBearer(Request $request): string | false
   {
-    $authorization = $request->headers["authorization"] ?? "";
+    $authorization = $request->headers["authorization"];
+    if (is_null($authorization))
+      return false;
     return Text::removeFromStart($authorization, "Bearer ");
   }
 
-  public static function getAlg()
+  private static function signature(string $header, string $payload): string
   {
-    if (is_null(self::$alg)) {
-      self::$alg = Env::getEnvOrValue("JWT_ALG", 'HS256');
-    }
-    return self::$alg;
-  }
+    $alg = self::$supported_algs[self::getAlg()];
+    if (is_null($alg))
+      throw new Error("Jwt: algorithm '" . self::getAlg() . "' not supported", 500);
 
-  public static function getExpire()
-  {
-    if (is_null(self::$expire)) {
-      self::$expire = (int)Env::getEnvOrValue("JWT_EXPIRES", 0);
-    }
-    return self::$expire;
-  }
-
-  public static function getKey()
-  {
-    if (is_null(self::$key)) {
-      self::$key = Env::getEnvOrValue("JWT_KEY", "");
-    }
-    return self::$key;
-  }
-
-  private static function signature(string $header, string $payload)
-  {
-    $alg = self::$supported_algs[self::$alg];
-    $signature =  call_user_func($alg[0], strtolower($alg[1]), "$header.$payload", self::getKey(), true);
+    $signature =  call_user_func_array($alg[0], [
+      strtolower($alg[1]),
+      "$header.$payload",
+      self::getKey(),
+      true
+    ]);
     return Base64url::encode($signature);
   }
 
-  public static function tokenize(array $payload)
+  public static function tokenize(array $payload): string
   {
     $header = [
       'alg' => self::getAlg(),
@@ -100,12 +76,15 @@ class Jwt
     return "$header.$payload.$signature";
   }
 
-  public static function validate(string $token)
+  public static function validate(string $token): bool
   {
     $part = explode(".", $token);
     $header = $part[0];
     $payload = $part[1];
     $signature = $part[2];
+
+    if (is_null($signature))
+      return false;
 
     $valid = self::signature($header, $payload);
 

@@ -7,10 +7,10 @@ use Phutilities\Parse;
 class Request
 {
   public readonly string $httpMethod;
+  public readonly mixed $postVars;
   public readonly array
     $headers,
     $queryParams,
-    $postVars,
     $cookies;
 
   public function __construct()
@@ -38,13 +38,12 @@ class Request
     $contentType = trim(explode(';', @$this->headers['content-type'])[0]);
     try {
       switch ($contentType) {
+        case 'text/plain':
+          $this->postVars = file_get_contents('php://input');
+          break;
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
           $json = json_decode($inputRaw, true);
-          if (!is_array($json)) {
-            $this->postVars[] = $json;
-            break;
-          }
           $this->postVars = $json;
           break;
         case 'application/xml':
@@ -57,10 +56,10 @@ class Request
           $this->postVars = array_merge($_POST, $_FILES);
           break;
         default:
-          exit(new Response("", Status::UNSUPPORTED_MEDIA_TYPE));
+          exit(Response::code(Status::UNSUPPORTED_MEDIA_TYPE));
       }
     } catch (\Throwable $th) {
-      exit(new Response("", Status::BAD_REQUEST));
+      exit(Response::code(Status::BAD_REQUEST));
     }
   }
 }

@@ -39,12 +39,11 @@ class Middlewares
     $firstKey = array_keys($this->middlewares)[0];
     if (is_numeric($firstKey)) {
       $middleware = $this->middlewares[$firstKey];
-      unset($this->middlewares[$firstKey]);
     } else {
       $params = $this->middlewares[$firstKey];
       $middleware = $firstKey;
-      unset($this->middlewares[$firstKey]);
     }
+    unset($this->middlewares[$firstKey]);
 
     if (class_exists($middleware))
       $middleware = (new $middleware);
