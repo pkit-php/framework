@@ -1,0 +1,67 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4263617cdffaaf06c21dab4abd3911dc",
+    "packages": [
+        {
+            "name": "pkit/phutilities",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pkit-php/phutilities.git",
+                "reference": "9b720bdba87ceffe231050675819ba6e8109831f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pkit-php/phutilities/zipball/9b720bdba87ceffe231050675819ba6e8109831f",
+                "reference": "9b720bdba87ceffe231050675819ba6e8109831f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "default-branch": true,
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Phutilities\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kauan Augusto",
+                    "email": "kauaug.mo@gmail.com"
+                }
+            ],
+            "description": "Generics utilities",
+            "keywords": [
+                "utilities"
+            ],
+            "support": {
+                "issues": "https://github.com/pkit-php/phutilities/issues",
+                "source": "https://github.com/pkit-php/phutilities/tree/master"
+            },
+            "time": "2022-08-16T18:52:50+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "pkit/phutilities": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=8.1"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
+}
