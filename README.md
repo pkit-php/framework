@@ -8,6 +8,8 @@
 
 <div align="center"><a href="https://packagist.org/packages/kauaug/pkit"><img src="icon.png"></a></div>
 
+```Esse projeto está parado para fins de estudo```
+
 Pkit é um framework php para aplicações web que visa facilitar o desenvolvimento de tais projetos.
 
 ## Instalação
