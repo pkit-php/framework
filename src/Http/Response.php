@@ -20,7 +20,7 @@ class Response
     ContentType::XML,
   ];
 
-  public function __construct(array | string | object $content, $status = 200)
+  public function __construct(array | string | object $content, int $status = 200)
   {
     $this->content = $content;
     $this->status($status);

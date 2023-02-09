@@ -36,13 +36,14 @@ class Error extends \Exception
             exit((new Response("", $red->getCode()))
                 ->header("Location", $red->getMessage()));
         } catch (\Throwable $err) {
-            $code = Status::validate($err->getCode())
-                ? $err->getCode()
-                : 500;
+            if (is_int($err->getCode()))
+                $code = Status::validate($err->getCode())
+                    ? $err->getCode()
+                    : 500;
             $codeProperty = (new ReflectionObject($err))
                 ->getProperty("code");
             $codeProperty->setAccessible(true);
-            $codeProperty->setValue($err, $code);
+            $codeProperty->setValue($err, $code ?? 500);
         } finally {
             if (
                 Env::getEnvOrValue("PKIT_CLEAR", "true") == "true" &&
