@@ -1,12 +1,13 @@
 <?php
 
-use Pkit\Abstracts\EspecialRoute;
+use Pkit\Abstracts\Route;
+use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Router\Debug;
 
-class FinalRoute extends EspecialRoute
+class FinalRoute extends Route
 {
-    public function all($request, $th): Response
+    public function ALL(Request $request, ?Throwable $th = null): Response
     {
         return Debug::error($request, $th);
     }

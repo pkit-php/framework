@@ -9,7 +9,7 @@ use Pkit\Utils\View;
 
 class Login extends Route
 {
-    public function get($request): Response
+    public function GET($request): Response
     {
         return $this->getLoginPage();
     }
@@ -18,14 +18,14 @@ class Login extends Route
     {
         return new Response(View::layout("login", [
             "title" => "login",
-            "code" => $code
+            "code"  => $code
         ]), $code);
     }
 
-    public function post($request): Response
+    public function POST($request): Response
     {
         $login = [
-            "email" => $request->postVars["email"],
+            "email"    => $request->postVars["email"],
             "password" => $request->postVars["password"]
         ];
 

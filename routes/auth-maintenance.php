@@ -12,7 +12,7 @@ class MaintenanceAuthenticated extends Route
         Maintenance::class,
     ];
 
-    function get($request): Response
+    function GET($request): Response
     {
         return new Response("get");
     }

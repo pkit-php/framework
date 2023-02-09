@@ -7,7 +7,7 @@ use Pkit\Middlewares\Auth;
 class Home extends Route
 {
 
-    public function get($request): Response
+    public function GET($request): Response
     {
         return new Response("home");
     }

@@ -4,61 +4,71 @@ namespace Pkit\Abstracts;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Route as HttpRoute;
+use Pkit\Http\Middlewares;
+use Pkit\Http\Status;
+use Pkit\Throwable\Error;
+use ReflectionClass;
+use ReflectionMethod;
+use Throwable;
 
-abstract class Route extends HttpRoute
+abstract class Route
 {
-  public $middlewares = [];
+    public $middlewares = [];
+    public function getMethod(Request $request, bool $especialRoute = false)
+    {
+        $all = 'ALL';
+        if (method_exists($this, $all)) {
+            if ((new ReflectionClass($this))
+                ->getMethod($all)
+                ->getDocComment() !== "/** @abstract */"
+            ) {
+                return $all;
+            }
+        }
 
-  /** @abstract */
-  public function options(Request $_): Response
+        $method = $request->httpMethod;
+        if (in_array($method, ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'HEAD'])) {
+            if (method_exists($this, $method)) 
+                return $method;
+            
+            if ($especialRoute == false)
+                throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
+        }
+        return false;
+    }
+
+  final public function __invoke(Request $request, ?Throwable $err = null)
   {
-    return Response::empty();
+    if( is_null($err)){
+      return $this->runRoute($request);
+    }
+    return $this->runEspecialRoute($request, $err);
+  
   }
-  /** @abstract */
-  public function delete(Request $_): Response
-  {
-    return Response::empty();
-  }
-  /** @abstract */
-  public function patch(Request $_): Response
-  {
-    return Response::empty();
-  }
-  /** @abstract */
-  public function trace(Request $_): Response
-  {
-    return Response::empty();
-  }
-  /** @abstract */
-  public function post(Request $_): Response
-  {
-    return Response::empty();
-  }
-  public function head(Request $_): Response
-  {
-    return (Response::empty())
-      ->header(
-        'Accept',
-        'application/x-www-form-urlencoded, ' .
-          'application/json, ' .
-          'application/xml, ' .
-          'multipart/form-data'
+
+  public function runRoute(Request $request){
+    if ($method = $this->getMethod($request)) {
+
+      $middlewares = Middlewares::filterMiddlewares(
+        $this->middlewares,
+        $request->httpMethod
       );
+      return (new Middlewares(function ($request) use ($method) {
+        return $this->$method($request);
+      },$middlewares))->next($request);
+    }
+
+    return new Response("", Status::NOT_IMPLEMENTED);
   }
-  /** @abstract */
-  public function get(Request $_): Response
+
+
+  public function runEspecialRoute(Request $request, Throwable $err)
   {
-    return Response::empty();
+    if ($method = $this->getMethod($request, true)) {
+      return $this->$method($request, $err);
+    }
+
+    throw $err;
   }
-  /** @abstract */
-  public function put(Request $_): Response
-  {
-    return Response::empty();
-  }
-  /** @abstract */
-  public function all(Request $_): Response
-  {
-    return Response::empty();
-  }
+ 
 }

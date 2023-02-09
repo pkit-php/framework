@@ -10,12 +10,12 @@ class Maintenance extends Route
         "post" => MiddlewaresMaintenance::class,
     ];
 
-    function get($request): Response
+    function GET($request): Response
     {
         return new Response("get");
     }
 
-    function post($request): Response
+    function POST($request): Response
     {
         return new Response("post");
     }

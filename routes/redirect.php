@@ -7,7 +7,7 @@ use Pkit\Throwable\Redirect;
 
 class Redirectable extends Route
 {
-    function get($request): Response
+    function GET($request): Response
     {
         throw new Redirect("/", Status::MOVED_PERMANENTLY);
     }

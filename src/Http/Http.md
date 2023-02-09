@@ -11,7 +11,7 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   - `[abc]` 'qualquer coisa entre `/`'
   - `{...abc}` 'qualquer coisa'
 
-    ```
+    ```php
     .htaccess
     index.php
     pkit/
@@ -29,6 +29,7 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 
   - Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funcionando como um rota comum. Essa rota deve ser chamada de `*.php` e estar no pasta routes.
   - uso:
+  
     ```php
     <?php
     //.../*
@@ -92,12 +93,12 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
       "post" => "pkit/onlycode"
     ];
 
-    public function get(Request $request, Response $response)
+    public function GET(Request $request, Response $response)
     {
       $response->send(Session::getSession());
     }
 
-    public function post(Request $request, Response $response)
+    public function POST(Request $request, Response $response)
     {
       /*validação*/
       Session::login($user);
@@ -173,7 +174,7 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 
   require __DIR__ . '/pkit/load.php';
 
-  use Pkit\Http\Middlewares;
+  use Pkit\Middlewares;
   /***/
   # namespace onde se localiza os middlewares a serem usados
   # padrão 'App\Middlewares'

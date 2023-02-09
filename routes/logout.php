@@ -15,12 +15,12 @@ class Logout extends Route
         return new Response(["message" => "Logout complete"]);
     }
 
-    public function get($request): Response
+    public function GET($request): Response
     {
         return $this->logout();
     }
 
-    public function post($request): Response
+    public function POST($request): Response
     {
         return $this->logout();
     }

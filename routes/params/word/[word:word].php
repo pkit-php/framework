@@ -6,7 +6,7 @@ use Pkit\Http\Router;
 
 class wordParams extends Route
 {
-    function get($request): Response
+    function GET($request): Response
     {
         return new Response(Router::getParams());
     }

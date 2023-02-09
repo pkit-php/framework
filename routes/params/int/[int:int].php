@@ -6,7 +6,7 @@ use Pkit\Http\Router;
 
 class IntParams extends Route
 {
-    function get($request): Response
+    function GET($request): Response
     {
         return new Response(Router::getParams());
     }
