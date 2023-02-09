@@ -4,8 +4,8 @@ namespace Pkit\Abstracts;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Middlewares;
 use Pkit\Http\Status;
+use Pkit\Middlewares;
 use Pkit\Throwable\Error;
 use ReflectionClass;
 use ReflectionMethod;
@@ -48,14 +48,23 @@ abstract class Route
 
   public function runRoute(Request $request){
     if ($method = $this->getMethod($request)) {
+      $attributedMiddlewares = (new ReflectionMethod($this, $method))->getAttributes(Middlewares::class)[0];
 
       $middlewares = Middlewares::filterMiddlewares(
         $this->middlewares,
         $request->httpMethod
       );
-      return (new Middlewares(function ($request) use ($method) {
+      return (new Middlewares($middlewares))->setController(function ($request) use ($method, $attributedMiddlewares) {
+        if($attributedMiddlewares){
+          return $attributedMiddlewares
+          ->newInstance()
+          ->setController(function ($request) use ($method) {
+            return $this->$method($request);
+          })->next($request);
+        }
+
         return $this->$method($request);
-      },$middlewares))->next($request);
+      })->next($request);
     }
 
     return new Response("", Status::NOT_IMPLEMENTED);
