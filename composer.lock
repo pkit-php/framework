@@ -4,27 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4263617cdffaaf06c21dab4abd3911dc",
+    "content-hash": "eb9a3f3e2075ce13356d248595df1ab4",
     "packages": [
         {
             "name": "pkit/phutilities",
-            "version": "dev-master",
+            "version": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pkit-php/phutilities.git",
-                "reference": "9b720bdba87ceffe231050675819ba6e8109831f"
+                "reference": "154fa446c996133478644862615763dbff67b0d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pkit-php/phutilities/zipball/9b720bdba87ceffe231050675819ba6e8109831f",
-                "reference": "9b720bdba87ceffe231050675819ba6e8109831f",
+                "url": "https://api.github.com/repos/pkit-php/phutilities/zipball/154fa446c996133478644862615763dbff67b0d0",
+                "reference": "154fa446c996133478644862615763dbff67b0d0",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "default-branch": true,
-            "type": "project",
+            "suggest": {
+                "php-xml": "Necessário para a conversão para array e vice-versa"
+            },
+            "type": "library",
             "autoload": {
                 "psr-4": {
                     "Phutilities\\": "src"
@@ -46,9 +48,9 @@
             ],
             "support": {
                 "issues": "https://github.com/pkit-php/phutilities/issues",
-                "source": "https://github.com/pkit-php/phutilities/tree/master"
+                "source": "https://github.com/pkit-php/phutilities/tree/development"
             },
-            "time": "2022-08-16T18:52:50+00:00"
+            "time": "2022-10-31T18:10:42+00:00"
         }
     ],
     "packages-dev": [],
