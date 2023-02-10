@@ -48,7 +48,7 @@ abstract class Route
 
   public function runRoute(Request $request){
     if ($method = $this->getMethod($request)) {
-      $attributedMiddlewares = (new ReflectionMethod($this, $method))->getAttributes(Middlewares::class)[0];
+      $attributedMiddlewares = @(new ReflectionMethod($this, $method))->getAttributes(Middlewares::class)[0];
 
       $middlewares = Middlewares::filterMiddlewares(
         $this->middlewares,
