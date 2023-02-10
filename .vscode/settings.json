@@ -1,3 +1,9 @@
 {
 	"thunder-client.saveToWorkspace": true,
+	"cSpell.words": [
+		"middlewares",
+		"Middlewares",
+		"Phutilities",
+		"Pkit"
+	],
 }
