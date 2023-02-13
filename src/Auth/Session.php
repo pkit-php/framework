@@ -15,7 +15,11 @@ class Session extends SessionEnv
       session_start();
       if (self::getTime() && is_null($_SESSION['created'])) {
         $_SESSION['created'] = Date::format(new DateTime());
-        setcookie(session_name(), session_id(), (time() + self::getTime()), '/', httponly: true);
+        setcookie(session_name(), session_id(), [
+          'expires'  => (time() + self::getTime()),
+          'path'     => '/',
+          'httponly' => true, // or false
+        ]);
       }
     }
   }
@@ -36,9 +40,7 @@ class Session extends SessionEnv
   {
     self::start();
     setcookie(session_name());
-    session_unset();
     session_destroy();
-    session_write_close();
   }
 
   public static function getSession(): mixed
