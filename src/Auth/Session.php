@@ -36,9 +36,7 @@ class Session extends SessionEnv
   {
     self::start();
     setcookie(session_name());
-    session_unset();
     session_destroy();
-    session_write_close();
   }
 
   public static function getSession(): mixed
