@@ -19,7 +19,7 @@ class Jwt extends JwtEnv
     'HS512' => ['hash_hmac', 'SHA512'],
   ];
 
-  public static function getPayload(string $token): string
+  public static function getPayload(string $token): mixed
   {
     $part = explode(".", $token);
     $payload = Base64url::decode($part[1]);
@@ -31,7 +31,7 @@ class Jwt extends JwtEnv
     return $response->header("authorization", "Bearer " . $token);
   }
 
-  public static function getBearer(Request $request): string | false
+  public static function getBearer(Request $request): string|false
   {
     $authorization = $request->headers["authorization"];
     if (is_null($authorization))
@@ -45,7 +45,7 @@ class Jwt extends JwtEnv
     if (is_null($alg))
       throw new Error("Jwt: algorithm '" . self::getAlg() . "' not supported", 500);
 
-    $signature =  call_user_func_array($alg[0], [
+    $signature = call_user_func_array($alg[0], [
       strtolower($alg[1]),
       "$header.$payload",
       self::getKey(),
