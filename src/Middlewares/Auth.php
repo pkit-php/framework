@@ -5,8 +5,7 @@ namespace Pkit\Middlewares;
 use Pkit\Abstracts\Middleware;
 use Pkit\Auth\Session;
 use Pkit\Auth\Jwt as AuthJwt;
-use Pkit\Http\Status;
-use Pkit\Throwable\Error;
+use Pkit\Exceptions\Auth\UserUnauthorizedException;
 use Phutilities\Date;
 use Phutilities\Parse;
 use DateTime;
@@ -31,7 +30,7 @@ class Auth extends Middleware
     $lastTh = null;
     foreach ($params as $auth) {
       $return = $this->tryAuth(
-        fn () => (new ReflectionMethod($this, "authBy" . $auth))
+        fn() => (new ReflectionMethod($this, "authBy" . $auth))
           ->invoke($this, $request, $next, $isGeneric),
         $err
       );
@@ -47,7 +46,8 @@ class Auth extends Middleware
   {
     try {
       return $auth();
-    } catch (\Throwable $th) {
+    }
+    catch (\Throwable $th) {
       if (
         $th->getFile() != __FILE__
         || $th->getTrace()[0]["function"] == "__construct"
@@ -60,10 +60,10 @@ class Auth extends Middleware
 
   public function authBySession($request, $next, $isGeneric)
   {
-    $prefix = $isGeneric ? "" : "Session: ";
+    $authType = $isGeneric ? null : "Session";
     if (!Session::logged()) {
       Session::logout();
-      throw new Error($prefix . "User Unauthorized", Status::UNAUTHORIZED);
+      throw new UserUnauthorizedException(false, $authType);
     }
 
     $expire = Session::getTime();
@@ -75,10 +75,7 @@ class Auth extends Middleware
       );
       if ($interval > $expire) {
         Session::logout();
-        throw new Error(
-          $prefix .  ($isGeneric ? "Auth" : "Session") . " Expired",
-          Status::UNAUTHORIZED
-        );
+        throw new UserUnauthorizedException(true, $authType);
       }
     }
 
@@ -88,9 +85,9 @@ class Auth extends Middleware
   public function authByJWT($request, $next, $isGeneric)
   {
     $token = AuthJwt::getBearer($request);
-    $prefix = $isGeneric ? "" : "Jwt: ";
+    $authType = $isGeneric ? null : "JWT";
     if (!$token || !AuthJwt::validate($token))
-      throw new Error($prefix . "User Unauthorized", Status::UNAUTHORIZED);
+      throw new UserUnauthorizedException(false, $authType);
 
     $expire = AuthJwt::getExpire();
     if ($expire > 0) {
@@ -100,10 +97,7 @@ class Auth extends Middleware
         new DateTime('now')
       );
       if ($interval > $expire)
-        throw new Error(
-          $prefix . ($isGeneric ? "Auth" : "Token") . " Expired",
-          Status::UNAUTHORIZED
-        );
+        throw new UserUnauthorizedException(true, $authType);
     }
     return $next($request);
   }
