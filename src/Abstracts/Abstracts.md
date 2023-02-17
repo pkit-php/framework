@@ -42,16 +42,16 @@ São modelos bases para criação de Middlewares e Rotas
   use Pkit\Abstracts\Route;
   use Pkit\Auth\Session;
   use Pkit\Http\Status;
+  use Pkit\Middlewares\Maintenance;
+  use Pkit\Middlewares\Auth;
 
   class Index extends Route
   {
     public $middlewares = [
-      "pkit/maintenance",
-      'get' => [
-        "pkit/auth",
-        "pkit/api"
-      ],
-      'post' => "pkit/onlycode"
+      Maintenance::class,
+      'GET' => [
+        Auth::class
+      ]
     ];
 
     public function get($request, $response)
