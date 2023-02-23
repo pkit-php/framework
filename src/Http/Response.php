@@ -162,11 +162,9 @@ class Response
     try {
       return match ($this->contentType) {
         'text/html' => $this->content,
-        'application/json' => is_array($this->content)
-          ? json_encode(
-            $this->content,
-          )
-          : $this->content,
+        'application/json' => json_encode(
+          $this->content,
+        ),
         'application/xml' => is_array($this->content)
           ? Parse::arrayToXml($this->content)
           : $this->content,
