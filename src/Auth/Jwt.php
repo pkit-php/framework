@@ -6,7 +6,6 @@ use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Auth\Jwt\JwtEnv;
-use Pkit\Throwable\Error;
 use Phutilities\Base64url;
 use Phutilities\Date;
 use Phutilities\Text;
@@ -39,11 +38,15 @@ class Jwt extends JwtEnv
     return Text::removeFromStart($authorization, "Bearer ");
   }
 
-  private static function signature(string $header, string $payload): string
+  private static function signature(string $header, string $payload): string|false
   {
-    $alg = self::$supported_algs[self::getAlg()];
+    $json_header = json_decode(Base64url::decode($header));
+    if (!is_object($json_header))
+      return false;
+
+    $alg = self::$supported_algs[$json_header->alg];
     if (is_null($alg))
-      throw new Error("Jwt: algorithm '" . self::getAlg() . "' not supported", 500);
+      return false;
 
     $signature = call_user_func_array($alg[0], [
       strtolower($alg[1]),
@@ -87,6 +90,9 @@ class Jwt extends JwtEnv
       return false;
 
     $valid = self::signature($header, $payload);
+
+    if (!$valid)
+      return false;
 
     return $signature == $valid;
   }
