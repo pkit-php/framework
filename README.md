@@ -1,54 +1,50 @@
-# PKIT
+# Pkit
 
-<p align="center">
-<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/dt/kauaug/pkit" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/v/kauaug/pkit" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/kauaug/pkit"><img src="https://img.shields.io/packagist/l/kauaug/pkit" alt="License"></a>
-</p>
+![https://packagist.org/packages/pkit/pkit](https://img.shields.io/packagist/dt/pkit/pkit)
+![https://packagist.org/packages/pkit/pkit](https://img.shields.io/packagist/v/pkit/pkit)
+![https://packagist.org/packages/pkit/pkit](https://img.shields.io/packagist/l/pkit/pkit)
 
-<div align="center"><a href="https://packagist.org/packages/kauaug/pkit"><img src="icon.png"></a></div>
+![https://github.com/pkit-php/pkit/raw/master/icon.png](https://github.com/pkit-php/pkit/raw/master/icon.png)
+
+`Esse projeto está parado para fins de estudo`
 
 Pkit é um framework php para aplicações web que visa facilitar o desenvolvimento de tais projetos.
 
 ## Instalação
 
-- Instale o Pkit através do [composer](https://getcomposer.org/download/)
-  ```sh
-  composer require kauaug/pkit
-  ```
+Instale o Pkit através do [composer](https://getcomposer.org/download/)
+
+`composer require pkit/pkit`
 
 ## Como iniciar
 
-- adicione o `.htaccess` para que só considere o `index.php`
+- adicione o `.htaccess` para que só considere o `index.php`
 
-  ```apache
-  RewriteEngine On
-  RewriteRule . index.php [L,QSA]
-  ```
+    ```php
+    RewriteEngine On
+    RewriteRule . index.php [L,QSA]
+    ```
 
-- inicialize o pkit
+- inicie o roteador
 
-  ```php
-  require __DIR__ . '/vendor/autoload.php';
-  ```
-
-- inicie o roteador com o path das rotas
-
-  ```php
-  //.../index.php
-  use Pkit\Http\Router;
-  /***/
-  # padrão '[root]/routes'
-  # pode ser configurado pelo .env 'ROUTE_PATH', 'PUBLIC_PATH', 'DOMAIN', 'SUB_DOMAIN' respectivamente
-  Router::config(__DIR__ . "/routes", __DIR__. "/public", "pkit.com", true);
-  Router::run();
-  ```
+    ```php
+    <?php
+    //.../index.php
+    require __DIR__ . '/vendor/autoload.php'
+    
+    use Pkit\Http\Router;
+    /***/
+    // o padrão de rotas são '[root]/routes' e '[root]/public'
+    // pode ser configurado pelo .env 'ROUTE_PATH', 'PUBLIC_PATH', 'DOMAIN', 'SUB_DOMAIN' respectivamente
+    Router::config(__DIR__ . "/routes", __DIR__. "/public", "pkit.com", true);// (opcional)
+    Router::run();
+    ```
 
 ## Rotas
 
-as rotas são adicionadas dentro da pasta `routes` e os caminhos são com base nos diretórios e nome dos arquivos, é suportado desde arquivos `.php` até arquivos estáticos como `.css` e `.js`
+as rotas são adicionadas dentro da pasta `routes` e os caminhos são com base nos diretórios e nome dos arquivos, é suportado desde arquivos `.php` até arquivos estáticos como `.css` e `.js`
 
-```files
+```php
 .htaccess
 index.php
 pkit/
@@ -59,384 +55,394 @@ routes/
 └ index.php
 ```
 
-- exemplo de rota
+O retorno padrão para a instancia de rotas é `\Pkit\Abstracts\Route`, sendo os métodos da classe os mesmos do HTTP, porem podendo ser retornado qualquer objeto que possa ser chamado ou qualquer string.
 
-  ```php
-  <?php
-  //.../routes/*
-  use Pkit\Abstracts\Route;
+```php
+<?php
+//.../routes/**/*.php
+use Pkit\Abstracts\Route;
+use Pkit\Http\Response;
 
-  # classe abstrata para adição de rotas por método
-  class index extends Route
+// classe abstrata para adição de rotas por método
+class index extends Route
+{
+  public function GET($request)
   {
-    public function get($request, $response)
-    {
-      $response->ok()->send('GET index.php');
-    }
-
-    public function post($request, $response)
-    {
-      $response->ok()->send('POST index.php');
-    }
-
+    return new Response('GET');
   }
 
-  # função que inicia a rota
-  Index::run();
+  public function POST($request)
+  {
+    return new Response('POST');
+  }
 
-  ```
+}
 
-- rotas avançadas
+// A rota funciona com base em objetos que podem ser chamados ou string retornadas
+return new Index;
+```
 
-  - `[abc]` 'qualquer coisa entre `/`'
-  - `{...abc}` 'qualquer coisa'
+### Rotas avançadas
 
-  ```files
-  .htaccess
-  index.php
-  pkit/
-  routes/
-  ├ [id]/
-  │ ├ [repo]/
-  │ │ ├ [...file].php
-  │ │ └ index.php
-  │ └ index.php
-  ├ home.php
-  └ index.php
-  ```
+As rotas avançadas são aquelas que recebem variáveis em meio as rotas
 
-  - exemplo de como pegar esse parâmetros
+```php
+.htaccess
+index.php
+pkit/
+routes/
+├ [id]/
+│ ├ [repo]/
+│ │ ├ [...file].php
+│ │ └ index.php
+│ └ index.php
+├ home.php
+└ index.php
+```
 
-    ```php
-    <?php
-    //.../routes/[id]/[repo]/[...file].php
+- `[abc]` : qualquer coisa entre barras
+- `[abc=int]` / `[abc=integer]` : qualquer numero sem casas decimais entre barras
+- `[abc=float]` : qualquer numero flutuante entre barras
+- `[abc=word]` : qualquer palavra entre barras
+- `[...abc]` : qualquer coisa depois da barra
 
-    use PKit\Abstracts\Route;
-    use PKit\Http\Router;
+Esses parâmetros são pegos através da instancia estática do Router
 
-    class FileByRepo extends Route
-    {
-      public function get($request, $response)
-      {
-        /**
-         * $params = [
-         *  'id' => '[^\/]',
-         *  'repo' => '[^\/]'
-         *  'file' => '.*'
-         * ]
-         */
-        $params = Router::getParams();
-        $response->json()->send($params);
-      }
-    }
+```php
+<?php
+//.../routes/[id=int]/[repo=word]/[...file].php
 
-    FileByRepo::run();
-    ```
+use PKit\Abstracts\Route;
+use PKit\Http\Router;
 
-- rota especial
+class FileByRepo extends Route
+{
+  public function GET($request)
+  {
+    /**
+     * $params = [
+     *  'id' => '[1-9]*',
+     *  'repo' => '[\w]*'
+     *  'file' => '.*'
+     * ]
+     */
+    $params = Router::getParams();
+    /***/
+    return new Response(/***/);
+  }
+}
 
-  `Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funcionando como um rota comum. Essa rota deve ser chamada de '*.php' e estar no pasta routes.`
+return new FileByRepo;
+```
 
-  - exemplo de uso em um middleware
+### Rota especial
 
-    ```php
-    <?php
-    //.../app/middlewares/maintenance.php
-    namespace Pkit\Middlewares;
+As rota interceptam erros das rotas, ainda funcionando como um rota comum, contudo qualquer método HTTP é pego pelo método `ALL`. Essa rota deve ser chamada de '*.php' e estar no pasta `routes`.
 
-    use Pkit\Abstracts\Middleware;
-    use Pkit\Http\Router;
+```php
+<?php
+//.../routes/*.php
+namespace Pkit\Middlewares;
 
-    class Maintenance implements Middleware
-    {
-      public function handle($request, $response, $next)
-      {
-        $response->serviceUnavailable();
-        Router::runEspecialRoute();# <--
-      }
-    }
-    ```
+use Pkit\Abstracts\Route;
+use Pkit\Http\Response;
+
+class EspecialRoute extends Route
+{
+ // esse método intercepta erros em qualquer um dos métodos HTTP
+  public function ALL($request, $err)
+  {
+  /***/
+  return new Response(/***/);
+  }
+}
+```
 
 ## Middlewares
 
-- inicie com namespace onde se encontra os middlewares adicionais no `index.php`
+Os Middlewares são intermediários das rotas, podendo conter parâmetros para uma configuração dinâmica.
 
-  ```php
-  //.../index.php
-  /***/
-  # padrão 'App\Middlewares'
-  # pode ser configurado pelo .env 'MIDDLEWARES_NAMESPACE'
-  use App\Middlewares as MiddlewaresNamespace;
+```php
+<?php
+//.../app/middlewares/teste.php
+namespace App\Middlewares;
 
-  Middlewares::config(MiddlewaresNamespace::class);
-  /***/
-  ```
+use Pkit\Abstracts\Middleware;
 
-- exemplo de criação
-
-  ```php
-  <?php
-  //.../app/middlewares/teste.php
-  namespace App\Middlewares;
-
-  use Pkit\Abstracts\Middleware;
-
-  class Teste extends Middleware{
-      public function handle($request, $response, $next)
-      {
-          echo 'teste';
-          /***/
-          $next($response, $request)
-      }
-  }
-  ```
-
-- exemplo de uso
-
-  ```php
-  <?php
-  //.../routes/home.php
-  use Pkit\Abstracts\Route;
-
-  class Home extends Route {
-
-      public $middlewares = [
-        'Teste', # middlewares adicionados
-        'Pkit/Api',# middlewares do framework iniciam com 'pkit/'
-        # chaves nomeados são pra métodos específicos
-        'post' => [
-          'Pkit/Auth',
-        ],
-      ];
-
-      function get($request, $response)
-      {
+class Teste extends Middleware {
+  // Os middlewares são baseados em closures
+    public function __invoke($request, $next, $params = null)
+    {
+        echo 'teste';
         /***/
-        $response->send(/***/);
-      }
+        return $next($request);
+    }
+}
+```
 
-      function post($request, $response)
-      {
-        /***/
-        $response->send(/***/);
-      }
-  }
-  Home::run();
-  ```
+Eles são tanto definidos em um atributo publico chamado `$middlewares` da classe `\Pkit\Abstracts\Route` quanto por atributos definidos acima do método.
 
-- lista de middlewares do framework
-  - `Pkit/Api` : converte o content-type para application/json
-  - `Pkit/Auth` : autentica o usuário com base na sessão
-  - `Pkit/Maintenance` : indica um rota em manutenção
-  - `Pkit/Jwt` : autentica o usuário com base no bearer token(jwt)
-  - `Pkit/OnlyCode` : converte o content-type para nulo
+```php
+<?php
+//.../routes/home.php
+use App\Middlewares\Teste;
+/***/
+use Pkit\Abstracts\Route;
+use Pkit\Middlewares\Auth;
+use Pkit\Middlewares;
+use Pkit\Http\Response;
+
+class Home extends Route {
+
+    public $middlewares = [
+      Teste::class, // middlewares adicionados
+      /***/
+      // chaves nomeados são pra métodos específicos
+      'POST' => [
+      // os valores são passados como parâmetros para o Middleware
+        Auth::class => "jwt",
+      ],
+    ];
+
+    function GET($request)
+    {
+      /***/
+      return new Response(/***/);
+    }
+
+    // os atributos podem ser usado para definir os middlewares
+    #[Middlewares([Auth::class => "session",])]
+    function POST($request)
+    {
+      /***/
+      return new Response(/***/);
+    }
+}
+
+return new Home;
+```
+
+### middlewares do framework
+
+- `Pkit/Middlewares/Auth`  : autentica o usuário com base na sessão
+  - Os possíveis parâmetros são “jwt”, “session” ou a sequência configuradas por array
+- `Pkit/Middlewares/Maintenance` : indica um rota em manutenção
 
 ## Session
 
-- configuração:
+```php
+<?php
+ // .../index.php
+require __DIR__ . '/pkit/load.php';
 
-  ```php
-  <?php
-   // .../index.php
-  require __DIR__ . '/pkit/load.php';
+use Pkit\Auth\Session;
+/***/
+// pode ser configurado pelo .env 'SESSION_EXPIRES' e 'SESSION_PATH' respectivamente
+Session::config(/*tempo em segundos*/, /*caminho para a sessão(opcional)*/);// (opcional)
+/***/
+```
 
-  use Pkit\Auth\Session;
+### login
+
+```php
+<?php
+//.../routes/login.php
+use Pkit\Abstracts\Route;
+use Pkit\Auth\Session;
+use Pkit\Http\Response;
+
+class Login extends Route {
+
+    function GET($request)
+    {
+        /***/
+        Session::login([
+          'id' => '1234',
+          'name' => 'user...'
+        ]);
+        return new Response("logged");
+    }
+
   /***/
-  # pode ser configurado pelo .env 'SESSION_EXPIRES' e 'SESSION_PATH' respectivamente
-  Session::config(/*tempo em segundos*/, /*caminho para a sessão(opcional)*/);//opcional
-  /***
-  ```
+}
 
-- login
+return new Login;
+```
 
-  ```php
-  <?php
-  //.../routes/login.php
-  use Pkit\Abstracts\Route;
-  use Pkit\Auth\Session;
+### logout
 
-  class Login extends Route {
+```php
+<?php
+//.../routes/logout.php
+use Pkit\Abstracts\Route;
+use Pkit\Auth\Session;
+use Pkit\Http\Response;
+use Pkit\Middlewares\Auth;
+use Pkit\Middlewares;
 
-      function get($request, $response)
-      {
-          /***/
-          Session::login([
-            'id' => '1234',
-            'name' => 'user...'
-          ]);
-          $response->send("logged");
-      }
-  }
-  Login::run();
-  ```
+class Logout extends Route {
 
-- logout
+    #[Middlewares([
+      Auth::class => 'session'
+    ])]
+    function GET($request)
+    {
+        /***/
+        Session::logout();
+        return new Response("logged out");
+    }
+  
+  /***/
+}
 
-  ```php
-  <?php
-  //.../routes/logout.php
-  use Pkit\Abstracts\Route;
-  use Pkit\Auth\Session;
-
-  class Logout extends Route {
-
-      public $middlewares = [
-        'Pkit/Auth',
-      ];
-
-      function get($request, $response)
-      {
-          /***/
-          Session::logout();
-          $response->send("dislogged");
-      }
-  }
-  Logout::run();
-  ```
+return new Logout;
+```
 
 ## Jwt
 
-- configuração do Jwt
+```php
+<?php
+//.../routes/logout.php
+use Pkit\Auth\Jwt;
+/***/
+// pode ser configurado pelo .env 'JWT_KEY', 'JWT_EXPIRES' e 'JWT_ALG' respectivamente
+Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos (opcional)*/, /*algoritmo de criptografia (opcional)*/));
+/***/
+```
 
-  ```php
-  //.../routes/logout.php
-  use Pkit\Auth\Jwt;
+### token
+
+```php
+<?php
+//.../routes/login.php
+use Pkit\Abstracts\Route;
+use Pkit\Auth\Jwt;
+use Pkit\Middlewares\Auth;
+
+class Login extends Route {
+
+    #[Middlewares([
+      Auth::class => 'jwt'
+    ])]
+    function GET($request)
+    {
+      /***/
+      // pega o token enviado pelo header 'Authorization'
+      $token = Jwt::getBearer();
+      return new Response(Jwt::getPayload($token));
+    }
+
+    function POST($request)
+    {
+      /***/
+      $token = Jwt::tokenize(/*payload*/);
+      // envia o token pelo header 'Authorization'
+      Jwt::setBearer($token);
+      return new Response(Jwt::getPayload($token));
+    }
+
   /***/
-  # pode ser configurado pelo .env 'JWT_KEY', 'JWT_EXPIRES' e 'JWT_ALG' respectivamente
-  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/, /*algoritmo de criptografia*/));
-  /***/
-  ```
+}
 
-- token
-
-  ```php
-  <?php
-  //.../routes/login.php
-  use Pkit\Abstracts\Route;
-  use Pkit\Auth\Jwt;
-
-  class Login extends Route {
-
-      public $middlewares = [
-        'get' => 'Pkit/jwt'
-      ]
-
-      function get($request, $response)
-      {
-        /***/
-        # pega o token enviado pelo header 'Authorization'
-        $token = Jwt::getBearer();
-        $response->send(Jwt::getPayload($token));
-      }
-
-      function post($request, $response)
-      {
-        /***/
-        $token = Jwt::tokenize(/*payload*/);
-        # envia o token pelo header 'Authorization'
-        Jwt::setBearer($token);
-      }
-  }
-  Login::run();
-  ```
+return new Login;
+```
 
 ## View
 
-- configuração do path de views
-
-  ```php
-  // index.php
-  /***/
-  # padrão '[root]/view'
-  # pode ser configurado pelo .env 'PATH_VIEW'
-  View::config(__DIR__ . '/app/view');
-  /***/
-  ```
+```php
+<?php
+//.../index.php
+/***/
+// padrão '[root]/view'
+// pode ser configurado pelo .env 'PATH_VIEW'
+View::config(__DIR__ . '/app/view');
+/***/
+```
 
 - é considerado a partir da pasta configurada
-- o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
-- obs.: somente os arquivos `.phtml` são reconhecidos
+- o argumentos são pegos a partir de `View::getArgs()` e renderizados a partir de `View::render(<file>)`
+- obs.: somente os arquivos `.phtml` são reconhecidos
 
-  ```php
-  <?php
-  //.../view/home/index.phtml
-  use Pkit\Utils\View;
-  ?>
-  <main>
+    ```php
     <?php
-    // $_ARGS# 'superglobal' que recebe os argumentos do render
-    foreach ($_ARGS as $key => $value) {
-      View::render('componentes/home/p', $key . ' : ' . $value);
-    }
+    //.../view/home/index.phtml
+    use Pkit\Utils\View;
     ?>
-  </main>
-  ```
+    <main>
+      <?php
+      // $_ARGS ('super global' que recebe os argumentos do render)
+      foreach ($_ARGS as $key => $value) {
+        View::render('componentes/home/p', $key . ' : ' . $value);
+      }
+      ?>
+    </main>
+    ```
 
 ### layout
 
-- deve estar no arquivo `__layout.phtml` no caminho para a view
-- para dar reset o layout deve estar no arquivo `__layout.reset.phtml`
-- para adicionar o arquivo ao layout deve se usar `View::slot(/*args*/)`
+- deve estar no arquivo `__layout.php` no caminho para a view
+- para dar reset o layout deve estar no arquivo `__layout.reset.php`
+- para adicionar o arquivo ao layout deve se usar `View::slot(/*args*/)`
 
-  ```phtml
-  <?php
-  //.../view/home/__layout.phtml
-  use Pkit\Utils\View;
-  ?>
-  <!DOCTYPE html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title><?= $_ARGS['title'] ?></title>
-      <meta name="description" content="<?= $_ARGS['description'] ?>">
-    </head>
-    <body>
-      <main>
-        <?= View::render("componentes/header") ?>
-        <?= View::slot($_ARGS) # deve-se passar os argumentos ao slot ?>
-        <?= View::render("componentes/footer") ?>
-      </main>
-    </body>
-  </html>
-  ```
+    ```php
+    <?php
+    //.../view/home/__layout.phtml
+    use Pkit\Utils\View;
+    ?>
+    <!DOCTYPE html><html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title><?= $_ARGS['title'] ?></title>
+        <meta name="description" content="<?= $_ARGS['description'] ?>">
+      </head>
+      <body>
+        <main>
+          <?= View::render("componentes/header") ?>
+          <?= View::slot($_ARGS) // deve-se passar os argumentos ao slot ?>
+          <?= View::render("componentes/footer") ?>
+        </main>
+      </body>
+    </html>
+    ```
 
 - exemplo de uso
 
-  ```php
-  <?php
-  //.../routes/index.php
-  use Pkit\Abstracts\Route;
-  use Pkit\Utils\View;
-
-  class Index extends Route
-  {
-    public function get($request, $response)
+    ```php
+    <?php
+    //.../routes/index.php
+    use Pkit\Abstracts\Route;
+    use Pkit\Http\Response;
+    use Pkit\Utils\View;
+    
+    class Index extends Route
     {
-      # o método layout tem os mesmo parâmetros do render, porem envolto com o __layout
-      $response->render(View::layout('home/index', [
-        'title' => 'Home',
-        'description' => 'tela inicial',
-      ]));
+      public function GET($request)
+      {
+        // o método layout tem os mesmo parâmetros do render, porem envolto com o __layout
+        return Response::render(View::layout('home/index', [
+          'title' => 'Home',
+          'description' => 'tela inicial',
+        ]));
+      }
     }
-  }
-
-  Index::run();
-  ```
+    
+    return new Index;
+    ```
 
 - lista de viewers do framework
 
-  `obs.:é usado da mesma forma que os middlewares do framework`
+    `obs.:é usado da mesma forma que os middlewares do framework`
 
-  - `pkit/code` : pagina que mostra um svg animado com base no código
+  - `pkit/code` : pagina que mostra um svg animado com base no código
     - argumentos
       - lang
       - title
       - code
       - color
       - message
-  - `pkit/redirect` : pagina que mostra uma tela de carregamento animado, ainda redireciona para o site pedido
+  - `pkit/redirect` : pagina que mostra uma tela de carregamento animado, ainda redireciona para o site pedido
     - argumentos
       - lang
       - title
@@ -444,15 +450,7 @@ routes/
 
 ## Variáveis de ambiente especiais
 
-```env
-DB_DRIVER=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_DBNAME=database
-DB_USER=root
-DB_PASS=
-DB_CHARSET=utf8
-DB_DIALECT=3
+```php
 MIDDLEWARES_NAMESPACE=\App\Middlewares # namespace onde se encontra os middlewares que não são do framework
 ROUTE_PATH=/var/www/pkit/routes
 PUBLIC_PATH=/var/www/pkit/public
@@ -468,4 +466,4 @@ PKIT_DEBUG=true # se true, caso aja erro, mostra uma pagina com o código de err
 PKIT_CLEAR=false # se false, mantêm o conteúdo renderizado mesmo que tenha sido ocasionado um erro
 ```
 
-_para mais informações acesse as documentações nas pastas no framework_
+***Para mais informações acesse as documentações nas pastas no framework***

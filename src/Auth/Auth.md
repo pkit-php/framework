@@ -1,23 +1,25 @@
 # Auth
 
-Classe de autenticação e criação de tokens genéricos
+Classes de autenticação e criação de tokens genéricos
 
 ## Session
 
-- Funciona a partir da sessão do php
-- É regerado sempre que a sessão é desligada
-- Pode durar uma sessão ou um tempo pre-determinado
+A classe Session Funciona a partir da sessão do php e é regerado sempre que a sessão é desligada, além disso pode durar uma sessão ou um tempo pré-determinado.
+
 - configuração:
 
   ```php
   <?php
    // .../index.php
-  require __DIR__ . '/pkit/load.php';
-
+  require __DIR__ . '/vendor/autoload.php';
+  /***/
   use Pkit\Auth\Session;
   /***/
   # pode ser configurado pelo .env 'SESSION_EXPIRES' e 'SESSION_PATH' respectivamente
-  Session::config(/*tempo em segundos*/, /*caminho para a sessão(opcional)*/);//opcional
+  Session::config(
+    /*tempo em segundos*/, 
+    /*caminho para a sessão(opcional)*/
+  );//opcional
   /***
   ```
 
@@ -28,31 +30,34 @@ Classe de autenticação e criação de tokens genéricos
   // .../*
   use Pkit\Auth\Session;
   /***/
-  $logged = Session::isLogged(); //: boolean
-  /***/
   Session::login(/*payload: array*/);
   /***/
-  Session::logout()
+  $logged = Session::isLogged(); //: bool
+  /***/
+  Session::logout()//: bool
   /***/
 
   ```
 
 ## Jwt
 
-- É enviado um token criptografado para o cliente e assim validado no retorno
-- Por padrão ele é enviado pelo cabeçalho 'Authorization' com o "Bearer \<token>"
-- Pode ser valido pra sempre ou um tempo pre-determinado
-- configuração:
+O jwt é token criptografado que é enviado para o cliente e então validado no retorno, por padrão é enviado pelo cabeçalho 'Authorization' com o sufixo `Bearer`, além disso pode ser valido pra sempre ou como recomendado, ter um tempo de expiração.
+
+- configuração da classe Jwt:
 
   ```php
   <?php
    // .../index.php
-  require __DIR__ . '/pkit/load.php';
+  require __DIR__ . '/vendor/autoload.php';
 
   use Pkit\Auth\Jwt;
   /***/
   # pode ser configurado pelo .env 'JWT_KEY', 'JWT_EXPIRES' e 'JWT_ALG' respectivamente
-  Jwt::config(/*chave para criptografia*/, /*tempo de expiração em segundos #opcional*/, /*algoritmo de criptografia*/));
+  Jwt::config(
+    /*chave para criptografia*/, 
+    /*tempo de expiração em segundos #opcional*/, 
+    /*algoritmo de criptografia*/
+  );
   /***
   ```
 
@@ -69,7 +74,7 @@ Classe de autenticação e criação de tokens genéricos
   /***/
   $payload = Jwt::getPayload(/*token:string*/)//:object
   /***/
-  Jwt::setBearer(/*response:Response*/,/*token:string*/)
+  Jwt::setBearer(/*response:Response*/,/*token:string*/)//:Response
   /***/
   $token = Jwt::getBearer(/*request:Request*/)//:string;
   /***/

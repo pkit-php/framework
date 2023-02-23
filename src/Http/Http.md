@@ -2,124 +2,11 @@
 
 Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 
-## Router
-
-- Gestor e inicializador de rotas estáticas e dinâmicas(php)
-- O `index.php` sempre se referem as pasta que se encontram
-- Gerencia URI dinâmica com base em parâmetros de rotas:
-
-  - `[abc]` 'qualquer coisa entre `/`'
-  - `{...abc}` 'qualquer coisa'
-
-    ```php
-    .htaccess
-    index.php
-    pkit/
-    routes/
-    ├ (id)/
-    │ ├ [repo]/
-    │ │ ├ {file}.php
-    │ │ └ index.php
-    │ └ index.php
-    ├ home.php
-    └ index.php
-    ```
-
-- Rota especial
-
-  - Rota que intercepta erros de rotas ou chamadas intencionais a mesma, ainda funcionando como um rota comum. Essa rota deve ser chamada de `*.php` e estar no pasta routes.
-  - uso:
-  
-    ```php
-    <?php
-    //.../*
-    use Pkit\Http\Router;
-    /***/
-    $params = Router::runEspecialRoute();//:array
-    /***/
-    ```
-
-- Guarda os parâmetros passados na URI antes configurados pelas rotas
-
-  ```php
-  <?php
-  //.../*
-  use Pkit\Http\Router;
-  /***/
-  $params = Router::getParams();//:array
-  /***/
-  ```
-
-- configuração/uso:
-
-  ```php
-  <?php
-  //.../index.php
-  require __DIR__ . '/pkit/load.php';
-
-  use Pkit\Http\Router;
-  /***/
-  Router::config(__DIR__ . '/routes');
-  Router::run();
-
-  ```
-
-## Route
-
-- Gestor de execução de código por método http
-- Usam os middlewares configurados
-- exemplo/uso:
-
-  ```php
-  <?php
-  //.../*
-  # A abstração do Route estende o Route do HTTP
-  use Pkit\Abstracts\Route;
-  use Pkit\Auth\Session;
-  use Pkit\Http\Status;
-  use Pkit\Http\Request;
-  use Pkit\Http\Response;
-  use Pkit\Utils\View;
-  /***/
-
-  class Login extends Route
-  {
-    # Ele que comanda a execução dos Middlewares
-    public $middlewares = [
-      "get" => [
-        "pkit/auth",
-        "pkit/api",
-      ],
-      "post" => "pkit/onlycode"
-    ];
-
-    public function GET(Request $request, Response $response)
-    {
-      $response->send(Session::getSession());
-    }
-
-    public function POST(Request $request, Response $response)
-    {
-      /*validação*/
-      Session::login($user);
-      $response->headers['Location'] = "/";
-      $response->sendStatus(Status::OK);
-    }
-  }
-
-  # É executado de forma estática
-  Login::run();
-
-  ```
-
-  - Referências:
-    - [Route Abstraction](../abstracts/Abstracts.md)
-
 ## Request
 
 - Armazena as informações relacionado a requisição
 - Suporta conteúdos em `json/xml/form` desde que esteja explicito na requisição
-- uso :
+- uso:
 
   ```php
   <?php
@@ -139,7 +26,7 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
 ## Response
 
 - Configura as informações a serem enviadas
-- Suporta conteúdos em `json/html/form` desde que esteja explicito
+- Suporta conteúdos em `json/html/form/xml` desde que esteja explicito
 - uso:
 
   ```php
@@ -210,15 +97,15 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   ```php
   <?php
   //.../*
+  use Pkit\Middlewares\Auth;
+  use Pkit\Middlewares\Maintenance;
+
   /*rota*/
   public $middlewares = [
-      "pkit/auth", # middlewares sem chaves são usados em todos o métodos
-      # podem ser específicos para cada métodos
-      "get" => [
-        "pkit/api",
-      ],
-      # não precisam ser arrays
-      "post" => "pkit/onlycode"
+      Maintenance::class,
+      # podem ser específicos para cada métodos e não precisam ser arrays
+      "GET" => Auth::class, # middlewares sem chaves são usados em todos o métodos
+      ,
     ];
   /*rota*/
   ```
@@ -237,8 +124,10 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   <?php
 
   use Pkit\Http\ContentType;
+  use PKit\Http\Response;
   /***/
-  $response->contentType(ContentType::JSON);
+  return (new Response())
+    ->contentType(ContentType::JSON);
   /***/
   ```
 
@@ -252,7 +141,9 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   <?php
 
   use Pkit\Http\Status;
+  use PKit\Http\Response;
   /***/
-  $response->status(Status::UNAUTHORIZED);
+  return (new Response())
+    ->status(Status::UNAUTHORIZED);
   /***/
   ```
