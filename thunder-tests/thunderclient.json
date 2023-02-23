@@ -438,5 +438,62 @@
         "value": "1"
       }
     ]
+  },
+  {
+    "_id": "abf4e46a-1c26-4466-8237-5cff5751d7d6",
+    "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+    "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+    "name": "jwt",
+    "url": "{{url}}/jwt",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-23T13:28:27.296Z",
+    "modified": "2023-02-23T14:32:01.995Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "30e72fc7-bf2b-4cd4-bf23-83b9826e4d39",
+    "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+    "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+    "name": "jwt validate",
+    "url": "{{url}}/jwt",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2023-02-23T13:54:24.731Z",
+    "modified": "2023-02-23T14:32:06.615Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "text",
+      "raw": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "bbd11a78-f71f-4aa5-975f-302bd1ce1375",
+    "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+    "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+    "name": "jwt validate failed",
+    "url": "{{url}}/jwt",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2023-02-23T14:29:04.692Z",
+    "modified": "2023-02-23T14:32:08.986Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "text",
+      "raw": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgE",
+      "form": []
+    },
+    "tests": []
   }
 ]
