@@ -50,7 +50,7 @@ class Cache extends Middleware
         return urlencode(Text::removeFromStart($uri, "/")) . $paramsString . ".cache";
     }
 
-    public function invalidateRoute($route)
+    public function invalidateRoute(string $route)
     {
         $cache_file = CacheUtil::getCacheDir() . "/"
             . urlencode(Text::removeFromStart($route, "/"));
