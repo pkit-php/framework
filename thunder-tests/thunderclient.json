@@ -495,5 +495,72 @@
       "form": []
     },
     "tests": []
+  },
+  {
+    "_id": "dcbbed99-ee01-49b3-80b3-b5a819bb88e0",
+    "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+    "containerId": "22298bb2-ba0a-47f5-82d1-ac856e39aabc",
+    "name": "cache",
+    "url": "{{url}}/cache",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-03-03T10:49:23.779Z",
+    "modified": "2023-03-03T12:23:53.469Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "e30d5736-1e8f-466e-a0db-3fa994e2f2a2",
+    "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+    "containerId": "22298bb2-ba0a-47f5-82d1-ac856e39aabc",
+    "name": "cache params",
+    "url": "{{url}}/cache?key=a\\b/.c&other=.",
+    "method": "GET",
+    "sortNum": 16250,
+    "created": "2023-03-03T12:23:57.779Z",
+    "modified": "2023-03-03T13:51:00.385Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "key",
+        "value": "a\\b/.c",
+        "isPath": false
+      },
+      {
+        "name": "other",
+        "value": ".",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3f0e8e08-0d55-4ca5-ba8d-d749459b4c19",
+    "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+    "containerId": "22298bb2-ba0a-47f5-82d1-ac856e39aabc",
+    "name": "cache file",
+    "url": "{{url}}/cache/file",
+    "method": "GET",
+    "sortNum": 15000,
+    "created": "2023-03-03T12:30:50.667Z",
+    "modified": "2023-03-03T12:31:01.565Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "94088717-b1b7-4d5f-aa12-478c61e85287",
+    "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+    "containerId": "22298bb2-ba0a-47f5-82d1-ac856e39aabc",
+    "name": "cache clear",
+    "url": "{{url}}/cache/clear",
+    "method": "GET",
+    "sortNum": 17500,
+    "created": "2023-03-03T13:12:22.835Z",
+    "modified": "2023-03-03T13:12:35.783Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]
