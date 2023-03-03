@@ -52,6 +52,8 @@ class Cache extends Middleware
 
     public function invalidateRoute(string $route)
     {
+        if (!str_starts_with($route, "/"))
+            $route = Router::getUri() . "/" . $route;
         $cache_file = CacheUtil::getCacheDir() . "/"
             . urlencode(Text::removeFromStart($route, "/"));
         array_map('unlink', glob(preg_quote($cache_file . "?") . "*.cache"));
