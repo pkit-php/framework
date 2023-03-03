@@ -39,7 +39,8 @@
         "name": "cache",
         "containerId": "",
         "created": "2023-03-03T12:23:51.312Z",
-        "sortNum": 20000
+        "sortNum": 20000,
+        "settings": {}
       }
     ],
     "settings": {

@@ -503,12 +503,35 @@
     "name": "cache",
     "url": "{{url}}/cache",
     "method": "GET",
-    "sortNum": 10000,
+    "sortNum": 13125,
     "created": "2023-03-03T10:49:23.779Z",
-    "modified": "2023-03-03T12:23:53.469Z",
+    "modified": "2023-03-03T15:22:03.634Z",
     "headers": [],
     "params": [],
-    "tests": []
+    "tests": [
+      {
+        "type": "res-time",
+        "custom": "",
+        "action": "<",
+        "value": "1000"
+      }
+    ],
+    "preReq": {
+      "runRequests": [
+        {
+          "reqId": "94088717-b1b7-4d5f-aa12-478c61e85287",
+          "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+          "triggerCondition": "run-always",
+          "triggerValue": ""
+        },
+        {
+          "reqId": "515e6c55-7099-4568-a90d-a9fc85679ed8",
+          "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+          "triggerCondition": "run-always",
+          "triggerValue": ""
+        }
+      ]
+    }
   },
   {
     "_id": "e30d5736-1e8f-466e-a0db-3fa994e2f2a2",
@@ -559,6 +582,20 @@
     "sortNum": 17500,
     "created": "2023-03-03T13:12:22.835Z",
     "modified": "2023-03-03T13:12:35.783Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "515e6c55-7099-4568-a90d-a9fc85679ed8",
+    "colId": "46e58a4c-40c9-428d-a95a-0b760f22020c",
+    "containerId": "22298bb2-ba0a-47f5-82d1-ac856e39aabc",
+    "name": "_cache",
+    "url": "{{url}}/cache",
+    "method": "GET",
+    "sortNum": 11250,
+    "created": "2023-03-03T15:17:18.601Z",
+    "modified": "2023-03-03T15:17:27.395Z",
     "headers": [],
     "params": [],
     "tests": []
