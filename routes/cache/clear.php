@@ -7,7 +7,7 @@ use Pkit\Middlewares\Cache as CacheMiddleware;
 
 class Cache extends Route
 {
-    #[Middlewares([CacheMiddleware::class => ["cache_params" => ["key"]]])]
+    #[Middlewares([CacheMiddleware::class => ["invalidate" => ["/cache"]]])]
     public function GET($request): Response
     {
         $date = (new DateTime("now"));
