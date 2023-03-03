@@ -52,10 +52,12 @@ class Cache
         if (!file_exists($cacheFile))
             return false;
 
-        $createTime = filectime($cacheFile);
-        $diffTime = time() - $createTime;
-        if ($diffTime > self::getExpiration())
-            return false;
+        if (self::getExpiration() > 0) {
+            $createTime = filectime($cacheFile);
+            $diffTime = time() - $createTime;
+            if ($diffTime > self::getExpiration())
+                return false;
+        }
 
         $serialize = file_get_contents($cacheFile);
         return unserialize($serialize);
