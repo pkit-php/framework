@@ -4,6 +4,7 @@ namespace Pkit\Utils;
 
 use Closure;
 use Phutilities\Env;
+use Pkit\Exceptions\Cache\CacheFilePermissionDenied;
 
 class Cache
 {
@@ -43,7 +44,9 @@ class Cache
         $serialize = serialize($content);
         $cacheFilePath = self::getFilePath($hash);
 
-        return file_put_contents($cacheFilePath, $serialize);
+        if (!@file_put_contents($cacheFilePath, $serialize))
+            throw new CacheFilePermissionDenied($cacheFilePath);
+
     }
 
     private static function getContentCache(string $hash)
