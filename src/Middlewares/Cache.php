@@ -27,6 +27,9 @@ class Cache extends Middleware
                 }
                 return $return;
             }
+
+            if ($expiration = $params['expiration'])
+                CacheUtil::config(CacheUtil::getCacheDir(), (int) $expiration);
         }
 
         $fileCache = self::formatFileCache(Router::getUri(), $cache_params, $request->queryParams);
