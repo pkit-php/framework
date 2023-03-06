@@ -12,7 +12,7 @@ class Cache
     private static ?string $dir = null;
     private static ?int $expiration = null;
 
-    public function config(string $dir, int $expiration = null)
+    public static function config(string $dir, int $expiration = null)
     {
         self::$dir = $dir;
         self::$expiration = $expiration;
