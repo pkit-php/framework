@@ -17,8 +17,8 @@ class Cache extends Middleware
         $invalidate_routes = [];
         if (!is_null($params)) {
             $params = Parse::anyToArray($params);
-            $cache_params = $params['cache_params'] ?? [];
-            $invalidate_routes = $params['invalidate'] ?? [];
+            $cache_params = @$params['cache_params'] ?? [];
+            $invalidate_routes = @$params['invalidate'] ?? [];
 
             if (!empty($invalidate_routes)) {
                 $return = $next($request);
@@ -28,7 +28,7 @@ class Cache extends Middleware
                 return $return;
             }
 
-            if ($expiration = $params['expiration'])
+            if ($expiration = @$params['expiration'])
                 CacheUtil::config(CacheUtil::getCacheDir(), (int) $expiration);
         }
 
