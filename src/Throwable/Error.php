@@ -31,11 +31,14 @@ class Error extends \Exception
         try {
             ob_start();
             $function();
-        } catch (Error $err) {
-        } catch (Redirect $red) {
-            exit((new Response("", $red->getCode()))
+        }
+        catch (Error $err) {
+        }
+        catch (Redirect $red) {
+            exit(Response::code($red->getCode())
                 ->header("Location", $red->getMessage()));
-        } catch (\Throwable $err) {
+        }
+        catch (\Throwable $err) {
             if (is_int($err->getCode()))
                 $code = Status::validate($err->getCode())
                     ? $err->getCode()

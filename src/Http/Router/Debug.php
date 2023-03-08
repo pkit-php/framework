@@ -3,7 +3,6 @@
 namespace Pkit\Http\Router;
 
 use Phutilities\Env;
-use Pkit\Http\ContentType;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Phutilities\Parse;
@@ -52,27 +51,25 @@ class Debug
 
   public static function json_err(Throwable $err): Response
   {
-    return (new Response(
+    return Response::json(
       array_filter([
         "code" => $err->getCode(),
         "message" => $err->getMessage(),
         "trace" => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
-    ))
-      ->contentType(ContentType::JSON);
+    );
   }
 
   public static function xml_err(Throwable $err): Response
   {
-    return (new Response(
+    return Response::xml(
       array_filter([
         "code" => $err->getCode(),
         "message" => $err->getMessage(),
         "trace" => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
-    ))
-      ->contentType(ContentType::XML);
+    );
   }
 }

@@ -3,6 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
+use Phutilities\FS;
 use Phutilities\Parse;
 use Pkit\Utils\View;
 
@@ -12,7 +13,7 @@ class Response
   private array $cookies = [];
   private ?string $contentType = null;
   private int $status;
-  private array | string | object $content;
+  private array|string|object $content;
 
   const CONTENT_TYPE_SUPPORT = [
     ContentType::JSON,
@@ -20,7 +21,7 @@ class Response
     ContentType::XML,
   ];
 
-  public function __construct(array | string | object $content, int $status = 200)
+  public function __construct(array|string|object $content, int $status = 200)
   {
     $this->content = $content;
     $this->status($status);
@@ -40,14 +41,15 @@ class Response
     $domain = "",
     $secure = false,
     $httponly = false
-  ) {
+  )
+  {
     $this->cookies[$name] = [
-      "value" => $value,
+      "value"              => $value,
       "expires_or_options" => $expires_or_options,
-      "path" => $path,
-      "domain" => $domain,
-      "secure" => $secure,
-      "httponly" => $httponly
+      "path"               => $path,
+      "domain"             => $domain,
+      "secure"             => $secure,
+      "httponly"           => $httponly
     ];
     return $this;
   }
@@ -98,6 +100,21 @@ class Response
       ->contentType(ContentType::XML);
   }
 
+  public static function mimeFile($filepath): Response
+  {
+    $content = file_get_contents($filepath);
+    $extension = FS::getExtension($filepath);
+
+    if (
+      ($mime_content = ContentType::getContentType($extension))
+      || ($mime_content = mime_content_type($filepath))
+    )
+      return (new Response($content))
+        ->header("Content-Type", $mime_content);
+    else
+      return Response::code(Status::UNSUPPORTED_MEDIA_TYPE);
+  }
+
   public static function code(int $status)
   {
     return new Response("", $status);
@@ -122,7 +139,8 @@ class Response
 
     if (is_string($this->content)) {
       $this->headers['Content-Type'] = ContentType::HTML;
-    } else {
+    }
+    else {
       $this->headers['Content-Type'] = ContentType::JSON;
     }
     $this->contentType = $this->headers['Content-Type'];
@@ -166,15 +184,16 @@ class Response
           $this->content,
         ),
         'application/xml' => is_array($this->content)
-          ? Parse::arrayToXml($this->content)
-          : $this->content,
+        ? Parse::arrayToXml($this->content)
+        : $this->content,
         default => $this->content
       };
-    } catch (\Throwable $th) {
+    }
+    catch (\Throwable $th) {
       throw new Error(
         "Response: conversion for content-type '"
-          . $this->contentType
-          . "'",
+        . $this->contentType
+        . "'",
         500,
         $th
       );
