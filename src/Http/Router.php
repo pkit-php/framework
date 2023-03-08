@@ -30,8 +30,9 @@ class Router extends RouterEnv
     if (strlen(self::$file)) {
       $extension = FS::getExtension(self::$file);
       if ($extension != "php") {
-        exit(self::getResponseForMimeFile(self::$file));
-      } else {
+        exit(Response::mimeFile(self::$file));
+      }
+      else {
         $err = Error::tryRun(function () use ($request) {
           exit(self::runRoute(self::$file, $request));
         });
@@ -123,17 +124,4 @@ class Router extends RouterEnv
     return $return($request, $err);
   }
 
-  private static function getResponseForMimeFile($file): Response
-  {
-    $content = file_get_contents($file);
-    $extension = FS::getExtension($file);
-
-    if (($mime_content = ContentType::getContentType($extension))
-      || ($mime_content = mime_content_type(self::$file))
-    )
-      return (new Response($content))
-        ->header("Content-Type", $mime_content);
-    else
-      return Response::code(Status::UNSUPPORTED_MEDIA_TYPE);
-  }
 }

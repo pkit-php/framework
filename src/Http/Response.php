@@ -3,6 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Throwable\Error;
+use Phutilities\FS;
 use Phutilities\Parse;
 use Pkit\Utils\View;
 
@@ -96,6 +97,21 @@ class Response
   {
     return (new Response($content, $status))
       ->contentType(ContentType::XML);
+  }
+
+  public static function mimeFile($filepath): Response
+  {
+    $content = file_get_contents($filepath);
+    $extension = FS::getExtension($filepath);
+
+    if (
+      ($mime_content = ContentType::getContentType($extension))
+      || ($mime_content = mime_content_type($filepath))
+    )
+      return (new Response($content))
+        ->header("Content-Type", $mime_content);
+    else
+      return Response::code(Status::UNSUPPORTED_MEDIA_TYPE);
   }
 
   public static function code(int $status)
