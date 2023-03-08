@@ -25,7 +25,7 @@ class Request
 
     $this->headers = self::getHeaders();
     $this->uri = self::getUri();
-    $this->postVars = self::getPostVars(trim(explode(';', @$this->headers['content-type'])[0]));
+    $this->postVars = self::getPostVars();
   }
 
   public static function getInstance(): self
@@ -46,8 +46,9 @@ class Request
     return Sanitize::uri($_SERVER["REQUEST_URI"]);
   }
 
-  public static function getPostVars($contentType)
+  public static function getPostVars()
   {
+    $contentType = trim(explode(';', getallheaders()['Content-Type'])[0]);
     try {
       switch ($contentType) {
         case 'text/plain':
