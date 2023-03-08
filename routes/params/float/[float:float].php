@@ -2,7 +2,7 @@
 
 use Pkit\Abstracts\Route;
 use Pkit\Http\Response;
-use Pkit\Http\Router;
+use Pkit\Router;
 
 class FloatParams extends Route
 {

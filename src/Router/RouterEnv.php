@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Http\Router;
+namespace Pkit\Router;
 
 use Phutilities\Env;
 
@@ -8,8 +8,8 @@ class RouterEnv
 {
     private static ?bool $subDomain = null;
     protected static ?string
-        $routePath = null,
-        $publicPath = null;
+    $routePath = null,
+    $publicPath = null;
 
     public static function config(string $routePath, ?string $publicPath = null, bool $subDomain = false)
     {

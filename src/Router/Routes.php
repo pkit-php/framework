@@ -1,16 +1,16 @@
 <?php
 
-namespace Pkit\Http\Router;
+namespace Pkit\Router;
 
 class Routes
 {
     private static
-        $patternVariable = '/\[\w+\]/',
-        $patternInteger = '/\[\w+\:(int|integer)\]/',
-        $patternFloat = '/\[\w+\:(float)\]/',
-        $patternWord = '/\[\w+\:(word)\]/',
-        $patternRest = '/\[\.{3}\w+\]/',
-        $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|float|word))?\]/';
+    $patternVariable = '/\[\w+\]/',
+    $patternInteger = '/\[\w+\:(int|integer)\]/',
+    $patternFloat = '/\[\w+\:(float)\]/',
+    $patternWord = '/\[\w+\:(word)\]/',
+    $patternRest = '/\[\.{3}\w+\]/',
+    $patternGeral = '/\[(?:\.{3})?(\w+)(?:\:(?:int|integer|float|word))?\]/';
 
     public static function matchRouteAndParams(string $route, string $uri, array &$array): bool
     {
@@ -46,7 +46,8 @@ class Routes
             unset($matches[0]);
             $array = array_combine(@$variables ?? [], $matches);
             return true;
-        };
+        }
+        ;
 
         return false;
     }

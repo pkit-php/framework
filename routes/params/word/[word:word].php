@@ -2,7 +2,7 @@
 
 use Pkit\Abstracts\Route;
 use Pkit\Http\Response;
-use Pkit\Http\Router;
+use Pkit\Router;
 
 class wordParams extends Route
 {

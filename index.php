@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-use Pkit\Http\Router;
+use Pkit\Router;
 use Phutilities\Env;
 
 Env::load(__DIR__ . "/.env");

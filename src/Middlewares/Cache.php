@@ -6,7 +6,7 @@ use Phutilities\Parse;
 use Phutilities\Text;
 use Pkit\Abstracts\Middleware;
 use Pkit\Http\Request;
-use Pkit\Http\Router;
+use Pkit\Router;
 use Pkit\Utils\Cache as CacheUtil;
 
 class Cache extends Middleware

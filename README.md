@@ -32,7 +32,7 @@ Instale o Pkit através do [composer](https://getcomposer.org/download/)
     //.../index.php
     require __DIR__ . '/vendor/autoload.php'
     
-    use Pkit\Http\Router;
+    use Pkit\Router;
     /***/
     // o padrão de rotas são '[root]/routes' e '[root]/public'
     // pode ser configurado pelo .env 'ROUTE_PATH', 'PUBLIC_PATH', 'DOMAIN', 'SUB_DOMAIN' respectivamente
@@ -113,7 +113,7 @@ Esses parâmetros são pegos através da instancia estática do Router
 //.../routes/[id=int]/[repo=word]/[...file].php
 
 use PKit\Abstracts\Route;
-use PKit\Http\Router;
+use PKit\Router;
 
 class FileByRepo extends Route
 {

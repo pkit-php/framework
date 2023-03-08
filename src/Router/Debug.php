@@ -1,6 +1,6 @@
 <?php
 
-namespace Pkit\Http\Router;
+namespace Pkit\Router;
 
 use Phutilities\Env;
 use Pkit\Http\Request;
@@ -26,14 +26,17 @@ class Debug
     $accepts = Parse::headerToArray($request->headers['accept'], false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
-    } else if (in_array('application/xml', $accepts)) {
+    }
+    else if (in_array('application/xml', $accepts)) {
       return self::xml_err($err);
-    } else if (
+    }
+    else if (
       in_array('application/json', $accepts) ||
       in_array('*/*', $accepts)
     ) {
       return self::json_err($err);
-    } else {
+    }
+    else {
       return new Response($err, $err->getCode());
     }
   }
@@ -41,11 +44,11 @@ class Debug
   public static function html_err(Throwable $err): Response
   {
     return Response::render("pkit/code", $err->getCode(), [
-      'code' => $err->getCode(),
-      'message' => $err->getMessage(),
+      'code'        => $err->getCode(),
+      'message'     => $err->getMessage(),
       'description' => $err->getMessage(),
-      'title' => $err->getMessage(),
-      "traces" => self::getCanTraces() ? $err->getTrace() : null,
+      'title'       => $err->getMessage(),
+      "traces"      => self::getCanTraces() ? $err->getTrace() : null,
     ]);
   }
 
@@ -53,9 +56,9 @@ class Debug
   {
     return Response::json(
       array_filter([
-        "code" => $err->getCode(),
+        "code"    => $err->getCode(),
         "message" => $err->getMessage(),
-        "trace" => self::getCanTraces() ? $err->getTrace() : null,
+        "trace"   => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
     );
@@ -65,9 +68,9 @@ class Debug
   {
     return Response::xml(
       array_filter([
-        "code" => $err->getCode(),
+        "code"    => $err->getCode(),
         "message" => $err->getMessage(),
-        "trace" => self::getCanTraces() ? $err->getTrace() : null,
+        "trace"   => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
     );

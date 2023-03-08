@@ -3,7 +3,7 @@
 use Pkit\Abstracts\Route;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Router\Debug;
+use Pkit\Router\Debug;
 
 class FinalRoute extends Route
 {

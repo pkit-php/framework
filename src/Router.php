@@ -1,10 +1,13 @@
 <?php
 
-namespace Pkit\Http;
+namespace Pkit;
 
-use Pkit\Http\Router\RouterEnv;
-use Pkit\Http\Router\Debug;
-use Pkit\Http\Router\Routes;
+use Pkit\Http\Request;
+use Pkit\Http\Response;
+use Pkit\Http\Status;
+use Pkit\Router\RouterEnv;
+use Pkit\Router\Debug;
+use Pkit\Router\Routes;
 use Pkit\Throwable\Error;
 use Phutilities\Sanitize;
 use Phutilities\Env;
@@ -15,12 +18,12 @@ use Throwable;
 class Router extends RouterEnv
 {
   private static string
-    $uri,
-    $file;
+  $uri,
+  $file;
 
   private static array $params = [];
   private static ?string
-    $especialRoute = null;
+  $especialRoute = null;
 
   public static function run()
   {
@@ -37,7 +40,8 @@ class Router extends RouterEnv
           exit(self::runRoute(self::$file, $request));
         });
       }
-    } else {
+    }
+    else {
       $err = new Error(
         "page '" . self::$uri . "' not found",
         Status::NOT_FOUND
