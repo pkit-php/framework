@@ -3,11 +3,14 @@
 namespace Pkit\Http;
 
 use Phutilities\Parse;
+use Phutilities\Sanitize;
 
 class Request
 {
   private static ?Request $instance = null;
-  public readonly string $httpMethod;
+  public readonly string
+  $httpMethod,
+  $uri;
   public readonly mixed $postVars;
   public readonly array
   $headers,
@@ -21,6 +24,7 @@ class Request
     $this->cookies = $_COOKIE ?? [];
 
     $this->headers = self::getHeaders();
+    $this->uri = self::getUri();
     $this->postVars = self::getPostVars(trim(explode(';', @$this->headers['content-type'])[0]));
   }
 
@@ -32,12 +36,17 @@ class Request
     return self::$instance;
   }
 
-  private static function getHeaders()
+  public static function getHeaders()
   {
     return getallheaders();
   }
 
-  private static function getPostVars($contentType)
+  public static function getUri()
+  {
+    return Sanitize::uri($_SERVER["REQUEST_URI"]);
+  }
+
+  public static function getPostVars($contentType)
   {
     try {
       switch ($contentType) {

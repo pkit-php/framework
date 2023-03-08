@@ -9,7 +9,6 @@ use Pkit\Router\RouterEnv;
 use Pkit\Router\Debug;
 use Pkit\Router\Routes;
 use Pkit\Throwable\Error;
-use Phutilities\Sanitize;
 use Phutilities\Env;
 use Phutilities\FS;
 use Phutilities\Text;
@@ -17,9 +16,7 @@ use Throwable;
 
 class Router extends RouterEnv
 {
-  private static string
-  $uri,
-  $file;
+  private static string $file;
 
   private static array $params = [];
   private static ?string
@@ -27,9 +24,8 @@ class Router extends RouterEnv
 
   public static function run()
   {
-    self::setUri($_SERVER["REQUEST_URI"]);
-    self::setFileAndParams();
-    $request = new Request;
+    $request = Request::getInstance();
+    self::setFileAndParams($request->uri);
     if (strlen(self::$file)) {
       $extension = FS::getExtension(self::$file);
       if ($extension != "php") {
@@ -43,7 +39,7 @@ class Router extends RouterEnv
     }
     else {
       $err = new Error(
-        "page '" . self::$uri . "' not found",
+        "page '" . $request->uri . "' not found",
         Status::NOT_FOUND
       );
     }
@@ -59,11 +55,6 @@ class Router extends RouterEnv
       exit(Response::code($err->getCode()));
   }
 
-  public static function getUri()
-  {
-    return self::$uri;
-  }
-
   public static function getParams()
   {
     return self::$params;
@@ -74,31 +65,15 @@ class Router extends RouterEnv
     return self::$file;
   }
 
-  private static function setUri($requestUri)
+  private static function setFileAndParams(string $uri)
   {
-    $uri = Sanitize::uri($requestUri);
-    if (self::getSubDomain()) {
-      $host = $_SERVER['HTTP_HOST'];
-      $subdomain = explode($host, ".")[0];
-      if (
-        $subdomain != "www" &&
-        !is_numeric($subdomain) &&
-        preg_match("/^\p{L}+$/u", $subdomain)
-      )
-        $uri = "/" . $subdomain . rtrim($uri, "/");
-    }
-    self::$uri = $uri;
-  }
-
-  private static function setFileAndParams()
-  {
-    $filePublic = self::getPublicPath() . str_replace("/../", "/", self::$uri);
+    $filePublic = self::getPublicPath() . str_replace("/../", "/", $uri);
     if (@file($filePublic)) {
       self::$file = $filePublic;
       return;
     }
     $params = [];
-    self::$file = FS::someFile(self::getRoutePath(), function ($file) use (&$params) {
+    self::$file = FS::someFile(self::getRoutePath(), function ($file) use (&$params, $uri) {
       $route = Text::removeFromStart($file, self::$routePath);
       if (str_ends_with($route, "/*.php"))
         return false;
@@ -107,7 +82,7 @@ class Router extends RouterEnv
         ? Text::removeFromEnd($route, "index.php")
         : Text::removeFromEnd($route, ".php");
 
-      return Routes::matchRouteAndParams($route, self::$uri, $params);
+      return Routes::matchRouteAndParams($route, $uri, $params);
     }, true) ?? "";
     self::$params = $params;
     self::$especialRoute = self::$routePath . "/*.php";
