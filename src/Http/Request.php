@@ -6,12 +6,13 @@ use Phutilities\Parse;
 
 class Request
 {
+  private static ?Request $instance = null;
   public readonly string $httpMethod;
   public readonly mixed $postVars;
   public readonly array
-    $headers,
-    $queryParams,
-    $cookies;
+  $headers,
+  $queryParams,
+  $cookies;
 
   public function __construct()
   {
@@ -19,46 +20,45 @@ class Request
     $this->queryParams = $_GET ?? [];
     $this->cookies = $_COOKIE ?? [];
 
-    $this->setHeaders();
-    $this->setPostVars();
+    $this->headers = self::getHeaders();
+    $this->postVars = self::getPostVars(trim(explode(';', @$this->headers['content-type'])[0]));
   }
 
-  public function setHeaders()
+  public static function getInstance(): self
   {
-    $headers = getallheaders() ?? [];
-    $headersKeys = array_map(
-      fn ($value) => strtolower($value),
-      array_keys($headers)
-    );
-    $this->headers = array_combine($headersKeys, $headers);
+    if (!self::$instance) {
+      self::$instance = new Request();
+    }
+    return self::$instance;
   }
 
-  private function setPostVars()
+  private static function getHeaders()
   {
-    $contentType = trim(explode(';', @$this->headers['content-type'])[0]);
+    return getallheaders();
+  }
+
+  private static function getPostVars($contentType)
+  {
     try {
       switch ($contentType) {
         case 'text/plain':
-          $this->postVars = file_get_contents('php://input');
-          break;
+          return file_get_contents('php://input');
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
           $json = json_decode($inputRaw, true);
-          $this->postVars = $json;
-          break;
+          return $json;
         case 'application/xml':
           $xml = file_get_contents('php://input');
-          $this->postVars = Parse::xmlToArray($xml);
-          break;
+          return Parse::xmlToArray($xml);
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
         case null:
-          $this->postVars = array_merge($_POST, $_FILES);
-          break;
+          return array_merge($_POST, $_FILES);
         default:
           exit(Response::code(Status::UNSUPPORTED_MEDIA_TYPE));
       }
-    } catch (\Throwable $th) {
+    }
+    catch (\Throwable $th) {
       exit(Response::code(Status::BAD_REQUEST));
     }
   }
