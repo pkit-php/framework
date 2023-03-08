@@ -13,13 +13,15 @@ Comportamento geral em relação a comportamentos relacionados ao Protocolo HTTP
   //.../*
   use use Pkit\Http\Request;
   /***/
-  $request = new Request;
+  $request = Request::getInstance();
   /***/
   $postVars = $request->postVars;//:array
   /***/
   $queryParams = $request->queryParams;//:array
   /***/
   $headers = $request->headers;//:array
+  /***/
+  $uri = $request->uri;//:array
   /***/
   ```
 
