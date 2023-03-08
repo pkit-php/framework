@@ -11,7 +11,6 @@ class Response
 {
   private array $headers = [];
   private array $cookies = [];
-  private ?string $contentType = null;
   private int $status;
   private array|string|object $content;
 
@@ -62,7 +61,7 @@ class Response
         Status::INTERNAL_SERVER_ERROR
       );
 
-    $this->contentType = $contentType;
+    $this->headers['Content-Type'] = $contentType;
     return $this;
   }
 
@@ -127,15 +126,8 @@ class Response
 
   private function fixContentType()
   {
-    if (@$this->headers['Content-Type']) {
-      $this->contentType = $this->headers['Content-Type'];
+    if (@$this->headers['Content-Type'])
       return;
-    }
-
-    if (@$this->contentType) {
-      $this->headers['Content-Type'] = $this->contentType;
-      return;
-    }
 
     if (is_string($this->content)) {
       $this->headers['Content-Type'] = ContentType::HTML;
@@ -143,7 +135,6 @@ class Response
     else {
       $this->headers['Content-Type'] = ContentType::JSON;
     }
-    $this->contentType = $this->headers['Content-Type'];
   }
 
   private function sendCode()
@@ -178,23 +169,25 @@ class Response
     $this->sendCookies();
 
     try {
-      return match ($this->contentType) {
-        'text/html' => $this->content,
-        'application/json' => json_encode(
-          $this->content,
-        ),
-        'application/xml' => is_array($this->content)
-        ? Parse::arrayToXml($this->content)
-        : $this->content,
-        default => $this->content
+      if (is_string($this->content))
+        return $this->content;
+      return match ($this->headers['Content-Type']) {
+        'application/json' => json_encode($this->content),
+        'application/xml' => Parse::arrayToXml($this->content),
+        default => throw new Error(
+          "Response: conversion for content-type '"
+          . $this->headers['Content-Type']
+          . "' unsupported",
+          Status::INTERNAL_SERVER_ERROR
+        )
       };
     }
     catch (\Throwable $th) {
       throw new Error(
         "Response: conversion for content-type '"
-        . $this->contentType
-        . "'",
-        500,
+        . $this->headers['Content-Type']
+        . "' failed",
+        Status::INTERNAL_SERVER_ERROR,
         $th
       );
     }
