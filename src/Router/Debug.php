@@ -23,7 +23,7 @@ class Debug
 
   public static function error(Request $request, Throwable $err): Response
   {
-    $accepts = Parse::headerToArray($request->headers['accept'], false);
+    $accepts = Parse::headerToArray($request->headers['Accept'], false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
     }
