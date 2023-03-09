@@ -43,25 +43,23 @@ abstract class Route
   protected final function runRoute(Request $request): Response
   {
     if ($method = $this->getMethod($request)) {
-      $attributedMiddlewares = @(new ReflectionMethod($this, $method))->getAttributes(Middlewares::class)[0];
-
       $middlewares = Middlewares::filterMiddlewares(
         $this->middlewares,
         $request->httpMethod
       );
-      return (new Middlewares($middlewares))->setController(function ($request) use ($method, $attributedMiddlewares) {
-        if ($attributedMiddlewares) {
-          return $attributedMiddlewares
-            ->newInstance()
-            ->setController(
-              function ($request) use ($method) {
-                return $this->$method($request);
-              }
-            )->next($request);
-        }
-
-        return $this->$method($request);
-      })->next($request);
+      return (new Middlewares($middlewares))
+        ->setController(function ($request) use ($method) {
+          if (
+            $attributedMiddlewares = @(new ReflectionMethod($this, $method))
+              ->getAttributes(Middlewares::class)[0]
+          )
+            return $attributedMiddlewares
+              ->newInstance()
+              ->setController(
+                fn($request) => $this->$method($request)
+              )->next($request);
+          return $this->$method($request);
+        })->next($request);
     }
 
     return new Response("", Status::NOT_IMPLEMENTED);
