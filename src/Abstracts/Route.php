@@ -62,7 +62,7 @@ abstract class Route
         })->next($request);
     }
 
-    return new Response("", Status::NOT_IMPLEMENTED);
+    return Response::code(Status::NOT_IMPLEMENTED);
   }
 
 
