@@ -13,40 +13,42 @@ use Throwable;
 
 abstract class Route
 {
-    public $middlewares = [];
-    public function getMethod(Request $request, bool $especialRoute = false)
-    {
-        $all = 'ALL';
-        if (method_exists($this, $all)) {
-            if ((new ReflectionClass($this))
-                ->getMethod($all)
-                ->getDocComment() !== "/** @abstract */"
-            ) {
-                return $all;
-            }
-        }
-
-        $method = $request->httpMethod;
-        if (in_array($method, ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'HEAD'])) {
-            if (method_exists($this, $method)) 
-                return $method;
-            
-            if ($especialRoute == false)
-                throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
-        }
-        return false;
+  public $middlewares = [];
+  public function getMethod(Request $request, bool $especialRoute = false)
+  {
+    $all = 'ALL';
+    if (method_exists($this, $all)) {
+      if (
+        (new ReflectionClass($this))
+          ->getMethod($all)
+          ->getDocComment() !== "/** @abstract */"
+      ) {
+        return $all;
+      }
     }
+
+    $method = $request->httpMethod;
+    if (in_array($method, ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'HEAD'])) {
+      if (method_exists($this, $method))
+        return $method;
+
+      if ($especialRoute == false)
+        throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
+    }
+    return false;
+  }
 
   final public function __invoke(Request $request, ?Throwable $err = null)
   {
-    if( is_null($err)){
+    if (is_null($err)) {
       return $this->runRoute($request);
     }
     return $this->runEspecialRoute($request, $err);
-  
+
   }
 
-  public function runRoute(Request $request){
+  public function runRoute(Request $request)
+  {
     if ($method = $this->getMethod($request)) {
       $attributedMiddlewares = @(new ReflectionMethod($this, $method))->getAttributes(Middlewares::class)[0];
 
@@ -55,12 +57,13 @@ abstract class Route
         $request->httpMethod
       );
       return (new Middlewares($middlewares))->setController(function ($request) use ($method, $attributedMiddlewares) {
-        if($attributedMiddlewares){
+        if ($attributedMiddlewares) {
           return $attributedMiddlewares
-          ->newInstance()
-          ->setController(function ($request) use ($method) {
-            return $this->$method($request);
-          })->next($request);
+            ->newInstance()
+            ->setController(function ($request) use ($method) {
+              return $this->$method($request);
+            }
+            )->next($request);
         }
 
         return $this->$method($request);
@@ -79,5 +82,5 @@ abstract class Route
 
     throw $err;
   }
- 
+
 }
