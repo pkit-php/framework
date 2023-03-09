@@ -34,8 +34,14 @@
     <?php endif ?>
   </div>
   <p>
-    <strong style="color: var(--color);"><?= $_ARGS['code'] ?? "'code'" ?></strong>
-    <?= $_ARGS['message'] ? (" - " . $_ARGS['message']) : "" ?>
+    <strong style="color: var(--color);">
+      <?= $_ARGS['code'] ?? "'code'" ?>
+    </strong>
+    <?= $_ARGS['name'] ? (" - " . $_ARGS['name']) : "" ?>
+    <br>
+    <em>
+      <?= @$_ARGS['message'] ?>
+    </em>
   </p>
   <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;">
 <?php
