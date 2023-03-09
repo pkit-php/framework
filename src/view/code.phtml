@@ -43,25 +43,82 @@
       <?= @$_ARGS['message'] ?>
     </em>
   </p>
-  <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;">
-<?php
-echo @$_ARGS['trace'] ? $_ARGS['trace'] : "";
-foreach ((@$_ARGS['traces'] ?? []) as $key => $line) :
-  if (@$line["file"]) :
-    echo "#$key "
-      . '<a target="_blank" href="file://' . $line["file"] . '">'
-      . $line["file"]
-      . "</a>";
-  else :
-    echo " [internal function]";
-  endif;
-  echo (@$line['line'] ? "(" . $line['line'] . ")" : "");
-  echo ": " . @$line["class"] . @$line["type"];
-  echo (@$line["function"] ? $line["function"] . "()" : "");
-  echo "\n";
-endforeach
-?>
-</pre>
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem;justify-content: center">
+    <?php
+    if ($_ARGS['traces']):
+      ?><span style="display: flex">
+        <?php
+        foreach ($_ARGS['traces'] as $trace):
+          if ($trace["file"]):
+            $fileContents = file_get_contents($trace["file"]);
+            $lines = preg_split("/((\r?\n)|(\r\n?))/", $fileContents);
+            $line = $trace["line"] > 5 ? $trace["line"] - 5 : 0;
+            ?><span style="user-select: none;">
+              <?php
+              if ($line > 0):
+                echo " 	...";
+              endif;
+              for ($index = $line; $index < ($line + 9); $index++):
+                ?>
+                <div>
+                  <?php
+                  $indexPlus = $index + 1;
+                  if (($trace["line"]) == $indexPlus)
+                    echo "⇒" . $indexPlus . " ";
+                  else
+                    echo " 	" . $indexPlus . " ";
+                  ?>
+                </div>
+                <?php
+              endfor;
+              if ($line + 9 < count($lines)):
+                echo " 	...";
+              endif;
+              ?>
+            </span>
+            <?php
+
+            ?>
+            <pre style="max-width: 75vw; max-height: 50vh; overflow: auto;"><?php
+            for ($index = $line; $index < ($line + 9); $index++):
+              if (is_string($lines[$index])):
+                $lineText = $lines[$index];
+
+                echo $lineText . "\n";
+
+              else:
+                break;
+              endif;
+            endfor;
+            ?></pre>
+            <?php
+
+            break;
+          endif;
+        endforeach;
+        ?>
+      </span>
+      <?php
+    endif ?>
+
+    <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;"><?php
+    echo @$_ARGS['trace'] ? $_ARGS['trace'] : ""; foreach ((@$_ARGS['traces'] ?? []) as $key => $line):
+      if (@$line["file"]):
+        echo "#$key "
+          . '<a target="_blank" href="file://' . $line["file"] . '">'
+          . $line["file"]
+          . "</a>";
+      else:
+        echo " [internal function]";
+      endif;
+      echo (@$line['line'] ? "(" . $line['line'] . ")" : "");
+      echo ": " . @$line["class"] . @$line["type"];
+      echo (@$line["function"] ? $line["function"] . "()" : "");
+      echo "\n";
+    endforeach ?>
+    </pre>
+  </div>
+
 </div>
 
 <style>
