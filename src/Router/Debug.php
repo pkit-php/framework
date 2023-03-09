@@ -6,6 +6,7 @@ use Phutilities\Env;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Phutilities\Parse;
+use ReflectionClass;
 use Throwable;
 
 class Debug
@@ -43,7 +44,11 @@ class Debug
 
   public static function html_err(Throwable $err): Response
   {
+    $nameClass = (new ReflectionClass($err))->getShortName();
+    $nameClass = preg_replace("([A-Z][^A-Z])", " $0", $nameClass);
+    $nameClass = trim($nameClass);
     return Response::render("pkit/code", $err->getCode(), [
+      'name'        => $nameClass,
       'code'        => $err->getCode(),
       'message'     => $err->getMessage(),
       'description' => $err->getMessage(),
