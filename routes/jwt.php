@@ -2,11 +2,9 @@
 
 use Pkit\Abstracts\Route;
 use Pkit\Auth\Jwt;
+use Pkit\Exceptions\Http\Status\ExpectationFailed;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Status;
-use Pkit\Middlewares\Auth;
-use Pkit\Throwable\Error;
 
 class Home extends Route
 {
@@ -14,7 +12,7 @@ class Home extends Route
     {
         if (!is_array($request->postVars)) {
             if (!Jwt::validate($request->postVars))
-                throw new Error("", Status::EXPECTATION_FAILED);
+                throw new ExpectationFailed;
 
             array(Jwt::getPayload($request->postVars));
             return new Response(Jwt::getPayload($request->postVars));

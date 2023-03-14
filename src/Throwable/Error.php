@@ -3,6 +3,7 @@
 namespace Pkit\Throwable;
 
 use Phutilities\Env;
+use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Response;
 use Pkit\Http\Status;
 use ReflectionObject;
@@ -17,9 +18,8 @@ class Error extends \Exception
             $code >= 600 ||
             !Status::validate($code)
         ) {
-            throw new Error(
+            throw new InternalServerError(
                 "Error: Status '$code' is not valid",
-                Status::INTERNAL_SERVER_ERROR,
                 $th
             );
         }
@@ -38,7 +38,7 @@ class Error extends \Exception
             exit(Response::code($red->getCode())
                 ->header("Location", $red->getMessage()));
         }
-        catch (\Throwable $err) {
+        catch (Throwable $err) {
             if (is_int($err->getCode()))
                 $code = Status::validate($err->getCode())
                     ? $err->getCode()
@@ -53,9 +53,8 @@ class Error extends \Exception
                 Env::getEnvOrValue("PKIT_RETURN", "true") == "true"
             )
                 ob_end_clean();
-            return $err ?? new Error(
+            return $err ?? new InternalServerError(
                 "Router: status and message is null or invalid",
-                Status::INTERNAL_SERVER_ERROR
             );
         }
     }

@@ -5,7 +5,7 @@ namespace Pkit\Middlewares;
 use Pkit\Abstracts\Middleware;
 use Pkit\Auth\Session;
 use Pkit\Auth\Jwt as AuthJwt;
-use Pkit\Exceptions\Auth\UserUnauthorizedException;
+use Pkit\Exceptions\Http\Status\Unauthorized;
 use Phutilities\Date;
 use Phutilities\Parse;
 use DateTime;
@@ -42,7 +42,7 @@ class Auth extends Middleware
     throw $lastTh;
   }
 
-  public function tryAuth($auth, &$err)
+  private function tryAuth($auth, &$err)
   {
     try {
       return $auth();
@@ -58,12 +58,20 @@ class Auth extends Middleware
     }
   }
 
-  public function authBySession($request, $next, $isGeneric)
+  private static function throwUserUnauthorized(bool $expired, string|null $authType = null)
+  {
+    if ($expired)
+      throw new Unauthorized(($authType ? $authType : "Auth") . " Expired");
+    else
+      throw new Unauthorized("User Unauthorized");
+  }
+
+  private function authBySession($request, $next, $isGeneric)
   {
     $authType = $isGeneric ? null : "Session";
     if (!Session::logged()) {
       Session::logout();
-      throw new UserUnauthorizedException(false, $authType);
+      self::throwUserUnauthorized(false, $authType);
     }
 
     $expire = Session::getTime();
@@ -75,19 +83,19 @@ class Auth extends Middleware
       );
       if ($interval > $expire) {
         Session::logout();
-        throw new UserUnauthorizedException(true, $authType);
+        self::throwUserUnauthorized(true, $authType);
       }
     }
 
     return $next($request);
   }
 
-  public function authByJWT($request, $next, $isGeneric)
+  private function authByJWT($request, $next, $isGeneric)
   {
     $token = AuthJwt::getBearer($request);
     $authType = $isGeneric ? null : "JWT";
     if (!$token || !AuthJwt::validate($token))
-      throw new UserUnauthorizedException(false, $authType);
+      self::throwUserUnauthorized(false, $authType);
 
     $expire = AuthJwt::getExpire();
     if ($expire > 0) {
@@ -97,7 +105,7 @@ class Auth extends Middleware
         new DateTime('now')
       );
       if ($interval > $expire)
-        throw new UserUnauthorizedException(true, $authType);
+        self::throwUserUnauthorized(true, $authType);
     }
     return $next($request);
   }

@@ -2,6 +2,7 @@
 
 namespace Pkit\Throwable;
 
+use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Status;
 
 class Redirect extends \Exception
@@ -13,9 +14,8 @@ class Redirect extends \Exception
             $code >= 400 ||
             !Status::validate($code)
         ) {
-            throw new Error(
+            throw new InternalServerError(
                 "Redirect: Status '$code' is not valid",
-                Status::INTERNAL_SERVER_ERROR
             );
         }
         parent::__construct($location, $code);

@@ -2,11 +2,11 @@
 
 namespace Pkit\Abstracts;
 
+use Pkit\Exceptions\Http\Status\MethodNotAllowed;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Http\Status;
 use Pkit\Middlewares;
-use Pkit\Throwable\Error;
 use ReflectionMethod;
 use Throwable;
 
@@ -27,7 +27,7 @@ abstract class Route
         return $method;
 
       if ($especialRoute == false)
-        throw new Error("Method Not Allowed", Status::METHOD_NOT_ALLOWED);
+        throw new MethodNotAllowed("Method '$method' Not Allowed");
     }
     return false;
   }
