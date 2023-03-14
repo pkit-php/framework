@@ -2,7 +2,7 @@
 
 namespace Pkit\Http;
 
-use Pkit\Throwable\Error;
+use Pkit\Exceptions\Http\Status\InternalServerError;
 use Phutilities\FS;
 use Phutilities\Parse;
 use Pkit\Utils\View;
@@ -56,9 +56,8 @@ class Response
   public function contentType(string $contentType)
   {
     if (in_array($contentType, self::CONTENT_TYPE_SUPPORT) == false)
-      throw new Error(
-        "Response: content-type $contentType not supported for conversion",
-        Status::INTERNAL_SERVER_ERROR
+      throw new InternalServerError(
+        "Content-type $contentType not supported for conversion in response",
       );
 
     $this->headers['Content-Type'] = $contentType;
@@ -68,9 +67,8 @@ class Response
   public function status(int $statusCode): self
   {
     if (!Status::validate($statusCode))
-      throw new Error(
-        "Response: Status '$statusCode' is not valid",
-        Status::INTERNAL_SERVER_ERROR
+      throw new InternalServerError(
+        "Status '$statusCode' is not valid in response",
       );
     $this->status = $statusCode;
     return $this;
@@ -174,20 +172,18 @@ class Response
       return match ($this->headers['Content-Type']) {
         'application/json' => json_encode($this->content),
         'application/xml' => Parse::arrayToXml($this->content),
-        default => throw new Error(
+        default => throw new InternalServerError(
           "Response: conversion for content-type '"
           . $this->headers['Content-Type']
           . "' unsupported",
-          Status::INTERNAL_SERVER_ERROR
         )
       };
     }
     catch (\Throwable $th) {
-      throw new Error(
+      throw new InternalServerError(
         "Response: conversion for content-type '"
         . $this->headers['Content-Type']
         . "' failed",
-        Status::INTERNAL_SERVER_ERROR,
         $th
       );
     }

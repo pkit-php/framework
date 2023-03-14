@@ -3,16 +3,16 @@
 namespace Pkit;
 
 use Attribute;
+use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Request;
 use Phutilities\Parse;
-use Pkit\Throwable\Error;
 
 #[Attribute]
 class Middlewares
 {
   private \Closure $controller;
 
-  public static function filterMiddlewares(array |string $middlewares, string $method)
+  public static function filterMiddlewares(array|string $middlewares, string $method)
   {
     $middlewares = Parse::anyToArray($middlewares);
 
@@ -65,9 +65,9 @@ class Middlewares
 
     if (!is_callable($middleware)) {
       if (is_string($middleware)) {
-        throw new Error("Middlewares: $middleware not callable", 500);
+        throw new InternalServerError("Middleware $middleware not callable");
       }
-      throw new Error("Middlewares: middleware not callable", 500);
+      throw new InternalServerError("Middleware not callable");
     }
 
     return $middleware($request, $next, $params ?? []);

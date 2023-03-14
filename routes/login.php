@@ -2,9 +2,9 @@
 
 use Pkit\Abstracts\Route;
 use Pkit\Auth\Session;
+use Pkit\Exceptions\Http\Status\NotAcceptable;
+use Pkit\Exceptions\Http\Status\Unauthorized;
 use Pkit\Http\Response;
-use Pkit\Http\Status;
-use Pkit\Throwable\Error;
 use Pkit\Utils\View;
 
 class Login extends Route
@@ -33,13 +33,12 @@ class Login extends Route
             strlen($login["email"] ?? "") <= 0 ||
             strlen($login["password"] ?? "") <= 0
         ) {
-            throw new Error("Email e Senha obrigatórios", Status::NOT_ACCEPTABLE);
+            throw new NotAcceptable("Email e Senha obrigatórios");
         }
 
-        $messageInvalid = "Email ou senha invalida";
 
         if ($login["email"] != "email@email.com" || $login["password"] != "123") {
-            throw new Error($messageInvalid, Status::UNAUTHORIZED);
+            throw new Unauthorized("Email ou senha inválidos");
         }
 
         Session::login($login);

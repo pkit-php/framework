@@ -2,9 +2,10 @@
 
 namespace Pkit;
 
+use Pkit\Exceptions\Http\Status\InternalServerError;
+use Pkit\Exceptions\Http\Status\NotFound;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Status;
 use Pkit\Router\RouterEnv;
 use Pkit\Router\Debug;
 use Pkit\Router\Routes;
@@ -38,9 +39,8 @@ class Router extends RouterEnv
       }
     }
     else {
-      $err = new Error(
+      $err = new NotFound(
         "page '" . $request->uri . "' not found",
-        Status::NOT_FOUND
       );
     }
 
@@ -95,7 +95,7 @@ class Router extends RouterEnv
       return $return;
 
     if (is_callable($return) == false && Env::getEnvOrValue("PKIT_RETURN", "true") == "true")
-      throw new Error("The route $route was not a valid return", 500);
+      throw new InternalServerError("The route $route was not a valid return");
 
     if ($return === 1 || is_null($return))
       return "";

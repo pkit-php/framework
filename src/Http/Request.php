@@ -48,7 +48,7 @@ class Request
 
   public static function getPostVars()
   {
-    $contentType = trim(explode(';', getallheaders()['Content-Type'])[0]);
+    $contentType = trim(explode(';', @getallheaders()['Content-Type'])[0]);
     try {
       switch ($contentType) {
         case 'text/plain':
