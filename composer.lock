@@ -4,24 +4,27 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eb9a3f3e2075ce13356d248595df1ab4",
+    "content-hash": "86d2f8ac48ed923ecacea941b5bba396",
     "packages": [
         {
             "name": "pkit/phutilities",
-            "version": "dev-development",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pkit-php/phutilities.git",
-                "reference": "154fa446c996133478644862615763dbff67b0d0"
+                "reference": "80523f513fd6b4ba17a530cb32d6a64d29b5dd96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pkit-php/phutilities/zipball/154fa446c996133478644862615763dbff67b0d0",
-                "reference": "154fa446c996133478644862615763dbff67b0d0",
+                "url": "https://api.github.com/repos/pkit-php/phutilities/zipball/80523f513fd6b4ba17a530cb32d6a64d29b5dd96",
+                "reference": "80523f513fd6b4ba17a530cb32d6a64d29b5dd96",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
+            },
+            "require-dev": {
+                "pestphp/pest": "^1.22"
             },
             "suggest": {
                 "php-xml": "Necessário para a conversão para array e vice-versa"
@@ -48,9 +51,9 @@
             ],
             "support": {
                 "issues": "https://github.com/pkit-php/phutilities/issues",
-                "source": "https://github.com/pkit-php/phutilities/tree/development"
+                "source": "https://github.com/pkit-php/phutilities/tree/develop"
             },
-            "time": "2022-10-31T18:10:42+00:00"
+            "time": "2023-03-07T15:52:25+00:00"
         }
     ],
     "packages-dev": [],
