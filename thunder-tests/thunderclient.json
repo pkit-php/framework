@@ -87,7 +87,7 @@
     "method": "POST",
     "sortNum": 15000,
     "created": "2022-10-17T18:51:53.016Z",
-    "modified": "2022-10-17T19:28:38.715Z",
+    "modified": "2023-03-28T23:59:13.265Z",
     "headers": [],
     "params": [],
     "body": {
@@ -112,7 +112,7 @@
         "type": "json-query",
         "custom": "json.message",
         "action": "equal",
-        "value": "Email ou senha invalida"
+        "value": "Email ou senha inválidos"
       }
     ]
   },
