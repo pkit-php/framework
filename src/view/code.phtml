@@ -96,12 +96,13 @@
             <?php
 
             ?>
-            <pre style="max-width: 75vw; max-height: 50vh; overflow: auto;"><?php
+            <pre style="max-width: 75vw; max-height: 50vh; overflow: auto; margin-top: 1rem; margin-bottom: 1rem;"><?php
             for ($index = $line; $index < ($line + 9); $index++):
               if (is_string($lines[$index])):
                 $lineText = $lines[$index];
 
-                echo $lineText . "\n";
+
+                echo $lineText . " \n";
 
               else:
                 break;
@@ -119,7 +120,8 @@
     endif ?>
 
     <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;"><?php
-    echo @$_ARGS['trace'] ? $_ARGS['trace'] : ""; foreach ((@$_ARGS['traces'] ?? []) as $key => $line):
+    echo @$_ARGS['trace'] ? $_ARGS['trace'] : "";
+    foreach ((@$_ARGS['traces'] ?? []) as $key => $line):
       if (@$line["file"]):
         echo "#$key "
           . '<a target="_blank" href="file://' . $line["file"] . '">'
