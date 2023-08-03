@@ -8,6 +8,7 @@
             "runtimeArgs": [
                 "-S",
                 "localhost:8000",
+                "index.php",
                 "-t",
                 "."
             ],

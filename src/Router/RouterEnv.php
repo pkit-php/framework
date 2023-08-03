@@ -13,9 +13,9 @@ class RouterEnv
 
     public static function config(string $routePath, ?string $publicPath = null, bool $subDomain = false)
     {
-        self::$routePath = rtrim($routePath, "/");
+        self::$routePath = trim($routePath, "/") . "/";
         self::$publicPath = $publicPath
-            ? rtrim($publicPath, "/")
+            ? trim($publicPath, "/") . "/"
             : null;
         self::$subDomain = $subDomain;
     }

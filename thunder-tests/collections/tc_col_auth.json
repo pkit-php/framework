@@ -1,0 +1,239 @@
+{
+    "_id": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+    "colName": "auth",
+    "created": "2022-10-17T18:44:30.558Z",
+    "sortNum": 20000,
+    "folders": [
+        {
+            "_id": "ce1a7991-2076-44c5-95e8-0156618a1276",
+            "name": "jwt",
+            "containerId": "",
+            "created": "2023-02-23T14:31:56.975Z",
+            "sortNum": 10000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "debdb31d-f90d-4086-bf54-5893252de2da",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "",
+            "name": "login view",
+            "url": "{{url}}/login",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2022-10-17T18:44:41.317Z",
+            "modified": "2023-01-10T01:07:21.837Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                },
+                {
+                    "type": "Content-Type",
+                    "custom": "",
+                    "action": "contains",
+                    "value": "text/html"
+                }
+            ]
+        },
+        {
+            "_id": "5d04aab0-f73f-44f7-bab6-1349d79abce2",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "",
+            "name": "login",
+            "url": "{{url}}/login",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2022-10-17T18:49:16.898Z",
+            "modified": "2022-10-17T19:26:38.106Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"email@email.com\",\n  \"password\": \"123\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.email",
+                    "action": "equal",
+                    "value": "email@email.com"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.password",
+                    "action": "equal",
+                    "value": "123"
+                }
+            ]
+        },
+        {
+            "_id": "b86f0107-b89d-484c-9e77-2d2b22a17252",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "",
+            "name": "login fail",
+            "url": "{{url}}/login",
+            "method": "POST",
+            "sortNum": 15000,
+            "created": "2022-10-17T18:51:53.016Z",
+            "modified": "2023-03-28T23:59:13.265Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"email\": \"email@email.com\",\n  \"password\": \"1234\"\n}",
+                "form": []
+            },
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "401"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.code",
+                    "action": "equal",
+                    "value": "401"
+                },
+                {
+                    "type": "json-query",
+                    "custom": "json.message",
+                    "action": "equal",
+                    "value": "Email ou senha inválidos"
+                }
+            ]
+        },
+        {
+            "_id": "9e1a9a24-84d2-4a22-aee1-2ea842ab4b82",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "",
+            "name": "logout",
+            "url": "{{url}}/logout",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2022-10-17T19:19:05.189Z",
+            "modified": "2022-10-17T19:27:14.014Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "200"
+                }
+            ],
+            "preReq": {
+                "runRequests": [
+                    {
+                        "reqId": "5d04aab0-f73f-44f7-bab6-1349d79abce2",
+                        "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+                        "triggerCondition": "run-always",
+                        "triggerValue": ""
+                    }
+                ]
+            }
+        },
+        {
+            "_id": "79b262d9-419b-44e4-9a13-42b2b0bd12e1",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "",
+            "name": "logout fail",
+            "url": "{{url}}/logout",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2022-10-17T19:20:38.302Z",
+            "modified": "2022-10-17T19:27:32.375Z",
+            "headers": [],
+            "params": [],
+            "tests": [
+                {
+                    "type": "res-code",
+                    "custom": "",
+                    "action": "equal",
+                    "value": "401"
+                }
+            ],
+            "preReq": {
+                "runRequests": [
+                    {
+                        "reqId": "9e1a9a24-84d2-4a22-aee1-2ea842ab4b82",
+                        "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+                        "triggerCondition": "run-always",
+                        "triggerValue": ""
+                    }
+                ]
+            }
+        },
+        {
+            "_id": "abf4e46a-1c26-4466-8237-5cff5751d7d6",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+            "name": "jwt",
+            "url": "{{url}}/jwt",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-02-23T13:28:27.296Z",
+            "modified": "2023-02-23T14:32:01.995Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"sub\": \"1234567890\",\n  \"name\": \"John Doe\",\n  \"iat\": 1516239022\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "30e72fc7-bf2b-4cd4-bf23-83b9826e4d39",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+            "name": "jwt validate",
+            "url": "{{url}}/jwt",
+            "method": "GET",
+            "sortNum": 20000,
+            "created": "2023-02-23T13:54:24.731Z",
+            "modified": "2023-02-23T14:32:06.615Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "text",
+                "raw": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgEg",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "bbd11a78-f71f-4aa5-975f-302bd1ce1375",
+            "colId": "c1ad7030-14fb-43f6-b56b-3f2cece25502",
+            "containerId": "ce1a7991-2076-44c5-95e8-0156618a1276",
+            "name": "jwt validate failed",
+            "url": "{{url}}/jwt",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-02-23T14:29:04.692Z",
+            "modified": "2023-02-23T14:32:08.986Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "text",
+                "raw": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.he0ErCNloe4J7Id0Ry2SEDg09lKkZkfsRiGsdX_vgE",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
