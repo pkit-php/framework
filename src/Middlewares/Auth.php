@@ -6,8 +6,6 @@ use Pkit\Abstracts\Middleware;
 use Pkit\Auth\Session;
 use Pkit\Auth\Jwt as AuthJwt;
 use Pkit\Exceptions\Http\Status\Unauthorized;
-use Phutilities\Date;
-use Phutilities\Parse;
 use DateTime;
 use ReflectionMethod;
 
@@ -19,8 +17,8 @@ class Auth extends Middleware
       if (is_null($params))
         $params = [];
       else
-        $params = Parse::anyToArray($params);
-    $isGeneric = count($params) > 1;
+        $params = is_array($params) ? $params : [$params];
+    $isGeneric = strlen($params) > 1;
 
     if (empty($params)) {
       $params = ["Session", "JWT"];
@@ -46,8 +44,7 @@ class Auth extends Middleware
   {
     try {
       return $auth();
-    }
-    catch (\Throwable $th) {
+    } catch (\Throwable $th) {
       if (
         $th->getFile() != __FILE__
         || $th->getTrace()[0]["function"] == "__construct"
@@ -77,10 +74,9 @@ class Auth extends Middleware
     $expire = Session::getTime();
     if ($expire > 0) {
       $created = Session::getCreated();
-      $interval = Date::deltaTime(
-        new DateTime($created),
-        new DateTime('now')
-      );
+      $interval =
+        (new DateTime('now'))->getTimestamp() -
+        (new DateTime($created))->getTimestamp();
       if ($interval > $expire) {
         Session::logout();
         self::throwUserUnauthorized(true, $authType);
@@ -97,13 +93,12 @@ class Auth extends Middleware
     if (!$token || !AuthJwt::validate($token))
       self::throwUserUnauthorized(false, $authType);
 
-    $expire = AuthJwt::getExpire();
+    $expire = (int) getenv("JWT_EXPIRES") ?: 0;
     if ($expire > 0) {
       $created = AuthJwt::getPayload($token)->_created;
-      $interval = Date::deltaTime(
-        new DateTime($created),
-        new DateTime('now')
-      );
+      $interval =
+        (new DateTime('now'))->getTimestamp() -
+        (new DateTime($created))->getTimestamp();
       if ($interval > $expire)
         self::throwUserUnauthorized(true, $authType);
     }

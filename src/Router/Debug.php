@@ -2,10 +2,9 @@
 
 namespace Pkit\Router;
 
-use Phutilities\Env;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Phutilities\Parse;
+use Pkit\Utils\Parser;
 use ReflectionClass;
 use Throwable;
 
@@ -17,14 +16,14 @@ class Debug
   {
     if (is_null(self::$canTraces)) {
       self::$canTraces =
-        Env::getEnvOrValue("PKIT_TRACES", "true") == "true";
+        (getenv("PKIT_TRACES") ?: "true") == "true";
     }
     return self::$canTraces;
   }
 
   public static function error(Request $request, Throwable $err): Response
   {
-    $accepts = Parse::headerToArray($request->headers['Accept'], false);
+    $accepts = Parser::headerToArray($request->headers['Accept'], false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
     }
@@ -32,7 +31,7 @@ class Debug
       return self::xml_err($err);
     }
     else if (
-      in_array('application/json', $accepts) ||
+      in_array('application/json', $accepts) ?:
       in_array('*/*', $accepts)
     ) {
       return self::json_err($err);

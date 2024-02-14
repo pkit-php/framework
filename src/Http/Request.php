@@ -2,8 +2,7 @@
 
 namespace Pkit\Http;
 
-use Phutilities\Parse;
-use Phutilities\Sanitize;
+use Pkit\Utils\Parser;
 
 class Request
 {
@@ -43,7 +42,9 @@ class Request
 
   public static function getUri()
   {
-    return Sanitize::uri($_SERVER["REQUEST_URI"]);
+    $uri = $_SERVER["REQUEST_URI"];
+    $uri = urldecode(parse_url($uri, PHP_URL_PATH));
+    return $uri != "/" ? rtrim($uri, "/") : $uri;
   }
 
   public static function getPostVars()
@@ -62,7 +63,7 @@ class Request
           return $json;
         case 'application/xml':
           $xml = file_get_contents('php://input');
-          return Parse::xmlToArray($xml);
+          return Parser::xmlToArray($xml);
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
         case null:

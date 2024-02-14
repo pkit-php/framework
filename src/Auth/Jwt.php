@@ -6,9 +6,6 @@ use DateTime;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
 use Pkit\Auth\Jwt\JwtEnv;
-use Phutilities\Base64url;
-use Phutilities\Date;
-use Phutilities\Text;
 
 class Jwt extends JwtEnv
 {
@@ -18,10 +15,20 @@ class Jwt extends JwtEnv
     'HS512' => ['hash_hmac', 'SHA512'],
   ];
 
+  private static function base64url_encode(mixed $data)
+  {
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+  }
+
+  private static function base64url_decode(mixed $data)
+  {
+    return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+  }
+
   public static function getPayload(string $token): mixed
   {
     $part = explode(".", $token);
-    $payload = Base64url::decode($part[1]);
+    $payload = self::base64url_decode($part[1]);
     return json_decode($payload);
   }
 
@@ -33,14 +40,17 @@ class Jwt extends JwtEnv
   public static function getBearer(Request $request): string|false
   {
     $authorization = $request->headers["authorization"];
+    $prefix_bearer = "Bearer ";
     if (is_null($authorization))
       return false;
-    return Text::removeFromStart($authorization, "Bearer ");
+    if (substr($authorization, 0, strlen($prefix_bearer)) !== $prefix_bearer)
+      return false;
+    return substr($authorization, strlen($prefix_bearer));
   }
 
   private static function signature(string $header, string $payload): string|false
   {
-    $json_header = json_decode(Base64url::decode($header));
+    $json_header = json_decode(self::base64url_decode($header));
     if (!is_object($json_header))
       return false;
 
@@ -54,7 +64,7 @@ class Jwt extends JwtEnv
       self::getKey(),
       true
     ]);
-    return Base64url::encode($signature);
+    return self::base64url_encode($signature);
   }
 
   public static function tokenize(array $payload): string
@@ -65,14 +75,14 @@ class Jwt extends JwtEnv
     ];
 
     if (self::getExpire()) {
-      $payload['_created'] = Date::format(new DateTime());
+      $payload['_created'] = (new DateTime())->format('Y-m-d H:i:s');
     }
 
     $header = json_encode($header);
-    $header = Base64url::encode($header);
+    $header = self::base64url_encode($header);
 
     $payload = json_encode($payload);
-    $payload = Base64url::encode($payload);
+    $payload = self::base64url_encode($payload);
 
     $signature = self::signature($header, $payload);
 

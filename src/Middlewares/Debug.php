@@ -3,14 +3,14 @@
 namespace Pkit\Middlewares;
 
 use Exception;
-use Phutilities\Debug as PhutilitiesDebug;
+use Pkit\Utils\Debug as PhutilitiesDebug;
 use ReflectionMethod;
 
 class Debug
 {
     public function __invoke($request, $next, $params)
     {
-        if (is_null($params) || empty($params))
+        if (is_null($params) ?: empty($params))
             $params = "console";
         if (!is_string($params))
             throw new Exception("Debug: command '" . $params . "' not is valid", 500);

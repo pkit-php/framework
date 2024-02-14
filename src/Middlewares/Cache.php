@@ -2,8 +2,6 @@
 
 namespace Pkit\Middlewares;
 
-use Phutilities\Parse;
-use Phutilities\Text;
 use Pkit\Abstracts\Middleware;
 use Pkit\Http\Request;
 use Pkit\Utils\Cache as CacheUtil;
@@ -15,7 +13,7 @@ class Cache extends Middleware
         $cache_params = [];
         $invalidate_routes = [];
         if (!is_null($params)) {
-            $params = Parse::anyToArray($params);
+            $params = is_array($params) ? $params : [$params];
             $cache_params = @$params['cache_params'] ?? [];
             $invalidate_routes = @$params['invalidate'] ?? [];
 
@@ -49,7 +47,7 @@ class Cache extends Middleware
             else
                 $paramsString .= "&$key=$value";
         }
-        return urlencode(Text::removeFromStart($uri, "/")) . $paramsString . ".cache";
+        return urlencode(ltrim($uri, "/")) . $paramsString . ".cache";
     }
 
     public function invalidateRoute(string $route)
@@ -57,7 +55,7 @@ class Cache extends Middleware
         if (!str_starts_with($route, "/"))
             $route = Request::getInstance()->uri . "/" . $route;
         $cache_file = CacheUtil::getCacheDir() . "/"
-            . urlencode(Text::removeFromStart($route, "/"));
+            . urlencode(ltrim($route, "/"));
         array_map('unlink', glob(preg_quote($cache_file . "?") . "*.cache"));
     }
 

@@ -1,13 +1,20 @@
 {
     "version": "0.2.0",
     "configurations": [
+        
+        {
+            "name": "Listen for Xdebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9003
+        },
         {
             "name": "Launch built-in server and debug",
             "type": "php",
             "request": "launch",
             "runtimeArgs": [
                 "-S",
-                "localhost:8000",
+                "localhost:8080",
                 "index.php",
                 "-t",
                 "."

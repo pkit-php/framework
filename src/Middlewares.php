@@ -5,7 +5,6 @@ namespace Pkit;
 use Attribute;
 use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Request;
-use Phutilities\Parse;
 
 #[Attribute]
 class Middlewares
@@ -14,10 +13,10 @@ class Middlewares
 
   public static function filterMiddlewares(array|string $middlewares, string $method)
   {
-    $middlewares = Parse::anyToArray($middlewares);
+    $middlewares = is_array($middlewares) ? $middlewares : [$middlewares];
 
     $methodsMiddlewares = $middlewares[strtolower($method)] ?? [];
-    $methodsMiddlewares = Parse::anyToArray($methodsMiddlewares);
+    $methodsMiddlewares = is_array($methodsMiddlewares) ? $methodsMiddlewares : [$methodsMiddlewares];
 
     $methods = ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'HEAD'];
     $middlewares = array_filter($middlewares, function ($key) use ($methods) {

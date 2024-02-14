@@ -3,8 +3,7 @@
 namespace Pkit\Http;
 
 use Pkit\Exceptions\Http\Status\InternalServerError;
-use Phutilities\FS;
-use Phutilities\Parse;
+use Pkit\Utils\Parser;
 use Pkit\Utils\View;
 
 class Response
@@ -100,7 +99,7 @@ class Response
   public static function mimeFile($filepath): Response
   {
     $content = file_get_contents($filepath);
-    $extension = FS::getExtension($filepath);
+    $extension = pathinfo($filepath)["extension"];
 
     if (
       ($mime_content = ContentType::getContentType($extension))
@@ -171,7 +170,7 @@ class Response
         return $this->content;
       return match ($this->headers['Content-Type']) {
         'application/json' => json_encode($this->content),
-        'application/xml' => Parse::arrayToXml($this->content),
+        'application/xml' => Parser::arrayToXml($this->content),
         default => throw new InternalServerError(
           "Response: conversion for content-type '"
           . $this->headers['Content-Type']

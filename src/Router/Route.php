@@ -2,8 +2,6 @@
 
 namespace Pkit\Router;
 
-use Phutilities\Env;
-use Phutilities\Text;
 use Pkit\Abstracts\MatchParam;
 use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Request;
@@ -80,7 +78,7 @@ class Route
         if (is_string($return))
             return $return;
 
-        if (is_callable($return) == false && Env::getEnvOrValue("PKIT_RETURN", "true") == "true")
+        if (is_callable($return) == false && (getenv("PKIT_RETURN") ?: "true") == "true")
             throw new InternalServerError("The route $this->routeFile was not a valid return");
 
         if ($return === 1 || is_null($return))
@@ -90,10 +88,11 @@ class Route
     }
 
     public static function matchRoute(string $routeFile, string $uri)
-    {
+    {   
+        ['basename' => $basename, 'dirname' => $dirname] = pathinfo($routeFile);
         $route = str_ends_with($routeFile, "/index.php")
-            ? Text::removeFromEnd($routeFile, "index.php")
-            : Text::removeFromEnd($routeFile, ".php");
+            ? $dirname
+            : $dirname . "/" . $basename;
         $route = str_replace('/', '\/', $route);
 
         $variablesConverts = [];

@@ -2,9 +2,6 @@
 
 namespace Pkit\Utils;
 
-use Phutilities\Env;
-use Phutilities\Parse;
-use Phutilities\Text;
 
 class View
 {
@@ -19,7 +16,7 @@ class View
   public static function getPath()
   {
     if (!self::$path) {
-      self::$path = Env::getEnvOrValue("VIEW_PATH", $_SERVER["DOCUMENT_ROOT"] . "/view");
+      self::$path = getenv("VIEW_PATH") ?: $_SERVER["DOCUMENT_ROOT"] . "/view";
     }
     return self::$path;
   }
@@ -32,7 +29,7 @@ class View
   private static function getBasePath(string $file)
   {
     if (substr($file, 0, 5) == 'pkit/') {
-      return __DIR__ . '/../view/';
+      return __DIR__ . '/../';
     } else {
       return Self::getPath() . '/';
     }
@@ -40,9 +37,9 @@ class View
 
   private static function getPathFile(string $file)
   {
-    $file = Text::removeFromEnd($file, '.phtml') . '.phtml';
+    ['basename' => $basename, 'dirname' => $dirname] = pathinfo($file);
+    $file = "$dirname/$basename.phtml";
     $path = self::getBasePath($file);
-    $file = Text::removeFromStart($file, 'pkit/');
     return $path . $file;
   }
 
@@ -66,7 +63,7 @@ class View
 
   public static function layout(string $file, mixed $args = null)
   {
-    $_ARGS = Parse::anyToArray($args);
+    $_ARGS = is_array($args) ? $args : [$args];
 
     $path = self::getPathFile($file);
     if (!file_exists($path)) {

@@ -3,9 +3,9 @@
 require 'vendor/autoload.php';
 
 use Pkit\Router;
-use Phutilities\Env;
+use Pkit\DotEnv;
 
-Env::load(__DIR__ . "/.env");
-Env::load(__DIR__ . "/.env.local");
+DotEnv::load(__DIR__ . "/.env");
+DotEnv::load(__DIR__ . "/.env.local");
 
 Router::run();

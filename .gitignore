@@ -1,3 +1,4 @@
 /vendor
 /.pkit
 .env.local
+*.cache

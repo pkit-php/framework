@@ -3,7 +3,6 @@
 namespace Pkit\Utils;
 
 use Closure;
-use Phutilities\Env;
 use Pkit\Exceptions\Cache\CacheFilePermissionDenied;
 
 class Cache
@@ -20,14 +19,14 @@ class Cache
     public static function getCacheDir()
     {
         if (is_null(self::$dir))
-            self::$dir = Env::getEnvOrValue('PKIT_CACHE_DIR', $_SERVER["DOCUMENT_ROOT"] . "/.pkit/cache");
+            self::$dir = getenv('PKIT_CACHE_DIR') ?: $_SERVER["DOCUMENT_ROOT"] . "/.pkit/cache";
         return self::$dir;
     }
 
     public static function getExpiration()
     {
         if (is_null(self::$expiration))
-            self::$expiration = (int) Env::getEnvOrValue('PKIT_CACHE_TIME', 3600);
+            self::$expiration = (int) getenv('PKIT_CACHE_TIME') ?: 3600;
         return self::$expiration;
     }
     private static function getFilePath(string $hash)

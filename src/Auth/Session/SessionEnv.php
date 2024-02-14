@@ -2,8 +2,6 @@
 
 namespace Pkit\Auth\Session;
 
-use Phutilities\Env;
-
 class SessionEnv
 {
     private static ?int $time = null;
@@ -18,14 +16,14 @@ class SessionEnv
     public static function getTime(): int
     {
         if (is_null(self::$time))
-            self::$time = (int)Env::getEnvOrValue("SESSION_TIME", 0);
+            self::$time = (int)getenv("SESSION_TIME") ?:0;
         return self::$time;
     }
 
     public static function getPath(): string
     {
         if (is_null(self::$path))
-            self::$path = Env::getEnvOrValue("SESSION_PATH", session_save_path());
+            self::$path = getenv("SESSION_PATH") ?:session_save_path();
         return self::$path;
     }
 }

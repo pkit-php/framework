@@ -2,7 +2,6 @@
 
 namespace Pkit\Throwable;
 
-use Phutilities\Env;
 use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Http\Response;
 use Pkit\Http\Status;
@@ -49,8 +48,8 @@ class Error extends \Exception
             $codeProperty->setValue($err, $code ?? 500);
         } finally {
             if (
-                Env::getEnvOrValue("PKIT_CLEAR", "true") == "true" &&
-                Env::getEnvOrValue("PKIT_RETURN", "true") == "true"
+                (getenv("PKIT_CLEAR") ?: "true") == "true" &&
+                (getenv("PKIT_RETURN") ?: "true") == "true"
             )
                 ob_end_clean();
             return $err ?? new InternalServerError(

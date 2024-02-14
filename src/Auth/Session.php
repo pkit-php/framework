@@ -3,7 +3,6 @@
 namespace Pkit\Auth;
 
 use DateTime;
-use Phutilities\Date;
 use Pkit\Auth\Session\SessionEnv;
 
 class Session extends SessionEnv
@@ -14,7 +13,7 @@ class Session extends SessionEnv
       session_save_path(self::getPath());
       session_start();
       if (self::getTime() && is_null($_SESSION['created'])) {
-        $_SESSION['created'] = Date::format(new DateTime());
+        $_SESSION['created'] = (new DateTime())->format('Y-m-d H:i:s');
         setcookie(session_name(), session_id(), [
           'expires'  => (time() + self::getTime()),
           'path'     => '/',
