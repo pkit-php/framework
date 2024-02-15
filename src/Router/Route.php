@@ -89,10 +89,10 @@ class Route
 
     public static function matchRoute(string $routeFile, string $uri)
     {   
-        ['basename' => $basename, 'dirname' => $dirname] = pathinfo($routeFile);
+        ['filename' => $filename, 'dirname' => $dirname] = pathinfo($routeFile);
         $route = str_ends_with($routeFile, "/index.php")
             ? $dirname
-            : $dirname . "/" . $basename;
+            : rtrim($dirname, "/") . "/" . $filename;
         $route = str_replace('/', '\/', $route);
 
         $variablesConverts = [];
