@@ -5,6 +5,7 @@ namespace Pkit;
 use Pkit\Exceptions\Http\Status\NotFound;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Http\Status;
 use Pkit\Router\RouterEnv;
 use Pkit\Router\Debug;
 use Pkit\Router\Route;
@@ -29,7 +30,7 @@ class Router extends RouterEnv
       $reflection = new \ReflectionObject($th);
       $codeProperty = $reflection->getProperty("code");
       $codeProperty->setAccessible(true);
-      $codeProperty->setValue($th, 500);
+      $codeProperty->setValue($th, Status::validate((int) $th->getCode()) ? $th->getCode() : 500);
       $err = $th;
     }
     if (@$route) {
