@@ -4,7 +4,7 @@ namespace Pkit\Http;
 
 use Pkit\Exceptions\Http\Status\InternalServerError;
 use Pkit\Utils\Parser;
-use Pkit\Utils\View;
+use Pkit\Phantom;
 
 class Response
 {
@@ -73,12 +73,9 @@ class Response
     return $this;
   }
 
-  public static function render(string $file, int $status = 200, mixed $args = null, bool $layout = true)
+  public static function render(string $file, int $status = 200, array $args = [])
   {
-    if ($layout)
-      $render = View::layout($file, $args);
-    else
-      $render = View::render($file, $args);
+    $render = Phantom::render($file, $args);
 
     return (new Response($render, $status))
       ->contentType(ContentType::HTML);

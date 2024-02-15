@@ -17,7 +17,8 @@
   ],
   "require": {
     "php": ">=8.1",
-    "pkit/env": "^0.1"
+    "pkit/env": "^0.1",
+    "pkit/phantom": "^0.1"
   },
   "suggest": {
     "php-xml": "Necessário para a conversão para array e vice-versa"

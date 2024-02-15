@@ -4,7 +4,9 @@ namespace Pkit\Router;
 
 use Pkit\Http\Request;
 use Pkit\Http\Response;
+use Pkit\Phantom;
 use Pkit\Utils\Parser;
+use Pkit\View;
 use ReflectionClass;
 use Throwable;
 
@@ -26,17 +28,14 @@ class Debug
     $accepts = Parser::headerToArray($request->headers['Accept'], false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
-    }
-    else if (in_array('application/xml', $accepts)) {
+    } else if (in_array('application/xml', $accepts)) {
       return self::xml_err($err);
-    }
-    else if (
+    } else if (
       in_array('application/json', $accepts) ?:
       in_array('*/*', $accepts)
     ) {
       return self::json_err($err);
-    }
-    else {
+    } else {
       return new Response($err, $err->getCode());
     }
   }
@@ -46,23 +45,24 @@ class Debug
     $nameClass = (new ReflectionClass($err))->getShortName();
     $nameClass = preg_replace("([A-Z][^A-Z])", " $0", $nameClass);
     $nameClass = trim($nameClass);
-    return Response::render("pkit/code", $err->getCode(), [
-      'name'        => $nameClass,
-      'code'        => $err->getCode(),
-      'message'     => $err->getMessage(),
+    $render = Phantom::renderView(new View(__DIR__ . "/../pkit"), "code", [
+      'name' => $nameClass,
+      'code' => $err->getCode(),
+      'message' => $err->getMessage(),
       'description' => $err->getMessage(),
-      'title'       => $err->getMessage(),
-      "traces"      => self::getCanTraces() ? $err->getTrace() : null,
+      'title' => $err->getMessage(),
+      "traces" => self::getCanTraces() ? $err->getTrace() : null,
     ]);
+    return new Response($render, $err->getCode());
   }
 
   public static function json_err(Throwable $err): Response
   {
     return Response::json(
       array_filter([
-        "code"    => $err->getCode(),
+        "code" => $err->getCode(),
         "message" => $err->getMessage(),
-        "trace"   => self::getCanTraces() ? $err->getTrace() : null,
+        "trace" => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
     );
@@ -72,9 +72,9 @@ class Debug
   {
     return Response::xml(
       array_filter([
-        "code"    => $err->getCode(),
+        "code" => $err->getCode(),
         "message" => $err->getMessage(),
-        "trace"   => self::getCanTraces() ? $err->getTrace() : null,
+        "trace" => self::getCanTraces() ? $err->getTrace() : null,
       ]),
       $err->getCode()
     );

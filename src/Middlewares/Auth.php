@@ -18,7 +18,7 @@ class Auth extends Middleware
         $params = [];
       else
         $params = is_array($params) ? $params : [$params];
-    $isGeneric = strlen($params) > 1;
+    $isGeneric = count($params) > 1;
 
     if (empty($params)) {
       $params = ["Session", "JWT"];

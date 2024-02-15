@@ -1,19 +1,16 @@
-<?php
-
-use Pkit\Utils\View;
-?>
+<?php use Pkit\Phantom ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <?php if (@$_ARGS['redirect']) : ?>
-    <meta http-equiv="refresh" content="0;url=<?= $_ARGS['redirect'] ?? '/' ?>" />
+  <?php if (@$redirect) : ?>
+    <meta http-equiv="refresh" content="0;url=<?= $redirect ?? '/' ?>" />
   <?php endif ?>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $_ARGS['title'] ?></title>
-  <meta name="description" content="<?= $_ARGS['description'] ?>">
+  <title><?= $title ?></title>
+  <meta name="description" content="<?= $description ?>">
 
   <style>
     body {
@@ -32,18 +29,21 @@ use Pkit\Utils\View;
     }
 
     :root {
-      --color: <?= $_ARGS['color'] ?? '#f22' ?>;
-      --back-color: <?= $_ARGS['back-color'] ?? '#fff' ?>;
-      --font-color: <?= $_ARGS['font-color'] ?? '#000' ?>;
+      --color: <?= $color ?? '#f22' ?>;
+      --back-color: <?= $back_color ?? '#fff' ?>;
+      --font-color: <?= $font_color ?? '#000' ?>;
       --time: 4s;
     }
   </style>
+  <?= Phantom::slot("styles") ?>
+
 </head>
 
 <body>
   <main>
-    <?= View::slot($_ARGS) ?>
+    <?= Phantom::slot("content") ?>
   </main>
 </body>
 
+<?= Phantom::slot("scripts") ?>
 </html>

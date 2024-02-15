@@ -5,7 +5,6 @@ use Pkit\Auth\Session;
 use Pkit\Exceptions\Http\Status\NotAcceptable;
 use Pkit\Exceptions\Http\Status\Unauthorized;
 use Pkit\Http\Response;
-use Pkit\Utils\View;
 
 class Login extends Route
 {
@@ -16,16 +15,16 @@ class Login extends Route
 
     public function getLoginPage($code = 200)
     {
-        return new Response(View::layout("login", [
+        return Response::render("login", $code, [
             "title" => "login",
-            "code"  => $code
-        ]), $code);
+            "code" => $code
+        ]);
     }
 
     public function POST($request): Response
     {
         $login = [
-            "email"    => $request->postVars["email"],
+            "email" => $request->postVars["email"],
             "password" => $request->postVars["password"]
         ];
 

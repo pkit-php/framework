@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7cf2cb55d06cb1963efb3d2fb80d3d70",
+    "content-hash": "1f04a120ae6b3f7452243d63d7ac697f",
     "packages": [
         {
             "name": "pkit/env",
@@ -45,6 +45,48 @@
                 "source": "https://github.com/pkit-php/env/tree/v0.1.0"
             },
             "time": "2024-02-04T21:03:53+00:00"
+        },
+        {
+            "name": "pkit/phantom",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pkit-php/phantom.git",
+                "reference": "4bb4401f7ed9b8fa6092e292c5e9673c2640db58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pkit-php/phantom/zipball/4bb4401f7ed9b8fa6092e292c5e9673c2640db58",
+                "reference": "4bb4401f7ed9b8fa6092e292c5e9673c2640db58",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "pestphp/pest": "^2.12"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pkit\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kauan Augusto"
+                }
+            ],
+            "description": "A simple module to handle views",
+            "support": {
+                "issues": "https://github.com/pkit-php/phantom/issues",
+                "source": "https://github.com/pkit-php/phantom/tree/v0.1.0"
+            },
+            "time": "2024-02-15T02:30:17+00:00"
         }
     ],
     "packages-dev": [
