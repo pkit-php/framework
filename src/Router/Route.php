@@ -91,8 +91,8 @@ class Route
     {   
         ['filename' => $filename, 'dirname' => $dirname] = pathinfo($routeFile);
         $route = str_ends_with($routeFile, "/index.php")
-            ? $dirname
-            : rtrim($dirname, "/") . "/" . $filename;
+        ? $dirname
+        : rtrim($dirname, "/") . "/" . $filename;
         $route = str_replace('/', '\/', $route);
 
         $variablesConverts = [];

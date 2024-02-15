@@ -4,32 +4,11 @@ namespace Pkit\Utils;
 
 use Closure;
 use Pkit\Exceptions\Cache\CacheFilePermissionDenied;
+use Pkit\Utils\Cache\CacheEnv;
 
-class Cache
+class Cache extends CacheEnv
 {
-
-    private static ?string $dir = null;
-    private static ?int $expiration = null;
-
-    public static function config(string $dir, int $expiration = null)
-    {
-        self::$dir = $dir;
-        self::$expiration = $expiration;
-    }
-    public static function getCacheDir()
-    {
-        if (is_null(self::$dir))
-            self::$dir = getenv('PKIT_CACHE_DIR') ?: $_SERVER["DOCUMENT_ROOT"] . "/.pkit/cache";
-        return self::$dir;
-    }
-
-    public static function getExpiration()
-    {
-        if (is_null(self::$expiration))
-            self::$expiration = (int) getenv('PKIT_CACHE_TIME') ?: 3600;
-        return self::$expiration;
-    }
-    private static function getFilePath(string $hash)
+    private static function parseFilePath(string $hash)
     {
         $dir = self::getCacheDir();
         if (!file_exists($dir))
@@ -41,7 +20,7 @@ class Cache
     private static function storageCache(string $hash, $content)
     {
         $serialize = serialize($content);
-        $cacheFilePath = self::getFilePath($hash);
+        $cacheFilePath = self::parseFilePath($hash);
 
         if (!@file_put_contents($cacheFilePath, $serialize))
             throw new CacheFilePermissionDenied($cacheFilePath);
@@ -50,7 +29,7 @@ class Cache
 
     private static function getContentCache(string $hash)
     {
-        $cacheFile = self::getFilePath($hash);
+        $cacheFile = self::parseFilePath($hash);
         if (!file_exists($cacheFile))
             return false;
 

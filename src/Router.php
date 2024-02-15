@@ -92,7 +92,7 @@ class Router extends RouterEnv
 
     $route = null;
     self::someFile(self::getRoutePath(), function ($file) use ($uri, &$route) {
-      $routeFile = substr($file, strlen(self::$routePath));
+      $routeFile = substr($file, strlen(self::getRoutePath()));
       if (str_ends_with($routeFile, "/*.php"))
         return false;
 
