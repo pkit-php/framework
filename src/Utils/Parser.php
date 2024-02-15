@@ -5,48 +5,32 @@ namespace Pkit\Utils;
 class Parser
 {
 
-  public static function headerToArray(string $header, bool $recursive = true): array
-  {
-    if ($recursive)
-      return self::headerToArrayRecursive($header);
-    return self::headerToArrayNotRecursive($header);
-  }
-
-  private static function headerToArrayNotRecursive(string $header)
-  {
-    $return = [];
-    foreach (explode(";", $header) as $line) {
-      foreach (explode(",", $line) as $parse) {
-        parse_str($parse, $result);
-        foreach ($result as $key => $value) {
-          if ($value == "") {
-            $return[] = $key;
-            continue;
-          }
-          $return[$key] = $value;
-        }
-      }
-    }
-    return $return;
-  }
-
-  private static function headerToArrayRecursive(string $header)
+  public static function headerToArray(string $header, bool $recursive = true)
   {
     $return = [];
     foreach (explode(";", $header) as $index => $line) {
       foreach (explode(",", $line) as $parse) {
         parse_str($parse, $result);
         foreach ($result as $key => $value) {
-          if ($value == "") {
-            $return[$index][] = $key;
-            continue;
+          if ($recursive) {
+            if ($value == "") {
+              $return[$index][] = $key;
+              continue;
+            }
+            $return[$index][$key] = $value;
+          } else {
+            if ($value == "") {
+              $return[] = $key;
+              continue;
+            }
+            $return[$key] = $value;
           }
-          $return[$index][$key] = $value;
         }
       }
     }
     return $return;
   }
+
   public static function xmlToArray(string $xml): array
   {
     $_xml = new \SimpleXMLElement($xml);
