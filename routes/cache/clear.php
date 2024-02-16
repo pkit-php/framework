@@ -5,14 +5,12 @@ use Pkit\Http\Response;
 use Pkit\Middlewares;
 use Pkit\Middlewares\Cache as CacheMiddleware;
 
-class Cache extends Route
+return new class extends Route
 {
-    #[Middlewares([CacheMiddleware::class => ["invalidate" => ["/cache"]]])]
+    #[Middlewares([CacheMiddleware::class => ["invalidate" => ["/cache/*"]]])]
     public function GET($request): Response
     {
         $date = (new DateTime("now"));
         return new Response($date);
     }
-}
-
-return new Cache;
+};
