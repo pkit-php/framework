@@ -88,11 +88,18 @@ class Route
     }
 
     public static function matchRoute(string $routeFile, string $uri)
-    {   
-        ['filename' => $filename, 'dirname' => $dirname] = pathinfo($routeFile);
-        $route = str_ends_with($routeFile, "/index.php")
-        ? $dirname
-        : rtrim($dirname, "/") . "/" . $filename;
+    {
+        [
+            'filename' => $filename,
+            'dirname' => $dirname,
+            'basename' => $basename,
+            'extension' => $extension
+        ] = pathinfo($routeFile);
+        if ($extension !== "php")
+            return false;
+        $route = ($basename == "index.php")
+            ? $dirname
+            : rtrim($dirname, "/") . "/" . $filename;
         $route = str_replace('/', '\/', $route);
 
         $variablesConverts = [];
@@ -105,8 +112,7 @@ class Route
             foreach ($matches as $key => $value) {
                 if (is_int($key)) {
                     unset($matches[$key]);
-                }
-                else {
+                } else {
                     $converter = $variablesConverts[$key];
                     if ($converter->validate($value) == false) {
                         return false;
@@ -136,8 +142,7 @@ class Route
                     $regex = $temp;
                 else
                     throw new InternalServerError("type $type not suporte rest param");
-            }
-            else {
+            } else {
                 $regex = $matchTest->regex;
             }
             $variablesConverts[$varName] = $matchTest;
@@ -156,12 +161,10 @@ class Route
         if (class_exists(__NAMESPACE__ . "\\match_$type")) {
             $matchClass = __NAMESPACE__ . "\\match_$type";
             return new $matchClass;
-        }
-        elseif (class_exists("Pkit\\$type\\match")) {
+        } elseif (class_exists("Pkit\\$type\\match")) {
             $matchClass = "Pkit\\$type\\match";
             return new $matchClass;
-        }
-        elseif (class_exists("App\\Matches\\match_$type")) {
+        } elseif (class_exists("App\\Matches\\match_$type")) {
             $matchClass = "App\\Matches\\match_$type";
             return new $matchClass;
         }
