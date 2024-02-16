@@ -49,7 +49,11 @@ class Request
 
   public static function getPostVars()
   {
-    $contentType = @getallheaders()['Content-Type'];
+    if ($contentType = @getallheaders()['Content-Type']) {
+      $contentType = Parser::headerToArray($contentType, false)[0];
+    } else {
+      return [];
+    }
     if (is_null($contentType))
       return null;
     $contentType = trim(explode(';', $contentType)[0]);
@@ -59,14 +63,13 @@ class Request
           return file_get_contents('php://input');
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
-          $json = json_decode($inputRaw, true);
+          $json = json_decode($inputRaw, true, 512, JSON_THROW_ON_ERROR);
           return $json;
         case 'application/xml':
           $xml = file_get_contents('php://input');
           return Parser::xmlToArray($xml);
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
-        case null:
           return array_merge($_POST, $_FILES);
         default:
           exit(Response::code(Status::UNSUPPORTED_MEDIA_TYPE));
