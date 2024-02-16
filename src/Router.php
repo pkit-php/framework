@@ -60,18 +60,16 @@ class Router extends RouterEnv
     return self::$route ? self::$route->variables : null;
   }
 
-  static private function someFile(string $path, \Closure $map, bool $recursive = false): string|false
+  static private function someFile(string $path, \Closure $map): string|false
   {
     $path = rtrim($path);
-    $directory = dir($path);
-    while ($file = $directory->read()) {
+    $directory = scandir($path, SCANDIR_SORT_DESCENDING);
+    foreach ($directory as $file) {
       if ($file == '.' || $file == '..')
         continue;
       $file = "$path/$file";
-      if (@dir($file)) {
-        if (!$recursive)
-          continue;
-        if ($result = self::someFile($file, $map, true))
+      if (@is_dir($file)) {
+        if ($result = self::someFile($file, $map))
           return $result;
         continue;
       }
@@ -80,7 +78,7 @@ class Router extends RouterEnv
         return $file;
 
     }
-    $directory->close();
+
     return false;
   }
   private static function getRoute(string $uri)
@@ -98,7 +96,7 @@ class Router extends RouterEnv
 
       $route = Route::matchRoute($routeFile, $uri);
       return $route;
-    }, true);
+    });
     return $route;
   }
 
