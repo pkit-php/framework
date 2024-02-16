@@ -81,13 +81,13 @@ class Response
       ->contentType(ContentType::HTML);
   }
 
-  public static function json(array|string $content, int $status)
+  public static function json(array|string $content, int $status = 200)
   {
     return (new Response($content, $status))
       ->contentType(ContentType::JSON);
   }
 
-  public static function xml(array|string $content, int $status)
+  public static function xml(array|string $content, int $status = 200)
   {
     return (new Response($content, $status))
       ->contentType(ContentType::XML);
