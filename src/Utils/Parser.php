@@ -58,7 +58,7 @@ class Parser
     return $xml->asXML();
   }
 
-  private static function handleArrayToXml(array $array, \SimpleXMLElement $xml)
+  private static function handleArrayToXml(array $array, \SimpleXMLElement $xml, ?string $outerTag = null)
   {
     foreach ($array as $tag => $children) {
       if ($tag == "@attributes") {
@@ -71,7 +71,7 @@ class Parser
         $xml->addChild($tag, $children);
         continue;
       }
-      self::handleArrayToXml($children, $xml->addChild($tag));
+      self::handleArrayToXml($children, $outerTag ? $xml->addChild($outerTag): $xml, $tag);
     }
   }
 }
