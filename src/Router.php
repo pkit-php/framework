@@ -23,31 +23,28 @@ class Router extends RouterEnv
   {
     $request = Request::getInstance();
     try {
-      $route = self::getRoute($request->uri);
+      if ($route = self::getRoute($request->uri)) {
+        self::$route = $route;
+        $err = Error::tryRun(function () use ($request) {
+          exit(self::$route->run($request));
+        });
+      } else {
+        $err = new NotFound(
+          "page '" . $request->uri . "' not found",
+        );
+      }
     } catch (Error $e) {
       $err = $e;
     } catch (\Throwable $th) {
-      $reflection = new \ReflectionObject($th);
-      $codeProperty = $reflection->getProperty("code");
-      $codeProperty->setAccessible(true);
-      $codeProperty->setValue($th, Status::validate((int) $th->getCode()) ? $th->getCode() : 500);
+      if (!Status::validate((int) $th->getCode())) {
+        $reflection = new \ReflectionObject($th);
+        $codeProperty = $reflection->getProperty("code");
+
+        $codeProperty->setAccessible(true);
+        $codeProperty->setValue($th, 500);
+      }
       $err = $th;
     }
-    if (@$route) {
-      self::$route = $route;
-      $err = Error::tryRun(function () use ($request) {
-        exit(self::$route->run($request));
-      });
-    } else if (is_null(@$err)) {
-      $err = new NotFound(
-        "page '" . $request->uri . "' not found",
-      );
-    }
-
-    if (@file(self::$routePath . "*.php"))
-      $err = Error::tryRun(function () use ($request, $err) {
-        exit((new Route("*.php", []))->run($request, $err));
-      });
 
     if (getenv("PKIT_DEBUG") == "true")
       exit(Debug::error($request, $err));
@@ -62,7 +59,6 @@ class Router extends RouterEnv
 
   static private function someFile(string $path, \Closure $map): string|false
   {
-    $path = rtrim($path);
     $directory = scandir($path, SCANDIR_SORT_DESCENDING);
     foreach ($directory as $file) {
       if ($file == '.' || $file == '..')
@@ -81,23 +77,22 @@ class Router extends RouterEnv
 
     return false;
   }
-  private static function getRoute(string $uri)
+  private static function getRoute(string $uri): Route|false
   {
     $filePublic = self::getPublicPath() . str_replace("/../", "/", $uri);
     if (@file($filePublic)) {
       return new Route("$uri", []);
     }
 
-    $route = null;
-    self::someFile(self::getRoutePath(), function ($file) use ($uri, &$route) {
+    if (self::someFile(self::getRoutePath(), function ($file) use ($uri, &$route) {
       $routeFile = substr($file, strlen(self::getRoutePath()));
-      if (str_ends_with($routeFile, "/*.php"))
-        return false;
-
       $route = Route::matchRoute($routeFile, $uri);
       return $route;
-    });
-    return $route;
+    })) {
+      return $route;
+    } else {
+      return false;
+    }
   }
 
 }
