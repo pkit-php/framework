@@ -25,7 +25,7 @@ class Debug
 
   public static function error(Request $request, Throwable $err): Response
   {
-    $accepts = Parser::headerToArray($request->headers['Accept'], false);
+    $accepts = Parser::headerToArray(@$request->headers['Accept'] ?? "", false);
     if (in_array('text/html', $accepts)) {
       return self::html_err($err);
     } else if (in_array('application/xml', $accepts)) {
