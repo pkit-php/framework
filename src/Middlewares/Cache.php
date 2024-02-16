@@ -54,9 +54,15 @@ class Cache extends Middleware
     {
         if (!str_starts_with($route, "/"))
             $route = Request::getInstance()->uri . "/" . $route;
+        $keys = null;
+        $exploded = explode("?", $route,2);
+        $route = $exploded[0];
+        $keys = @$exploded[1];
+        $trated_route = str_replace("%2A", "*", preg_quote(urlencode(ltrim($route, "/"))));
         $cache_file = CacheUtil::getCacheDir() . "/"
-            .  str_replace(preg_quote(urlencode(ltrim($route, "/"))),"%2A", "*") 
-            . "\?*.cache";
+        . $trated_route
+        . ($keys ? "?$keys" : "\?*")
+        . ".cache";
         array_map('unlink', glob($cache_file));
     }
 
