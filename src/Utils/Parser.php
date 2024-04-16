@@ -33,7 +33,7 @@ class Parser
 
   public static function xmlToArray(string $xml): array
   {
-    $_xml = new \SimpleXMLElement($xml);
+    $_xml = @new \SimpleXMLElement($xml);
 
     $array = json_decode(json_encode($_xml), 1);
     $root = $_xml->getName();
