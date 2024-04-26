@@ -3,15 +3,13 @@
 namespace Pkit\Middlewares;
 
 use Pkit\Abstracts\Middleware;
-use Pkit\Http\Router;
-use Pkit\Http\Status;
+use Pkit\Exceptions\Http\Status\ServiceUnavailable;
+
 
 class Maintenance extends Middleware
 {
-  public function handle($request, $response, $next)
+  public function __invoke($request, $next, $_)
   {
-    $response->status(Status::SERVICE_UNAVAILABLE);
-    Router::setMessage('page in maintenance');
-    Router::runEspecialRoute();
+    throw new ServiceUnavailable("page '$request->uri' in maintenance");
   }
 }

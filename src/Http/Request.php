@@ -2,16 +2,19 @@
 
 namespace Pkit\Http;
 
-use Pkit\Utils\Converter;
+use Pkit\Utils\Parser;
 
 class Request
 {
-  public readonly string $httpMethod;
+  private static ?Request $instance = null;
+  public readonly string
+  $httpMethod,
+  $uri;
+  public readonly mixed $postVars;
   public readonly array
-    $headers,
-    $queryParams,
-    $postVars,
-    $cookies;
+  $headers,
+  $queryParams,
+  $cookies;
 
   public function __construct()
   {
@@ -19,41 +22,61 @@ class Request
     $this->queryParams = $_GET ?? [];
     $this->cookies = $_COOKIE ?? [];
 
-    $this->headers = getallheaders();
-    if ($this->httpMethod != 'GET') {
-      $this->setPostVars();
-    }
+    $this->headers = self::getHeaders();
+    $this->uri = self::getUri();
+    $this->postVars = self::getPostVars();
   }
 
-  private function setPostVars()
+  public static function getInstance(): self
   {
-    $contentType = trim(explode(';', @$this->headers['content-type'])[0]);
+    if (!self::$instance) {
+      self::$instance = new Request();
+    }
+    return self::$instance;
+  }
+
+  public static function getHeaders()
+  {
+    return getallheaders();
+  }
+
+  public static function getUri()
+  {
+    $uri = $_SERVER["REQUEST_URI"];
+    $uri = urldecode(parse_url($uri, PHP_URL_PATH));
+    return $uri != "/" ? rtrim($uri, "/") : $uri;
+  }
+
+  public static function getPostVars()
+  {
+    if ($contentType = @getallheaders()['Content-Type']) {
+      $contentType = Parser::headerToArray($contentType, false)[0];
+    } else {
+      return [];
+    }
+    if (is_null($contentType))
+      return null;
+    $contentType = trim(explode(';', $contentType)[0]);
     try {
       switch ($contentType) {
+        case 'text/plain':
+          return file_get_contents('php://input');
         case 'application/json':
           $inputRaw = file_get_contents('php://input');
-          $json = json_decode($inputRaw, true);
-          if (!is_array($json)) {
-            $this->postVars[] = $json;
-            break;
-          }
-          $this->postVars = $json;
-          break;
+          $json = json_decode($inputRaw, true, 512, JSON_THROW_ON_ERROR);
+          return $json;
         case 'application/xml':
           $xml = file_get_contents('php://input');
-          $this->postVars = Converter::xmlToArray($xml);
-          break;
+          return Parser::xmlToArray($xml);
         case 'application/x-www-form-urlencoded':
         case 'multipart/form-data':
-        case null:
-          $this->postVars = $_POST;
-          break;
+          return array_merge($_POST, $_FILES);
         default:
-          (new Response)->status(Status::UNSUPPORTED_MEDIA_TYPE)->onlyCode()->send();
-          break;
+          exit(Response::code(Status::UNSUPPORTED_MEDIA_TYPE));
       }
-    } catch (\Throwable $th) {
-      (new Response)->status(Status::BAD_REQUEST)->onlyCode()->send($th);
+    }
+    catch (\Throwable $th) {
+      exit(Response::code(Status::BAD_REQUEST));
     }
   }
 }

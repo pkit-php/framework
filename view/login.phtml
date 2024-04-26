@@ -1,0 +1,16 @@
+<?php use Pkit\Phantom ?>
+<?= Phantom::extend("layout/master", compact(["title"])) ?>
+
+<?= Phantom::section("content") ?>
+<form action="" method="post" enctype="multipart/form-data">
+    <label for="email">Email: </label>
+    <input type="text" name="email" id="email">
+    <br>
+    <label for="email">Password: </label>
+    <input type="password" name="password" id="password">
+    <br>
+    <input type="file" name="a" id="file">
+    <br>
+    <button type="submit">submit</button>
+</form>
+<?= Phantom::stop() ?>

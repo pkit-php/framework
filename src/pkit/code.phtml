@@ -1,0 +1,101 @@
+<?php use Pkit\Phantom ?>
+<?= Phantom::extend("layout/master", compact(["title", "description"])) ?>
+
+<?= Phantom::section("content") ?>
+<div class="center">
+  <div class="icons">
+    <?php if ($code == 503): ?>
+      <?= Phantom::include("code/svg/maintenance") ?>
+    <?php elseif ($code == 401): ?>
+      <?= Phantom::include("code/svg/not_authorized") ?>
+    <?php elseif ($code == 403): ?>
+      <?= Phantom::include("code/svg/not_authenticated") ?>
+    <?php elseif ($code == 404): ?>
+      <?= Phantom::include("code/svg/not_found") ?>
+    <?php elseif ($code >= 500): ?>
+      <?= Phantom::include("code/svg/server_error") ?>
+    <?php elseif ($code >= 400): ?>
+      <?= Phantom::include("code/svg/client_error") ?>
+    <?php elseif ($code >= 300): ?>
+      <?= Phantom::include("code/svg/redirect") ?>
+    <?php endif ?>
+  </div>
+  <p>
+    <strong style="color: var(--color);">
+      <?= $code ?>
+    </strong>
+    <?= (" - " . $name) ?>
+    <br>
+    <em>
+      <?= $message ?>
+    </em>
+  </p>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem;justify-content: center">
+    <?php if ($traces):?>
+      <span style="display: flex">
+        <?php foreach ($traces as $trace):
+          if ($trace["file"]):
+            $fileContents = file_get_contents($trace["file"]);
+            $lines = preg_split("/((\r?\n)|(\r\n?))/", $fileContents);
+            $line = $trace["line"] > 5 ? $trace["line"] - 5 : 0;
+            ?>
+            <span style="user-select: none;">
+              <?php if ($line > 0):
+                echo " 	...";
+              endif ?>
+              <?php for ($index = $line; $index < ($line + 9); $index++): ?>
+                <div>
+                  <?php
+                    $indexPlus = $index + 1;
+                    if (($trace["line"]) == $indexPlus)
+                      echo "⇒" . $indexPlus . " ";
+                    else
+                      echo " 	" . $indexPlus . " ";
+                  ?>
+                </div>
+              <?php endfor ?>
+              <?php if ($line + 9 < count($lines)):
+                echo " 	...";
+              endif ?>
+            </span>
+
+            <pre style="max-width: 75vw; max-height: 50vh; overflow: auto; margin-top: 1rem; margin-bottom: 1rem;">
+              <?php for ($index = $line; $index < ($line + 9); $index++):
+                if (is_string(@$lines[$index])):
+                  echo $lines[$index] . " \n";
+                else:
+                  break;
+                endif;
+              endfor ?>
+            </pre>
+            <?php
+            break;
+          endif;
+        endforeach ?>
+      </span>
+
+      <pre style="max-width: 75vw; max-height: 40vh; overflow: auto;"
+        ><?php foreach ((@$traces ?? []) as $key => $line):
+          if (@$line["file"]):
+            echo "#$key "
+              . '<a target="_blank" href="file://' . $line["file"] . '">'
+              . $line["file"]
+              . "</a>";
+          else:
+            echo " [internal function]";
+          endif;
+          echo (@$line['line'] ? "(" . $line['line'] . ")" : "");
+          echo ": " . @$line["class"] . @$line["type"];
+          echo (@$line["function"] ? $line["function"] . "()" : "");
+          echo "\n";
+        endforeach ?>
+      </pre>
+    <?php endif ?>
+  </div>
+</div>
+<?= Phantom::stop() ?>
+
+<?= Phantom::section("styles") ?>
+<?= Phantom::include("code/styles", compact("code")) ?>
+<?= Phantom::stop() ?>

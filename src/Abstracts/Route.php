@@ -2,62 +2,77 @@
 
 namespace Pkit\Abstracts;
 
+use Pkit\Exceptions\Http\Status\MethodNotAllowed;
 use Pkit\Http\Request;
 use Pkit\Http\Response;
-use Pkit\Http\Route as HttpRoute;
 use Pkit\Http\Status;
+use Pkit\Middlewares;
+use ReflectionMethod;
+use Throwable;
 
-function methodNotAllowed(Request $_, Response $response)
-{
-  $response
-    ->onlyCode()
-    ->setStatus(Status::METHOD_NOT_ALLOWED)
-    ->send();
-}
-
-abstract class Route extends HttpRoute
+abstract class Route
 {
   public $middlewares = [];
 
-  public function options(Request $request, Response $response)
+  protected final function getMethod(Request $request, bool $especialRoute = false): string|false
   {
-    methodNotAllowed($request, $response);
+    $all = 'ALL';
+    if (method_exists($this, $all)) {
+      return $all;
+    }
+
+    $method = $request->httpMethod;
+    if (in_array($method, ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'HEAD'])) {
+      if (method_exists($this, $method))
+        return $method;
+
+      if ($especialRoute == false)
+        throw new MethodNotAllowed("Method '$method' Not Allowed");
+    }
+    return false;
   }
-  public function delete(Request $request, Response $response)
+
+  public final function __invoke(Request $request, ?Throwable $err = null): Response
   {
-    methodNotAllowed($request, $response);
+    if (is_null($err)) {
+      return $this->runRoute($request);
+    }
+    return $this->runEspecialRoute($request, $err);
   }
-  public function patch(Request $request, Response $response)
+
+  protected final function runRoute(Request $request): Response
   {
-    methodNotAllowed($request, $response);
+    if ($method = $this->getMethod($request)) {
+      $middlewares = Middlewares::filterMiddlewares(
+        $this->middlewares,
+        $request->httpMethod
+      );
+      return (new Middlewares($middlewares))
+        ->setController(function ($request) use ($method) {
+          if (
+            $attributedMiddlewares = @(new ReflectionMethod($this, $method))
+              ->getAttributes(Middlewares::class)[0]
+          )
+            return $attributedMiddlewares
+              ->newInstance()
+              ->setController(
+                fn($request) => $this->$method($request)
+              )->next($request);
+          return $this->$method($request);
+        })->next($request);
+    }
+
+    return Response::code(Status::NOT_IMPLEMENTED);
   }
-  public function trace(Request $request, Response $response)
+
+
+  protected final function runEspecialRoute(Request $request, Throwable $err): Response
   {
-    methodNotAllowed($request, $response);
+    if ($method = $this->getMethod($request, true)) {
+      return $this->$method($request, $err);
+    }
+
+    throw $err;
   }
-  public function post(Request $request, Response $response)
-  {
-    methodNotAllowed($request, $response);
-  }
-  public function head(Request $request, Response $response)
-  {
-    $response->headers['Accept'] =
-      'application/x-www-form-urlencoded, ' .
-      'application/json, ' .
-      'application/xml, ' .
-      'multipart/form-data';
-    $response->onlyCode();
-    $response->send();
-  }
-  public function get(Request $request, Response $response)
-  {
-    methodNotAllowed($request, $response);
-  }
-  public function put(Request $request, Response $response)
-  {
-    methodNotAllowed($request, $response);
-  }
-  public function all(Request $request, Response $response)
-  {
-  }
+
 }

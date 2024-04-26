@@ -4,9 +4,7 @@ São modelos bases para criação de Middlewares e Rotas
 
 ## Middleware
 
-- A abstração deve ser implementada para que funcione da maneira desejada
-- Funciona com o handle interceptando o request, response e next, assim chamando o next de acordo com a condições e necessidades
-- exemplo:
+A abstração de Middleware é implementada através do handle interceptando o request e next, assim chamando o next de acordo com a condições e necessidades, como por exemplo:
 
   ```php
   <?php
@@ -18,56 +16,52 @@ São modelos bases para criação de Middlewares e Rotas
   use PKit\Http\ContentType;
   use PKit\Abstracts\Middleware;
 
-  class Json extends Middleware
+  class Test extends Middleware
   {
-    public function handle(Request $request, Response $response, \Closure $next){
-      $request->setContentType(ContentType::JSON);
-      $next($request, $response);
+    public function handle(Request $request, \Closure $next){
+      echo "test";
+      return $next($request);
     };
   }
   ```
 
 ## Route
 
-- A abstração deve ser estendida para que funcione da maneira desejada
-- O middlewares são opcionais e são executados de acordo com as chaves:
-  - caso não aja será usado em todos o métodos;
-  - caso aja será usado no método com o mesmo nome da chave;
-- É executado o método com o mesmo nome do método do cabeçalho HTTP, recebendo o request e o response, assim enviando o conteúdo final
-- exemplo:
+A abstração de rotas funcionam a partir dos métodos das classes, sendo executado o método com o mesmo nome do método do cabeçalho HTTP, recebendo o request, assim retornado o conteúdo final, como por exemplo:
 
   ```php
   <?php
 
   use Pkit\Abstracts\Route;
   use Pkit\Auth\Session;
+  use Pkit\Http\Response;
   use Pkit\Http\Status;
+  use Pkit\Middlewares\Maintenance;
+  use Pkit\Middlewares\Auth;
+  use Pkit\Throwable\Redirect;
 
-  class Index extends Route
+  class Login extends Route
   {
     public $middlewares = [
-      "pkit/maintenance",
-      'get' => [
-        "pkit/auth",
-        "pkit/api"
-      ],
-      'post' => "pkit/onlycode"
+      Maintenance::class,
+      'GET' => [
+        Auth::class
+      ]
     ];
 
-    public function get($request, $response)
+    public function GET($request)
     {
-      $request->send(Session::getSession());
+      return new Response(Session::getSession());
     }
 
-    public function post($request, $response)
+    public function POST($request, $response)
     {
       /*validação*/
 
       Session::login($user);
-      $response->headers['Location'] = "/";
-      $response->sendStatus(Status::OK);
+      throw new Redirect("/");
     }
   }
 
-  (new Index)->run();
+  return new Login;
   ```

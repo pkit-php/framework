@@ -1,0 +1,49 @@
+<?php use Pkit\Phantom ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <?php if (@$redirect) : ?>
+    <meta http-equiv="refresh" content="0;url=<?= $redirect ?? '/' ?>" />
+  <?php endif ?>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><?= $title ?></title>
+  <meta name="description" content="<?= $description ?>">
+
+  <style>
+    body {
+      width: 100%;
+      height: 100vh;
+
+      box-sizing: border-box;
+
+      margin: 0;
+      padding: 0;
+    }
+
+    main {
+      width: 100%;
+      height: 100vh;
+    }
+
+    :root {
+      --color: <?= $color ?? '#f22' ?>;
+      --back-color: <?= $back_color ?? '#fff' ?>;
+      --font-color: <?= $font_color ?? '#000' ?>;
+      --time: 4s;
+    }
+  </style>
+  <?= Phantom::slot("styles") ?>
+
+</head>
+
+<body>
+  <main>
+    <?= Phantom::slot("content") ?>
+  </main>
+</body>
+
+<?= Phantom::slot("scripts") ?>
+</html>

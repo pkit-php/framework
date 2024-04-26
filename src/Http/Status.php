@@ -4,6 +4,14 @@ namespace Pkit\Http;
 
 class Status
 {
+
+  public static function validate(int $code)
+  {
+    $constantNames = (new \ReflectionClass(self::class))
+      ->getConstants();
+    return in_array($code, $constantNames);
+  }
+
   const
     CONTINUE = 100,
     SWITCHING_PROTOCOL = 101,

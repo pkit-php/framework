@@ -1,0 +1,13 @@
+<?php
+
+use Pkit\Abstracts\Route;
+use Pkit\Http\Response;
+
+return new class extends Route
+{
+    public function GET($request): Response
+    {
+        return new Response("not execute");
+    }
+};
+

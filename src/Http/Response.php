@@ -2,51 +2,36 @@
 
 namespace Pkit\Http;
 
+use Pkit\Exceptions\Http\Status\InternalServerError;
+use Pkit\Utils\Parser;
+use Pkit\Phantom;
+
 class Response
 {
-  public array $headers = [];
+  private array $headers = [];
   private array $cookies = [];
-  private ?int $status = null;
-  private ?string $contentType = null;
+  private int $status;
+  private array|string|object $content;
 
-  public function setStatus($status = 200)
+  const CONTENT_TYPE_SUPPORT = [
+    ContentType::JSON,
+    ContentType::HTML,
+    ContentType::XML,
+  ];
+
+  public function __construct(array|string|object $content, int $status = 200)
   {
-    if (!$this->status) {
-      $this->status($status);
-    }
+    $this->content = $content;
+    $this->status($status);
+  }
+
+  public function header(string $key, string $value)
+  {
+    $this->headers[$key] = $value;
     return $this;
   }
 
-  public function setContentType($contentType = 'text/html')
-  {
-    if (!$this->contentType) {
-      $this->contentType($contentType);
-    }
-    return $this;
-  }
-
-
-  public function contentType(?string $contentType = null): self | string
-  {
-    if ($contentType) {
-      $this->contentType = $contentType;
-      return $this;
-    } else {
-      return $this->contentType ?? "text/html";
-    }
-  }
-
-  public function status(int $statusCode = 0): self | int
-  {
-    if ($statusCode) {
-      $this->status = $statusCode;
-      return $this;
-    } else {
-      return $this->status ?? 200;
-    }
-  }
-
-  public function setCookie(
+  public function cookie(
     string $name,
     $value = "",
     $expires_or_options = 0,
@@ -54,15 +39,96 @@ class Response
     $domain = "",
     $secure = false,
     $httponly = false
-  ) {
+  )
+  {
     $this->cookies[$name] = [
-      "value" => $value,
+      "value"              => $value,
       "expires_or_options" => $expires_or_options,
-      "path" => $path,
-      "domain" => $domain,
-      "secure" => $secure,
-      "httponly" => $httponly
+      "path"               => $path,
+      "domain"             => $domain,
+      "secure"             => $secure,
+      "httponly"           => $httponly
     ];
+    return $this;
+  }
+
+  public function contentType(string $contentType)
+  {
+    if (in_array($contentType, self::CONTENT_TYPE_SUPPORT) == false)
+      throw new InternalServerError(
+        "Content-type $contentType not supported for conversion in response",
+      );
+
+    $this->headers['Content-Type'] = $contentType;
+    return $this;
+  }
+
+  public function status(int $statusCode): self
+  {
+    if (!Status::validate($statusCode))
+      throw new InternalServerError(
+        "Status '$statusCode' is not valid in response",
+      );
+    $this->status = $statusCode;
+    return $this;
+  }
+
+  public static function render(string $file, int $status = 200, array $args = [])
+  {
+    $render = Phantom::render($file, $args);
+
+    return (new Response($render, $status))
+      ->contentType(ContentType::HTML);
+  }
+
+  public static function json(array|string $content, int $status = 200)
+  {
+    return (new Response($content, $status))
+      ->contentType(ContentType::JSON);
+  }
+
+  public static function xml(array|string $content, int $status = 200)
+  {
+    return (new Response($content, $status))
+      ->contentType(ContentType::XML);
+  }
+
+  public static function mimeFile($filepath): Response
+  {
+    $content = file_get_contents($filepath);
+    $extension = pathinfo($filepath)["extension"];
+
+    if (
+      ($mime_content = ContentType::getContentType($extension))
+      || ($mime_content = mime_content_type($filepath))
+    )
+      return (new Response($content))
+        ->header("Content-Type", $mime_content);
+    else
+      return Response::code(Status::UNSUPPORTED_MEDIA_TYPE);
+  }
+
+  public static function code(int $status)
+  {
+    return new Response("", $status);
+  }
+
+  public static function empty()
+  {
+    return new Response("");
+  }
+
+  private function fixContentType()
+  {
+    if (@$this->headers['Content-Type'])
+      return;
+
+    if (is_string($this->content)) {
+      $this->headers['Content-Type'] = ContentType::HTML;
+    }
+    else {
+      $this->headers['Content-Type'] = ContentType::JSON;
+    }
   }
 
   private function sendCode()
@@ -70,24 +136,10 @@ class Response
     http_response_code($this->status);
   }
 
-  public function sendStatus($status = 200)
-  {
-    $this
-      ->onlyCode()
-      ->status($status)
-      ->send();
-  }
-
   private function sendHeaders()
   {
-    $this->headers['Content-Type'] = $this->contentType;
-
     foreach ($this->headers as $key => $value) {
-      if ($value) {
-        header($key . ':' . $value);
-      } else {
-        header_remove($value);
-      }
+      header(strtolower($key) . ':' . $value);
     }
   }
 
@@ -98,39 +150,38 @@ class Response
     }
   }
 
-  public function send($content = '')
+  public function __invoke()
   {
-    $this->setStatus();
-    $this->setContentType();
+    return $this->__toString();
+  }
+
+  public function __toString()
+  {
+    $this->fixContentType();
     $this->sendCode();
     $this->sendHeaders();
     $this->sendCookies();
 
-    switch ($this->contentType) {
-      case 'text/html':
-        echo $content;
-        break;
-      case 'application/json':
-        echo json_encode(
-          $content,
-          JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-        );
-        break;
-      default:
-        echo $content;
-        break;
+    try {
+      if (is_string($this->content))
+        return $this->content;
+      return match ($this->headers['Content-Type']) {
+        'application/json' => json_encode($this->content),
+        'application/xml' => Parser::arrayToXml($this->content),
+        default => throw new InternalServerError(
+          "Response: conversion for content-type '"
+          . $this->headers['Content-Type']
+          . "' unsupported",
+        )
+      };
     }
-
-    exit;
-  }
-
-  public function render($content = '', $status = 200)
-  {
-    $this->setStatus($status)->contentType(ContentType::HTML)->send($content);
-  }
-
-  public function onlyCode(): self
-  {
-    return $this->setContentType(ContentType::NONE);
+    catch (\Throwable $th) {
+      throw new InternalServerError(
+        "Response: conversion for content-type '"
+        . $this->headers['Content-Type']
+        . "' failed",
+        $th
+      );
+    }
   }
 }
