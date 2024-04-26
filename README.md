@@ -8,6 +8,8 @@
 
 `Esse projeto está parado para fins de estudo`
 
+```Esse projeto está parado para fins de estudo```
+
 Pkit é um framework php para aplicações web que visa facilitar o desenvolvimento de tais projetos.
 
 ## Instalação
